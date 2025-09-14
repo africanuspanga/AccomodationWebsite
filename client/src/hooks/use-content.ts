@@ -1,48 +1,20 @@
-import { useState, useEffect } from 'react';
-import contentData from '../data/content.json';
-
-export interface Accommodation {
-  id: string;
-  name: string;
-  continental: string;
-  country: string;
-  destination: string;
-  category: string;
-  description: string;
-  price: number;
-  rating: number;
-  features: string[];
-}
-
-export interface Destination {
-  id: string;
-  name: string;
-  continental: string;
-  country: string;
-  region: string;
-  description: string;
-  highlights: string[];
-  bestTime: string;
-}
-
-export interface Itinerary {
-  id: string;
-  name: string;
-  duration: string;
-  price: number;
-  category: string;
-  description: string;
-  highlights: string[];
-  includes: string[];
-  difficulty?: string;
-  groupSize: string;
-  rating: number;
-}
+import { useQuery } from '@tanstack/react-query';
+import { type Accommodation, type Destination, type Itinerary } from '@shared/schema';
 
 export function useContent() {
-  const [accommodations] = useState<Accommodation[]>(contentData.accommodations);
-  const [destinations] = useState<Destination[]>(contentData.destinations);
-  const [itineraries] = useState<Itinerary[]>(contentData.itineraries);
+  const { data: accommodations = [], isLoading: isLoadingAccommodations } = useQuery<Accommodation[]>({
+    queryKey: ['/api/accommodations'],
+  });
+
+  const { data: destinations = [], isLoading: isLoadingDestinations } = useQuery<Destination[]>({
+    queryKey: ['/api/destinations'],
+  });
+
+  const { data: itineraries = [], isLoading: isLoadingItineraries } = useQuery<Itinerary[]>({
+    queryKey: ['/api/itineraries'],
+  });
+
+  const isLoading = isLoadingAccommodations || isLoadingDestinations || isLoadingItineraries;
 
   const getAccommodationsByDestination = (destination: string) => {
     if (destination === 'all') return accommodations;
@@ -65,9 +37,13 @@ export function useContent() {
     accommodations,
     destinations,
     itineraries,
+    isLoading,
     getAccommodationsByDestination,
     getAccommodationsByCategory,
     getDestinationsByRegion,
     getItinerariesByCategory,
   };
 }
+
+// Export interfaces for backward compatibility
+export type { Accommodation, Destination, Itinerary };

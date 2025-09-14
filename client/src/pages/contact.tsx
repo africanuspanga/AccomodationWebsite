@@ -56,19 +56,39 @@ export default function Contact() {
     setIsSubmitting(true);
     
     try {
-      // Simulate form submission - in production this would send to your backend
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "Message Sent Successfully!",
-        description: "Thank you for your inquiry. We'll get back to you within 24 hours.",
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone || null,
+          checkIn: data.checkIn || null,
+          checkOut: data.checkOut || null,
+          travelers: data.travelers ? parseInt(data.travelers.split(' ')[0]) : null,
+          message: data.message,
+        }),
       });
-      
-      reset();
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "Message Sent Successfully!",
+          description: "Thank you for your inquiry. We'll get back to you within 24 hours.",
+        });
+        reset();
+      } else {
+        throw new Error(result.error || 'Failed to send message');
+      }
     } catch (error) {
+      console.error('Contact form error:', error);
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
         variant: "destructive",
       });
     } finally {
