@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Mountain } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Menu, Mountain, User, LogOut } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function Header() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logoutMutation } = useAuth();
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -54,15 +57,43 @@ export default function Header() {
             ))}
           </div>
 
-          {/* CTA Button */}
+          {/* Authentication Controls */}
           <div className="hidden lg:block">
-            <Button 
-              onClick={handleInquireClick}
-              className="btn-accent px-6 py-3 font-semibold"
-              data-testid="inquire-now-button"
-            >
-              Inquire Now
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="flex items-center space-x-2" data-testid="user-menu-trigger">
+                    <User className="h-4 w-4" />
+                    <span>{user.username}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem 
+                    onClick={() => logoutMutation.mutate()}
+                    className="flex items-center space-x-2 cursor-pointer"
+                    data-testid="logout-button"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Sign Out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <Link href="/auth">
+                  <Button variant="outline" data-testid="sign-in-button">
+                    Sign In
+                  </Button>
+                </Link>
+                <Button 
+                  onClick={handleInquireClick}
+                  className="btn-accent px-6 py-3 font-semibold"
+                  data-testid="inquire-now-button"
+                >
+                  Inquire Now
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu */}
@@ -89,6 +120,37 @@ export default function Header() {
                     {item.name}
                   </Link>
                 ))}
+                
+                {/* Mobile Authentication */}
+                <div className="border-t pt-4 mt-6">
+                  {user ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                        <User className="h-4 w-4" />
+                        <span>Signed in as {user.username}</span>
+                      </div>
+                      <Button 
+                        onClick={() => {
+                          logoutMutation.mutate();
+                          setIsOpen(false);
+                        }}
+                        variant="outline"
+                        className="w-full flex items-center space-x-2"
+                        data-testid="mobile-logout-button"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>Sign Out</span>
+                      </Button>
+                    </div>
+                  ) : (
+                    <Link href="/auth" onClick={() => setIsOpen(false)}>
+                      <Button variant="outline" className="w-full" data-testid="mobile-sign-in-button">
+                        Sign In
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+                
                 <Button 
                   onClick={handleInquireClick}
                   className="w-full btn-accent mt-6 py-3 font-semibold"

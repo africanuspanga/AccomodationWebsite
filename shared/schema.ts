@@ -94,6 +94,7 @@ export const insertInquirySchema = createInsertSchema(inquiries).omit({
 // Type definitions
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+export type PublicUser = Omit<User, 'password'>;
 
 export type InsertAccommodation = z.infer<typeof insertAccommodationSchema>;
 export type Accommodation = typeof accommodations.$inferSelect;
