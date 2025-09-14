@@ -1,0 +1,101 @@
+Based on all our discussions and your detailed requirements, here is a single, comprehensive prompt for your Next.js agent. This prompt combines all the information you've provided, including the website's purpose, design inspiration, content structure, and technical requirements. It instructs the agent to create the full web application, including all pages, and to use Google Search to populate the content where needed.
+
+---
+
+### **Prompt for Next.js Agent: Accommodation Collection - Full Web Application Build**
+
+**To the Agent:**
+
+I am commissioning you to build a complete, professional, and scalable travel web application for a new tourism brand, **Accommodation Collection**. You are a highly skilled and experienced frontend developer, and I expect you to deliver a top-tier, production-ready product.
+
+**The Brand and Project Goal:**
+
+* **Brand Identity:** **Accommodation Collection** is a premium tourism brand specializing in curating tours, accommodations, and other travel services. Our mission is to provide unforgettable, safe, and family-friendly trips, backed by over 10 years of experience in the industry.
+* **Design Inspiration:** The entire website design, from layout and user flow to overall aesthetic, should be a direct adaptation of the "Take Me To Tanzania" website, based on the screenshots provided. The visual style should be elegant, clean, and inspiring.
+* **Brand Colors:** Please select a color palette that complements a premium travel brand. Use a primary color, a secondary accent color, and a neutral palette. A rich, earthy green or deep blue could work well as a primary color, paired with a warm accent like gold or orange, and a clean white/off-white for backgrounds. You have creative freedom here, but ensure the palette feels luxurious and inviting.
+* **Content:** For now, all image containers must be left empty. This is a strict requirement as our team will upload the final images later. You must, however, use Google Search to find and populate all text-based content (names of hotels, national parks, tour descriptions, etc.) to make the pages look complete and realistic.
+* **Backend-Readiness:** The entire application must be built with a forward-looking architecture. All dynamic content should be stored in a mock JSON file within the project. The code for fetching and displaying this data should be written in a way that it can be easily swapped out for a real API endpoint in the future. This includes defining clear data structures for all content types (e.g., Accommodations, Destinations, Itineraries).
+
+---
+
+### **Website Page-by-Page Requirements:**
+
+**1. Homepage:**
+* **Header:** Create a sticky header with the **Accommodation Collection** logo, the main navigation links (Home, Accommodation, Destinations, Itineraries, About Us, Contact), and a prominent "Inquire Now" button.
+* **Hero Section:** A full-width hero container with a background, but leave the background image placeholder empty. Overlay a captivating headline like "Curating Your Perfect Getaway" and a sub-headline. Include a search widget for "Destination" and "Dates," with a clear "Search" button.
+* **Why Us Section:** Use a headline like "Why Our Clients Trust Us" and populate 3-4 feature cards. Research and write short descriptions based on the provided "About Us" information (experience, safety, etc.).
+* **Featured Destinations:** Create a section showcasing "Top Destinations." Research names of 5-6 well-known national parks in Tanzania (e.g., Serengeti, Ngorongoro, Tarangire) and list them with a brief description. Leave image placeholders empty.
+* **Featured Accommodations:** A section titled "Featured Stays" or similar. Research 3-4 famous hotels or lodges in Serengeti or Zanzibar and display their names, categories (e.g., Luxury Lodge, Beach Resort), and a short description. Leave image placeholders empty.
+* **Testimonials:** A testimonials section with placeholder quotes from "happy clients."
+* **Footer:** A multi-column footer with quick links, generic contact details (email: info@accommodationcollection.com, phone: +255 7XX XXX XXX), and social media icons.
+
+**2. Accommodation Page:**
+* **Layout:** A directory-style page with a list of all accommodations.
+* **Content & Data:** Create a large dataset of mock accommodations in your JSON file. For each entry, include properties like `id`, `name`, `continental`, `country`, `destination`, `category`, and a description.
+* **Filtering System:** Build a sophisticated, multi-level filter component that allows users to filter accommodations by:
+    1.  **Continental:** Europe, America, Asia, Africa.
+    2.  **Country:** Research and list 3-4 countries for each continent (e.g., Tanzania, Kenya for Africa).
+    3.  **Destination:** For the countries you list, research and list 5-6 destinations (e.g., Serengeti National Park, Arusha City, Zanzibar City).
+    4.  **Category:** Use the categories provided: Camping, Basic, Standard, Mid Range, Luxury, Ultra Luxury.
+* **Accommodation Cards:** Display the filtered accommodations using cards. Each card must have a title, destination, category, and an empty image container.
+
+**3. Destinations Page:**
+* **Layout:** A directory-style page that organizes destinations.
+* **Content & Data:** Create a JSON data structure for destinations.
+* **Hierarchy:** The page should be organized as follows:
+    * **Africa**
+        * **Eastern Africa:** Tanzania, Kenya, Uganda, Rwanda.
+        * **Southern Africa:** Research and list 2-3 countries.
+        * **Northern Africa:** Research and list 2-3 countries.
+        * **Western Africa:** Research and list 2-3 countries.
+    * **Asia:** Research and list 3-4 countries.
+    * **Europe:** Research and list 3-4 countries.
+    * **America:** Research and list 3-4 countries.
+* **Destination Cards:** Display the destinations in a visually appealing grid. Each card should have the destination name and an empty image container. Each card should link to a dedicated, separate page for that destination.
+
+**4. Itineraries Page:**
+* **Layout:** A clean, card-based directory of all tour packages.
+* **Content & Data:** Use the exact itinerary data I provided:
+    * `Ngorongoro Day Trip` - `1 Day & 0 Nights` - `$350`
+    * `Tanzania Wildlife Safari` - `7 Days & 6 Nights` - `$2,240`
+    * `Tarangire National Park Daytrip` - `1 Day` - `$250`
+    * `Wilderness Escape Safari` - `4 Days & 3 Nights` - `$1,720`
+    * `Classic Tanzania Safari: Tarangire, Serengeti & Ngorongoro` - `5 Days & 4 Nights` - `$2,420`
+    * `Southern Tanzania Safari Escape` - `5 Days & 4 Nights` - `$4,610`
+    * `Tanzania’s Southern Circuit Experience` - `3 Days & 2 Nights` - `$655`
+    * `Oldoinyo Lengai Trekking` - `3 Days & 2 Nights` - `$842`
+    * `Marangu Route` - `6 Days & 5 Nights` - `$1,584`
+    * `Mount Meru Hiking` - `4 Days & 3 Nights` - `$600`
+    * `Machame Route` - `6 Days & 5 Nights` - `$1,650`
+    * `Lemosho Route` - `7 Days & 6 Nights` - `$2,145`
+* **Itinerary Cards:** Each card should clearly display the title, duration, and price. Add a button to "View Details." Leave empty image containers.
+
+**5. About Us Page:**
+* **Headline:** "Your Journey, Our Passion: A Decade of Unforgettable Adventures."
+* **Content:** Write a detailed, narrative-style page about the company, including:
+    * The mission of providing safe, seamless, and memorable trips.
+    * Our 10+ years of experience.
+    * A commitment to personalized, family-friendly experiences.
+    * A general call-to-action to contact us.
+
+**6. Contact Page:**
+* **Headline:** "Let's Plan Your Perfect Escape."
+* **Layout:** A clear page with a contact form and static contact information.
+* **Content:**
+    * **Contact Information:** Use the generic details provided:
+        * Email: `info@accommodationcollection.com`
+        * Phone: `+255 7XX XXX XXX`
+        * Address: `Plot 45, Nyerere Road, Dar es Salaam, Tanzania`
+    * **Contact Form:** Include fields for Full Name, Email, Phone Number, and Message.
+    * **Social Media:** Add social media icons at the bottom of the page.
+
+**Technical Deliverables:**
+
+* Build the Next.js application from scratch.
+* Use Tailwind CSS for all styling.
+* Structure the project with reusable components for all common UI elements.
+* Create a single JSON file to serve as the temporary content management system.
+* Implement clean, semantic HTML and ensure the site is fully responsive.
+* The code should be well-commented and easy to understand for future developers.
+
+I'm entrusting this entire project to you. Begin by setting up the project structure and building out all the pages with the specified content. Your research should be quick and focused on gathering realistic place names and hotel titles to make the pages look complete. I look forward to seeing your completed work.
