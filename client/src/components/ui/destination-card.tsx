@@ -20,7 +20,7 @@ export default function DestinationCard({ destination, className = '' }: Destina
       <div className="relative overflow-hidden rounded-2xl mb-6">
         {destination.imageUrl ? (
           <img 
-            src={destination.imageUrl.replace('@assets/', '/attached_assets/')} 
+            src={destination.imageUrl} 
             alt={destination.name}
             className="aspect-[4/3] w-full object-cover group-hover:scale-105 transition-transform duration-300"
           />

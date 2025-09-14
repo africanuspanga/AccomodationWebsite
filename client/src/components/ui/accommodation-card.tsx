@@ -50,7 +50,7 @@ export default function AccommodationCard({ accommodation, className = '' }: Acc
       <div className="aspect-[4/3] w-full relative overflow-hidden">
         {accommodation.imageUrl ? (
           <img 
-            src={accommodation.imageUrl.replace('@assets/', '/attached_assets/')} 
+            src={accommodation.imageUrl} 
             alt={accommodation.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
