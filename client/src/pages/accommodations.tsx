@@ -13,13 +13,20 @@ export default function Accommodations() {
   });
 
   const filteredAccommodations = useMemo(() => {
-    return accommodations.filter((accommodation) => {
-      if (filters.continental && filters.continental !== 'all' && accommodation.continental !== filters.continental) return false;
-      if (filters.country && filters.country !== 'all' && accommodation.country !== filters.country) return false;
-      if (filters.destination && filters.destination !== 'all' && accommodation.destination !== filters.destination) return false;
-      if (filters.category && filters.category !== 'all' && accommodation.category !== filters.category) return false;
-      return true;
-    });
+    return accommodations
+      .filter((accommodation) => {
+        if (filters.continental && filters.continental !== 'all' && accommodation.continental !== filters.continental) return false;
+        if (filters.country && filters.country !== 'all' && accommodation.country !== filters.country) return false;
+        if (filters.destination && filters.destination !== 'all' && accommodation.destination !== filters.destination) return false;
+        if (filters.category && filters.category !== 'all' && accommodation.category !== filters.category) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        // Sort accommodations with images first
+        if (a.imageUrl && !b.imageUrl) return -1;
+        if (!a.imageUrl && b.imageUrl) return 1;
+        return 0;
+      });
   }, [accommodations, filters]);
 
   const handleFilterChange = (newFilters: FilterState) => {
