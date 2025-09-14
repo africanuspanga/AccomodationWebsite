@@ -14,7 +14,7 @@ export default function Home() {
   // Get featured content
   const featuredDestinations = destinations.slice(0, 6);
   const featuredAccommodations = accommodations.filter(acc => 
-    ['ultra-luxury', 'luxury'].includes(acc.category)
+    ['ultra-luxury', 'luxury'].includes(acc.category) && acc.imageUrl
   ).slice(0, 4);
 
   const trustFeatures = [

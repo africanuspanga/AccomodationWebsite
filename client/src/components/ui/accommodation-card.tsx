@@ -75,7 +75,7 @@ export default function AccommodationCard({ accommodation, className = '' }: Acc
             ))}
           </div>
           <span className="text-2xl font-bold text-primary">
-            {formatPrice(accommodation.price)}+
+            {accommodation.price ? formatPrice(accommodation.price) + '+' : 'Price on request'}
           </span>
         </div>
 

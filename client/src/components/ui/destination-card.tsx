@@ -18,9 +18,17 @@ export default function DestinationCard({ destination, className = '' }: Destina
   return (
     <div className={`group cursor-pointer ${className}`}>
       <div className="relative overflow-hidden rounded-2xl mb-6">
-        <div className="image-placeholder aspect-[4/3] w-full group-hover:scale-105 transition-transform duration-300">
-          <span className="text-sm">{destination.name}</span>
-        </div>
+        {destination.imageUrl ? (
+          <img 
+            src={destination.imageUrl.replace('@assets/', '/attached_assets/')} 
+            alt={destination.name}
+            className="aspect-[4/3] w-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="image-placeholder aspect-[4/3] w-full group-hover:scale-105 transition-transform duration-300">
+            <span className="text-sm">{destination.name}</span>
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <h3 className="font-serif text-2xl font-semibold mb-2">{destination.name}</h3>
