@@ -6,6 +6,7 @@ import DestinationCard from '@/components/ui/destination-card';
 import { Shield, Star, Heart, Users, ArrowRight } from 'lucide-react';
 import { useContent } from '@/hooks/use-content';
 import { Link } from 'wouter';
+import elephantHeroImage from '@assets/beautiful-african-elephant_1757883583699.jpg';
 
 export default function Home() {
   const { accommodations, destinations } = useContent();
@@ -67,7 +68,7 @@ export default function Home() {
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/attached_assets/beautiful-african-elephant_1757883583699.jpg')`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${elephantHeroImage})`,
           }}
         ></div>
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
