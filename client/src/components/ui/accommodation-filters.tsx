@@ -18,10 +18,10 @@ export interface FilterState {
 
 export default function AccommodationFilters({ onFilterChange, className = '' }: AccommodationFiltersProps) {
   const [filters, setFilters] = useState<FilterState>({
-    continental: '',
-    country: '',
-    destination: '',
-    category: '',
+    continental: 'all',
+    country: 'all',
+    destination: 'all',
+    category: 'all',
   });
 
   const continentals = [
@@ -64,10 +64,10 @@ export default function AccommodationFilters({ onFilterChange, className = '' }:
 
   const handleClearFilters = () => {
     const clearedFilters = {
-      continental: '',
-      country: '',
-      destination: '',
-      category: '',
+      continental: 'all',
+      country: 'all',
+      destination: 'all',
+      category: 'all',
     };
     setFilters(clearedFilters);
     onFilterChange(clearedFilters);
@@ -94,7 +94,7 @@ export default function AccommodationFilters({ onFilterChange, className = '' }:
               <SelectValue placeholder="All Continents" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Continents</SelectItem>
+              <SelectItem value="all">All Continents</SelectItem>
               {continentals.map((continental) => (
                 <SelectItem key={continental.value} value={continental.value}>
                   {continental.label}
@@ -113,7 +113,7 @@ export default function AccommodationFilters({ onFilterChange, className = '' }:
               <SelectValue placeholder="All Countries" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Countries</SelectItem>
+              <SelectItem value="all">All Countries</SelectItem>
               {countries.map((country) => (
                 <SelectItem key={country.value} value={country.value}>
                   {country.label}
@@ -132,7 +132,7 @@ export default function AccommodationFilters({ onFilterChange, className = '' }:
               <SelectValue placeholder="All Destinations" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Destinations</SelectItem>
+              <SelectItem value="all">All Destinations</SelectItem>
               {destinations.map((destination) => (
                 <SelectItem key={destination.value} value={destination.value}>
                   {destination.label}
@@ -151,7 +151,7 @@ export default function AccommodationFilters({ onFilterChange, className = '' }:
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category.value} value={category.value}>
                   {category.label}

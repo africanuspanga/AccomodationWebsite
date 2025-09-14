@@ -6,18 +6,18 @@ import { useContent } from '@/hooks/use-content';
 export default function Accommodations() {
   const { accommodations } = useContent();
   const [filters, setFilters] = useState<FilterState>({
-    continental: '',
-    country: '',
-    destination: '',
-    category: '',
+    continental: 'all',
+    country: 'all',
+    destination: 'all',
+    category: 'all',
   });
 
   const filteredAccommodations = useMemo(() => {
     return accommodations.filter((accommodation) => {
-      if (filters.continental && accommodation.continental !== filters.continental) return false;
-      if (filters.country && accommodation.country !== filters.country) return false;
-      if (filters.destination && accommodation.destination !== filters.destination) return false;
-      if (filters.category && accommodation.category !== filters.category) return false;
+      if (filters.continental && filters.continental !== 'all' && accommodation.continental !== filters.continental) return false;
+      if (filters.country && filters.country !== 'all' && accommodation.country !== filters.country) return false;
+      if (filters.destination && filters.destination !== 'all' && accommodation.destination !== filters.destination) return false;
+      if (filters.category && filters.category !== 'all' && accommodation.category !== filters.category) return false;
       return true;
     });
   }, [accommodations, filters]);
@@ -71,7 +71,7 @@ export default function Accommodations() {
                 Try adjusting your filters to see more results.
               </p>
               <button 
-                onClick={() => setFilters({ continental: '', country: '', destination: '', category: '' })}
+                onClick={() => setFilters({ continental: 'all', country: 'all', destination: 'all', category: 'all' })}
                 className="text-accent hover:text-accent/80 font-semibold"
                 data-testid="clear-all-filters-button"
               >
