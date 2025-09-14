@@ -16,6 +16,7 @@ export default function Destinations() {
     { name: 'Rwanda', destinations: ['Volcanoes National Park', 'Akagera National Park'] },
   ];
 
+
   const cities = [
     { name: 'Arusha City', description: 'Safari capital and gateway to Northern Circuit parks' },
     { name: 'Stone Town, Zanzibar', description: 'UNESCO World Heritage site with rich cultural heritage' },
@@ -144,35 +145,35 @@ export default function Destinations() {
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Other Eastern African Countries */}
-        <div className="mb-16">
-          <h2 className="font-serif text-3xl font-bold text-foreground mb-8">Other Eastern African Destinations</h2>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {otherCountries.map((country) => (
-              <div key={country.name} className="bg-card rounded-2xl p-6 shadow-lg">
-                <div className="mb-4">
-                  <div className="image-placeholder aspect-[4/3] w-full rounded-lg mb-4">
-                    <span className="text-sm">{country.name} Landscape</span>
-                  </div>
-                  <h4 className="font-serif text-xl font-semibold mb-2 text-primary">{country.name}</h4>
-                  <Badge variant="outline" className="text-xs mb-4">
-                    {country.destinations.length} Destinations
-                  </Badge>
-                </div>
-                
-                <div className="space-y-2">
-                  {country.destinations.map((destination) => (
-                    <div key={destination} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors">
-                      <span className="text-sm text-muted-foreground">{destination}</span>
-                      <span className="text-xs text-accent">→</span>
+          {/* Other Eastern African Countries */}
+          <div className="mb-12" data-testid="other-eastern-africa-section">
+            <h2 className="font-serif text-3xl font-bold text-foreground mb-8">Other Eastern African Countries</h2>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {otherCountries.map((country) => (
+                <div key={country.name} className="bg-card rounded-2xl p-6 shadow-lg" data-testid={`country-card-${country.name.toLowerCase()}`}>
+                  <div className="mb-4">
+                    <div className="image-placeholder aspect-[4/3] w-full rounded-lg mb-4">
+                      <span className="text-sm">{country.name} Landscape</span>
                     </div>
-                  ))}
+                    <h4 className="font-serif text-xl font-semibold mb-2 text-primary">{country.name}</h4>
+                    <Badge variant="outline" className="text-xs mb-4">
+                      {country.destinations.length} Destinations
+                    </Badge>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {country.destinations.map((destination) => (
+                      <div key={destination} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors">
+                        <span className="text-sm text-muted-foreground">{destination}</span>
+                        <span className="text-xs text-accent">→</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
