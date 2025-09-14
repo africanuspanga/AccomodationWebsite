@@ -47,10 +47,18 @@ export default function AccommodationCard({ accommodation, className = '' }: Acc
   return (
     <div className={`bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group ${className}`}>
       {/* Image Container */}
-      <div className="image-placeholder aspect-[4/3] w-full relative">
-        <span className="text-sm">
-          {accommodation.name}
-        </span>
+      <div className="aspect-[4/3] w-full relative overflow-hidden">
+        {accommodation.imageUrl ? (
+          <img 
+            src={accommodation.imageUrl.replace('@assets/', '/attached_assets/')} 
+            alt={accommodation.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="image-placeholder w-full h-full">
+            <span className="text-sm">{accommodation.name}</span>
+          </div>
+        )}
         <div className="absolute top-4 left-4">
           <Badge className={getCategoryColor(accommodation.category)}>
             {formatCategory(accommodation.category)}

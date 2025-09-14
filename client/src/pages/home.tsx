@@ -63,10 +63,13 @@ export default function Home() {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center hero-background">
-        <div className="image-placeholder absolute inset-0 w-full h-full">
-          <span className="text-white/60">Hero Background Image - Tanzania Landscape</span>
-        </div>
+      <section className="relative min-h-screen flex items-center justify-center">
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/attached_assets/beautiful-african-elephant_1757883583699.jpg')`,
+          }}
+        ></div>
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
           <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight animate-fade-in">
             Curating Your Perfect<br />Getaway
