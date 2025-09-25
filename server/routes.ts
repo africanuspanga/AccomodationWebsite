@@ -5,6 +5,15 @@ import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema
 import { setupAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint for deployment monitoring
+  app.get("/api/health", (req, res) => {
+    res.json({ 
+      status: "healthy", 
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || "development"
+    });
+  });
+
   // Setup authentication routes: /api/register, /api/login, /api/logout, /api/user
   setupAuth(app);
   // Contact/Inquiry routes

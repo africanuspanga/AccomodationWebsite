@@ -12,16 +12,18 @@ import {
   Phone, 
   MapPin, 
   Send, 
-  Facebook, 
-  Instagram, 
-  Twitter, 
-  Youtube,
   Check,
   Clock,
   Users,
   Award,
-  Shield
+  Shield,
+  MessageCircle,
+  Calendar,
+  Star,
+  CreditCard,
+  ExternalLink
 } from 'lucide-react';
+import { SiTiktok, SiThreads, SiPinterest, SiLinkedin, SiTumblr, SiInstagram, SiFacebook, SiYoutube, SiWhatsapp, SiX } from 'react-icons/si';
 import { useToast } from '@/hooks/use-toast';
 
 const contactFormSchema = z.object({
@@ -100,28 +102,54 @@ export default function Contact() {
     {
       icon: Mail,
       title: 'Email Address',
-      value: 'info@accommodationcollection.com',
+      value: 'accommodationcollection@gmail.com',
       description: 'We respond within 24 hours',
     },
     {
       icon: Phone,
-      title: 'Phone Number',
-      value: '+255 7XX XXX XXX',
+      title: 'Phone Numbers',
+      value: '+255717523882 / +255696154521',
       description: 'Available 9 AM - 6 PM EAT',
     },
     {
+      icon: Phone,
+      title: 'Emergency Contact',
+      value: '+255789631010 / +255768512626',
+      description: '24/7 support during your trip',
+    },
+    {
       icon: MapPin,
-      title: 'Office Address',
-      value: 'Plot 45, Nyerere Road\nDar es Salaam, Tanzania',
+      title: 'HQ Office Address',
+      value: 'ACU Tower, Plot: 30 & 31, Block: J\nHouse Number: 18, Sokoine Road\nPangani Street, Kati Ward\nArusha, Tanzania\nPostal Address: 13874, Post Code: 23102',
       description: 'Visit by appointment only',
     },
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Youtube, href: '#', label: 'YouTube' },
+    { icon: SiInstagram, href: 'https://www.instagram.com/accommodationcollection?igsh=amtmazU2dmxqOGRh&utm_source=ig_contact_invite', label: 'Instagram' },
+    { icon: SiThreads, href: 'https://www.threads.com/@accommodationcollection?igshid=NTc4MTIwNjQ2YQ==', label: 'Threads' },
+    { icon: SiFacebook, href: 'https://www.facebook.com/share/1B8V3VVZ9j/?mibextid=wwXIfr', label: 'Facebook' },
+    { icon: SiTiktok, href: 'https://www.tiktok.com/@accommodationcollection', label: 'TikTok' },
+    { icon: SiYoutube, href: 'https://www.youtube.com/@AccommodationCollection', label: 'YouTube' },
+    { icon: SiWhatsapp, href: 'https://wa.me/255768512626', label: 'WhatsApp' },
+    { icon: SiX, href: 'https://x.com/africalodges?s=21', label: 'X (Twitter)' },
+    { icon: SiPinterest, href: 'https://pin.it/5fIXuXfWK', label: 'Pinterest' },
+    { icon: SiLinkedin, href: 'https://www.linkedin.com/company/kim-zebra-adventures-and-safaris-limited/', label: 'LinkedIn' },
+    { icon: SiTumblr, href: 'https://www.tumblr.com/kimzebraadventuressafaris', label: 'Tumblr' },
+  ];
+
+  const additionalLinks = [
+    { icon: Star, href: 'https://www.tripadvisor.com.au/Attraction_Review-g297913-d16634014-Reviews-Kim_zebra_Adventures_and_Safaris_Limited-Arusha_Arusha_Region.html', label: 'TripAdvisor Reviews' },
+    { icon: ExternalLink, href: 'https://share.google/JplRQSFfZoa2Ae6yZ', label: 'Google Account' },
+    { icon: ExternalLink, href: 'https://www.getyourguide.com/s/?q=supplier:463668', label: 'Get Your Guide' },
+    { icon: Star, href: 'https://www.trustindex.io/reviews/www.kim.tours?_gl=1*1jjxjzh*_gcl_au*Mzk1MDEyOTk3LjE3Mjk3MDE4NzM.*_ga*MTMxMjYzMzkwLjE3Mjk3MDE1MDI.*_ga_DGL6KLFTVT*MTcyOTcwMTUwMi4xLjEuMTcyOTcxNTM3OC4zMy4wLjA.', label: 'Trustindex Reviews' },
+    { icon: Calendar, href: 'https://calendly.com/kimtours/30min', label: 'Schedule Meeting' },
+    { icon: MessageCircle, href: 'https://app.chatra.io/conversations/G3K8M46mJREExm84m', label: 'Live Chat' },
+  ];
+
+  const paymentLinks = [
+    { icon: CreditCard, href: 'https://payments.pesapal.com/kim-tours', label: 'Payment Option A' },
+    { icon: CreditCard, href: 'https://shop.directpay.online/paymybills/KIMZEBRAADVENTURESANDSAFARISLIMITED', label: 'Payment Option B' },
   ];
 
   const whyContactUs = [
@@ -320,13 +348,16 @@ export default function Contact() {
             {/* Social Media */}
             <div className="bg-card rounded-2xl p-8 shadow-lg">
               <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">Follow Our Adventures</h3>
-              <div className="flex space-x-4 mb-4">
+              <div className="grid grid-cols-5 gap-4 mb-4">
                 {socialLinks.map((social) => (
                   <a
                     key={social.label}
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
                     aria-label={social.label}
+                    title={social.label}
                     data-testid={`social-link-${social.label.toLowerCase()}`}
                   >
                     <social.icon className="h-5 w-5" />
@@ -336,6 +367,51 @@ export default function Contact() {
               <p className="text-muted-foreground text-sm">
                 Stay updated with our latest safari adventures, travel tips, and exclusive offers.
               </p>
+            </div>
+
+            {/* Additional Links */}
+            <div className="bg-card rounded-2xl p-8 shadow-lg">
+              <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">Reviews & Bookings</h3>
+              <div className="space-y-4">
+                {additionalLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors duration-200"
+                    data-testid={`additional-link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <link.icon className="h-5 w-5 text-primary" />
+                    <span className="text-foreground font-medium">{link.label}</span>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Payment Options */}
+            <div className="bg-card rounded-2xl p-8 shadow-lg">
+              <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">Secure Payment Options</h3>
+              <div className="space-y-4">
+                {paymentLinks.map((payment) => (
+                  <a
+                    key={payment.label}
+                    href={payment.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-3 p-4 rounded-lg bg-primary/5 border border-primary/20 hover:bg-primary/10 transition-colors duration-200"
+                    data-testid={`payment-link-${payment.label.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <payment.icon className="h-6 w-6 text-primary" />
+                    <div>
+                      <span className="text-foreground font-semibold block">{payment.label}</span>
+                      <span className="text-muted-foreground text-sm">Secure online payment</span>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                  </a>
+                ))}
+              </div>
             </div>
 
             {/* Why Contact Us */}

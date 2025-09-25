@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: accommodation-collection
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false  # This will be set manually in Render dashboard
+      - key: SESSION_SECRET
+        generateValue: true  # Render will generate a random value
+      - key: PORT
+        value: 10000  # Render's default port
+    autoDeploy: true
+    healthCheckPath: /api/health
