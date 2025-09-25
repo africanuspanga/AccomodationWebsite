@@ -44,8 +44,19 @@ export default function ItineraryCard({ itinerary, className = '' }: ItineraryCa
   return (
     <div className={`bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group ${className}`}>
       {/* Image Container */}
-      <div className="image-placeholder aspect-[4/3] w-full relative">
-        <span className="text-sm">{itinerary.name}</span>
+      <div className="aspect-[4/3] w-full relative overflow-hidden">
+        {itinerary.imageUrl ? (
+          <img 
+            src={itinerary.imageUrl} 
+            alt={itinerary.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            data-testid={`img-itinerary-${itinerary.id}`}
+          />
+        ) : (
+          <div className="image-placeholder w-full h-full flex items-center justify-center">
+            <span className="text-sm text-center px-4">{itinerary.name}</span>
+          </div>
+        )}
         <div className="absolute top-4 left-4">
           <Badge className={getCategoryColor(itinerary.category)}>
             {formatCategory(itinerary.category)}

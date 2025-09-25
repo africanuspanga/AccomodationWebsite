@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import SEOHead from '@/components/seo/seo-head';
 import SearchWidget from '@/components/ui/search-widget';
 import AccommodationCard from '@/components/ui/accommodation-card';
 import DestinationCard from '@/components/ui/destination-card';
@@ -62,7 +63,15 @@ export default function Home() {
   ];
 
   return (
-    <div className="pt-20">
+    <>
+      <SEOHead 
+        title="Accommodation Collection - Premium Tanzania Travel & Safari Experiences"
+        description="Discover luxury Tanzania safaris, Mt. Kilimanjaro treks, and premium accommodations. Expert-guided adventures featuring the Big Five, Great Migration, and pristine beaches in Zanzibar."
+        canonical="/"
+        ogImage="/attached_assets/beautiful-african-elephant_1757883583699.jpg"
+      />
+      
+      <div className="pt-20">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center">
         <div 
@@ -214,6 +223,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

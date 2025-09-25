@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import AccommodationCard from '@/components/ui/accommodation-card';
+import SEOHead from '@/components/seo/seo-head';
 import AccommodationFilters, { type FilterState } from '@/components/ui/accommodation-filters';
 import { useContent } from '@/hooks/use-content';
 
@@ -34,7 +35,15 @@ export default function Accommodations() {
   };
 
   return (
-    <div className="pt-32 pb-20">
+    <>
+      <SEOHead 
+        title="Luxury Tanzania Accommodations - Safari Lodges & Beach Resorts"
+        description="Book premium Tanzania accommodations including luxury safari lodges in Serengeti, Ngorongoro Crater, and pristine beach resorts in Zanzibar. Ultra-luxury to mid-range options available."
+        canonical="/accommodations"
+        ogImage="/attached_assets/four-seasons-serengeti-night_1757883337619.jpg"
+      />
+      
+      <div className="pt-32 pb-20">
       <div className="container-custom">
         <div className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
@@ -88,6 +97,7 @@ export default function Accommodations() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

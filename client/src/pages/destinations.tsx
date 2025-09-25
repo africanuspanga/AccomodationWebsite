@@ -1,4 +1,5 @@
 import DestinationCard from '@/components/ui/destination-card';
+import SEOHead from '@/components/seo/seo-head';
 import { Badge } from '@/components/ui/badge';
 import { MapPin } from 'lucide-react';
 import { useContent } from '@/hooks/use-content';
@@ -11,21 +12,29 @@ export default function Destinations() {
   const coastalRegions = destinations.filter(dest => dest.region === 'coast');
 
   const otherCountries = [
-    { name: 'Kenya', destinations: ['Maasai Mara', 'Amboseli National Park', 'Tsavo National Parks', 'Samburu National Reserve'] },
-    { name: 'Uganda', destinations: ['Bwindi Impenetrable Forest', 'Queen Elizabeth National Park', 'Murchison Falls National Park'] },
-    { name: 'Rwanda', destinations: ['Volcanoes National Park', 'Akagera National Park'] },
+    { name: 'Kenya', destinations: ['Maasai Mara', 'Amboseli National Park', 'Tsavo National Parks', 'Samburu National Reserve'], imageUrl: '/attached_assets/Serengeti _1757885374577.png' },
+    { name: 'Uganda', destinations: ['Bwindi Impenetrable Forest', 'Queen Elizabeth National Park', 'Murchison Falls National Park'], imageUrl: '/attached_assets/Ruaha_1757885374579.jpg' },
+    { name: 'Rwanda', destinations: ['Volcanoes National Park', 'Akagera National Park'], imageUrl: '/attached_assets/Ngorongro_1757885374578.png' },
   ];
 
 
   const cities = [
-    { name: 'Arusha City', description: 'Safari capital and gateway to Northern Circuit parks' },
-    { name: 'Stone Town, Zanzibar', description: 'UNESCO World Heritage site with rich cultural heritage' },
-    { name: 'Dar es Salaam', description: 'Commercial capital and main international gateway' },
-    { name: 'Moshi Town', description: 'Gateway to Kilimanjaro climbing expeditions' },
+    { name: 'Arusha City', description: 'Safari capital and gateway to Northern Circuit parks', imageUrl: '/attached_assets/Arusha_1757885640432.jpg' },
+    { name: 'Stone Town, Zanzibar', description: 'UNESCO World Heritage site with rich cultural heritage', imageUrl: '/attached_assets/Stone Town, Znazibar_1757885640432.jpg' },
+    { name: 'Dar es Salaam', description: 'Commercial capital and main international gateway', imageUrl: '/attached_assets/Dar es SALAAM_1757885640431.jpg' },
+    { name: 'Moshi Town', description: 'Gateway to Kilimanjaro climbing expeditions', imageUrl: '/attached_assets/Mount kILIMANAJRO _1757885640431.jpg' },
   ];
 
   return (
-    <div className="pt-32 pb-20">
+    <>
+      <SEOHead 
+        title="Tanzania Destinations - National Parks, Safaris & Travel Guide"
+        description="Explore Tanzania's top destinations including Serengeti National Park, Ngorongoro Crater, Mount Kilimanjaro, and Zanzibar. Complete travel guide with best times to visit and highlights."
+        canonical="/destinations"
+        ogImage="/attached_assets/Serengeti _1757885374577.png"
+      />
+      
+      <div className="pt-32 pb-20">
       <div className="container-custom">
         <div className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
@@ -135,9 +144,18 @@ export default function Destinations() {
               {cities.map((city) => (
                 <div key={city.name} className="group cursor-pointer">
                   <div className="relative overflow-hidden rounded-xl mb-4">
-                    <div className="image-placeholder aspect-[4/3] w-full group-hover:scale-105 transition-transform duration-300">
-                      <span className="text-sm">{city.name}</span>
-                    </div>
+                    {city.imageUrl ? (
+                      <img 
+                        src={city.imageUrl} 
+                        alt={city.name}
+                        className="aspect-[4/3] w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        data-testid={`img-city-${city.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      />
+                    ) : (
+                      <div className="image-placeholder aspect-[4/3] w-full group-hover:scale-105 transition-transform duration-300">
+                        <span className="text-sm">{city.name}</span>
+                      </div>
+                    )}
                   </div>
                   <h4 className="font-serif text-lg font-semibold mb-2 text-primary">{city.name}</h4>
                   <p className="text-muted-foreground text-sm">{city.description}</p>
@@ -154,8 +172,19 @@ export default function Destinations() {
               {otherCountries.map((country) => (
                 <div key={country.name} className="bg-card rounded-2xl p-6 shadow-lg" data-testid={`country-card-${country.name.toLowerCase()}`}>
                   <div className="mb-4">
-                    <div className="image-placeholder aspect-[4/3] w-full rounded-lg mb-4">
-                      <span className="text-sm">{country.name} Landscape</span>
+                    <div className="relative overflow-hidden rounded-lg mb-4">
+                      {country.imageUrl ? (
+                        <img 
+                          src={country.imageUrl} 
+                          alt={`${country.name} Landscape`}
+                          className="aspect-[4/3] w-full object-cover"
+                          data-testid={`img-country-${country.name.toLowerCase()}`}
+                        />
+                      ) : (
+                        <div className="image-placeholder aspect-[4/3] w-full">
+                          <span className="text-sm">{country.name} Landscape</span>
+                        </div>
+                      )}
                     </div>
                     <h4 className="font-serif text-xl font-semibold mb-2 text-primary">{country.name}</h4>
                     <Badge variant="outline" className="text-xs mb-4">
@@ -177,6 +206,7 @@ export default function Destinations() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

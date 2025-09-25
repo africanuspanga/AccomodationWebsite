@@ -1,9 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
+import SEOHead from '@/components/seo/seo-head';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
+    <>
+      <SEOHead 
+        title="Page Not Found - Accommodation Collection"
+        description="The page you're looking for doesn't exist. Explore our Tanzania safari packages, luxury accommodations, and travel experiences instead."
+        noIndex={true}
+      />
+      
+      <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md mx-4">
         <CardContent className="pt-6">
           <div className="flex mb-4 gap-2">
@@ -16,6 +24,7 @@ export default function NotFound() {
           </p>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import SEOHead from '@/components/seo/seo-head';
 import { Check, Users, Shield, Heart, Award } from 'lucide-react';
 
 export default function About() {
@@ -53,7 +54,15 @@ export default function About() {
   ];
 
   return (
-    <div className="pt-32 pb-20">
+    <>
+      <SEOHead 
+        title="About Accommodation Collection - 10+ Years Tanzania Travel Expertise"
+        description="Learn about Accommodation Collection's 10+ years of experience creating unforgettable Tanzania safaris, Kilimanjaro treks, and luxury travel experiences. Family-owned, safety-first approach."
+        canonical="/about"
+        ogImage="/attached_assets/beautiful-african-elephant_1757883583699.jpg"
+      />
+      
+      <div className="pt-32 pb-20">
       <div className="container-custom max-w-4xl">
         <div className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
@@ -204,6 +213,7 @@ export default function About() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

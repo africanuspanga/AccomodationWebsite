@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ItineraryCard from '@/components/ui/itinerary-card';
+import SEOHead from '@/components/seo/seo-head';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useContent } from '@/hooks/use-content';
@@ -28,7 +29,15 @@ export default function Itineraries() {
   };
 
   return (
-    <div className="pt-32 pb-20">
+    <>
+      <SEOHead 
+        title="Tanzania Safari Packages & Kilimanjaro Trekking - Expert Guided Tours"
+        description="Book Tanzania safari packages, Mount Kilimanjaro trekking routes, and adventure tours. Day trips, classic safaris, luxury expeditions with expert guides and accommodation included."
+        canonical="/itineraries"
+        ogImage="/attached_assets/Classic TanzaniaTarangire, Serengeti & Ngorongoro_1758796915224.jpg"
+      />
+      
+      <div className="pt-32 pb-20">
       <div className="container-custom">
         <div className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
@@ -120,6 +129,7 @@ export default function Itineraries() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

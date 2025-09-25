@@ -24,6 +24,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { SiTiktok, SiThreads, SiPinterest, SiLinkedin, SiTumblr, SiInstagram, SiFacebook, SiYoutube, SiWhatsapp, SiX } from 'react-icons/si';
+import SEOHead from '@/components/seo/seo-head';
 import { useToast } from '@/hooks/use-toast';
 
 const contactFormSchema = z.object({
@@ -160,7 +161,15 @@ export default function Contact() {
   ];
 
   return (
-    <div className="pt-32 pb-20">
+    <>
+      <SEOHead 
+        title="Contact Accommodation Collection - Tanzania Travel Specialists"
+        description="Contact our Tanzania travel experts in Arusha. Get personalized safari quotes, Kilimanjaro trek planning, and luxury accommodation bookings. Emergency contacts available 24/7."
+        canonical="/contact"
+        ogImage="/attached_assets/Arusha_1757885640432.jpg"
+      />
+      
+      <div className="pt-32 pb-20">
       <div className="container-custom max-w-6xl">
         <div className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
@@ -478,6 +487,7 @@ export default function Contact() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

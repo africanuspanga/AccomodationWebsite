@@ -188,8 +188,23 @@ async function seedDatabase() {
       await db.insert(destinations).values(destination);
     }
 
-    // Insert itineraries
+    // Insert itineraries with images
     console.log("Inserting itineraries...");
+    const itineraryImages: Record<string, string> = {
+      '1': '/attached_assets/Ngorongoro_1758796915223.jpg',
+      '2': '/attached_assets/Tanzania Widlife Safari_1758796915225.jpg',
+      '3': '/attached_assets/Tarangire_1758796915224.jpg',
+      '4': '/attached_assets/Wilderness_1758796915225.jpg',
+      '5': '/attached_assets/Classic TanzaniaTarangire, Serengeti & Ngorongoro_1758796915224.jpg',
+      '6': '/attached_assets/Southern Tanzania Safari Escape_1758796915224.jpg',
+      '7': '/attached_assets/Tanzania\'s Southern Circuit Experience_1758796915225.jpg',
+      '8': '/attached_assets/lengai_1758796915223.jpg',
+      '9': '/attached_assets/Marangu_1758796915222.jpg',
+      '10': '/attached_assets/Mt Meru Hiking _1758796915223.jpg',
+      '11': '/attached_assets/Mschame_1758796915222.jpg',
+      '12': '/attached_assets/Lemosho_1758796915224.jpg'
+    };
+    
     for (const itinerary of contentData.itineraries) {
       await db.insert(itineraries).values({
         id: itinerary.id,
@@ -203,7 +218,7 @@ async function seedDatabase() {
         difficulty: itinerary.difficulty || null,
         groupSize: itinerary.groupSize,
         rating: itinerary.rating,
-        imageUrl: null // Will be added when image upload is implemented
+        imageUrl: itineraryImages[itinerary.id] || null
       });
     }
 
