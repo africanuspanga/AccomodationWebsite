@@ -1,0 +1,89 @@
+1) Lets add the following information on the /contact page 
+
+HQ Office: ACU Tower, Plot: 30 & 31, Block: J, House Number: 18, Postal Address: 13874, Post Code: 23102, Road: Sokoine Road, Street: Pangani, Ward: Kati, Region: Arusha, Country: Tanzania.
+
+E-mail: accommodationcollection@gmail.com
+
+Phone:
++255717523882 / +255696154521
+
+Emergency Contact
++255789631010 / +255768512626
+
+These are social media account - please add each on with icon and add link so when user clicks the icon they are taken to the right url 
+
+Social Media Accounts 
+
+Instagram 👉 https://www.instagram.com/accommodationcollection?igsh=amtmazU2dmxqOGRh&utm_source=ig_contact_invite 
+
+Thread 👉 https://www.threads.com/@accommodationcollection?igshid=NTc4MTIwNjQ2YQ== 
+
+Facebook account 👉 https://www.facebook.com/share/1B8V3VVZ9j/?mibextid=wwXIfr 
+
+Likee 👉 https://l.likee.video/p/NYkOhC 
+
+TikTok 👉 www.tiktok.com/@accommodationcollection 
+
+YouTube 👉 https://www.youtube.com/@AccommodationCollection 
+
+WhatsApp 👉 ‎wa.me/255768512626 
+
+X 👉 https://x.com/africalodges?s=21 
+
+Pinterest 👉 https://pin.it/5fIXuXfWK 
+
+LinkedIn 👉 https://www.linkedin.com/company/kim-zebra-adventures-and-safaris-limited/ 
+
+Tumblr 👉 https://www.tumblr.com/kimzebraadventuressafaris 
+
+TripAdvisor 👉 https://www.tripadvisor.com.au/Attraction_Review-g297913-d16634014-Reviews-Kim_zebra_Adventures_and_Safaris_Limited-Arusha_Arusha_Region.html 
+
+Google Account 👉 https://share.google/JplRQSFfZoa2Ae6yZ 
+
+Get Your Guide 👉 https://www.getyourguide.com/s/?q=supplier:463668 
+
+Online Payment Link : Optional A
+https://payments.pesapal.com/kim-tours 
+
+Online Payment Link : Optional B
+https://shop.directpay.online/paymybills/KIMZEBRAADVENTURESANDSAFARISLIMITED 
+
+Trustindex Reviews 
+https://www.trustindex.io/reviews/www.kim.tours?_gl=1*1jjxjzh*_gcl_au*Mzk1MDEyOTk3LjE3Mjk3MDE4NzM.*_ga*MTMxMjYzMzkwLjE3Mjk3MDE1MDI.*_ga_DGL6KLFTVT*MTcyOTcwMTUwMi4xLjEuMTcyOTcxNTM3OC4zMy4wLjA. 
+
+My Calendly
+https://calendly.com/kimtours/30min 
+
+CHATRA (Chat bot)
+https://app.chatra.io/conversations/G3K8M46mJREExm84m 
+
+
+2) On the homepage on the HERO SECTION please add - on the filter 
+
+
+* Continent (add all continents 
+* ⁠Country (add all of them too)
+* ⁠Category ( I have listed them below) 
+* ⁠Destination (just leave the current national park you can add like top 20 popular destinations in africa and middle east and maybe iBIZA, MALDIVES) 
+* ⁠Check-in
+* ⁠Check-out
+* ⁠Then Search Experiences Button 
+
+On Category it can be 
+
+•National Parks
+•Mountains & Hills 
+•Conservation Areas 
+•Major Cities & Towns
+•Wildlife Management Areas
+•Coastal (Beaches & Islands)
+•Lakes, Rivers & Waterfalls 
+•Adventure Destinations
+•Entertainment Destinations
+•Cultural/Historical Destinations
+•Religious/Pilgrimage Destinations
+•Health/Wellness Destinations
+•Natural/Recreational Destinations
+•Business / MICE Destinations 
+
+3) Add configuration that this project can be hosted in render as dynamic websites being pulled from Github please 
