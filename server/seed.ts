@@ -191,18 +191,18 @@ async function seedDatabase() {
     // Insert itineraries with images
     console.log("Inserting itineraries...");
     const itineraryImages: Record<string, string> = {
-      '1': '/attached_assets/Ngorongoro_1758796915223.jpg',
-      '2': '/attached_assets/Tanzania Widlife Safari_1758796915225.jpg',
-      '3': '/attached_assets/Tarangire_1758796915224.jpg',
-      '4': '/attached_assets/Wilderness_1758796915225.jpg',
-      '5': '/attached_assets/Classic TanzaniaTarangire, Serengeti & Ngorongoro_1758796915224.jpg',
-      '6': '/attached_assets/Southern Tanzania Safari Escape_1758796915224.jpg',
-      '7': '/attached_assets/Tanzania\'s Southern Circuit Experience_1758796915225.jpg',
-      '8': '/attached_assets/lengai_1758796915223.jpg',
-      '9': '/attached_assets/Marangu_1758796915222.jpg',
-      '10': '/attached_assets/Mt Meru Hiking _1758796915223.jpg',
-      '11': '/attached_assets/Mschame_1758796915222.jpg',
-      '12': '/attached_assets/Lemosho_1758796915224.jpg'
+      '1': '/attached_assets/Ngorongoro_1758798006918.jpg',
+      '2': '/attached_assets/Tanzania Widlife Safari_1758798006919.jpg',
+      '3': '/attached_assets/Tarangire_1758798006919.jpg',
+      '4': '/attached_assets/Wilderness_1758798006919.jpg',
+      '5': '/attached_assets/Classic TanzaniaTarangire, Serengeti & Ngorongoro_1758798006918.jpg',
+      '6': '/attached_assets/Southern Tanzania Safari Escape_1758798006918.jpg',
+      '7': '/attached_assets/Tanzania\'s Southern Circuit Experience_1758798006920.jpg',
+      '8': '/attached_assets/lengai_1758798006917.jpg',
+      '9': '/attached_assets/Marangu_1758798006916.jpg',
+      '10': '/attached_assets/Mt Meru Hiking _1758798006917.jpg',
+      '11': '/attached_assets/Mschame_1758798006917.jpg',
+      '12': '/attached_assets/Lemosho_1758798006918.jpg'
     };
     
     for (const itinerary of contentData.itineraries) {
