@@ -6,6 +6,15 @@ Accommodation Collection is a premium Tanzania travel web application specializi
 
 ## Recent Changes (September 2025)
 
+### User Authentication System (Supabase Auth)
+- **Supabase Integration**: Replaced legacy username/password auth with Supabase Auth using email/password for regular users
+- **Auth Page**: Created dual-tab authentication page with Login and Signup forms, form validation, and error handling
+- **User Dashboard**: Implemented protected dashboard route displaying user's trips, accommodations, receipts, and messages (currently using mock data)
+- **Session Management**: Automatic session tracking with onAuthStateChange, proper redirects, and logout functionality
+- **Header Integration**: Updated navigation header to show user email when logged in with sign-out option
+- **Environment Configuration**: Frontend uses VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for secure Supabase client setup
+- **Dual Auth Systems**: Admin uses hardcoded credentials (admin@accommodations.guide), users use Supabase Auth
+
 ### Booking System Implementation
 - **Detail Pages**: Created comprehensive detail pages for accommodations and itineraries showing full information with imagery, features/highlights, pricing, and booking options
 - **Airbnb-Style Booking Form**: Implemented professional booking form with fields for full name, email, phone (with country code), check-in/check-out dates with calendar pickers, guest counts (adults/children), and optional special requests
@@ -56,9 +65,12 @@ Preferred communication style: Simple, everyday language.
 - **Development Data**: JSON-based mock data structure for accommodations, destinations, and itineraries
 
 ### Authentication and Authorization
-- **Current Implementation**: Basic user schema with username/password structure
-- **Session Management**: Express session configuration with PostgreSQL session store (connect-pg-simple)
-- **Security**: Prepared for production authentication with proper password hashing and session management
+- **User Authentication**: Supabase Auth with email/password authentication for regular users
+- **Admin Authentication**: Separate hardcoded credentials system (admin@accommodations.guide / Guide@1961)
+- **Auth Provider**: SupabaseAuthProvider context managing user session, sign-in, sign-up, and sign-out
+- **Protected Routes**: Dashboard route (/dashboard) requires authenticated user, redirects to /auth if not logged in
+- **Environment Variables**: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for frontend Supabase client
+- **Security**: Toast-based error handling, automatic session tracking, and proper redirect flows
 
 ### Content Management
 - **Static Data**: JSON-based content system for accommodations, destinations, and itineraries
