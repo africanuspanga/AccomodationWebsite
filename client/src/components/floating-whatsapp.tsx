@@ -18,9 +18,9 @@ export default function FloatingWhatsApp() {
       >
         <Button
           size="lg"
-          className="h-16 w-16 rounded-full bg-[#25D366] hover:bg-[#128C7E] border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-110 p-0"
+          className="h-16 w-16 rounded-full bg-[#25D366] hover:bg-[#128C7E] border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-110 p-0 flex items-center justify-center"
         >
-          <SiWhatsapp className="h-14 w-14 text-white" />
+          <SiWhatsapp className="h-10 w-10 text-white" />
         </Button>
       </a>
       
