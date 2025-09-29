@@ -6,7 +6,7 @@ Disallow: /auth
 Disallow: /admin
 
 # Sitemap
-Sitemap: https://www.accommodations.guide/sitemap.xml
+Sitemap: https://accommodations.guide/sitemap.xml
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1
