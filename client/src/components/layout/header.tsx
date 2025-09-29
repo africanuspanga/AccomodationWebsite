@@ -16,13 +16,11 @@ export default function Header() {
     { name: 'Accommodations', href: '/accommodations' },
     { name: 'Destinations', href: '/destinations' },
     { name: 'Itineraries', href: '/itineraries' },
+    { name: 'Blogs', href: '/blog' },
     { name: 'About Us', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
 
-  const handleInquireClick = () => {
-    window.location.href = '/contact';
-  };
 
   return (
     <header className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
@@ -79,20 +77,11 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center space-x-3">
-                <Link href="/auth">
-                  <Button variant="outline" data-testid="sign-in-button">
-                    Sign In
-                  </Button>
-                </Link>
-                <Button 
-                  onClick={handleInquireClick}
-                  className="btn-accent px-6 py-3 font-semibold"
-                  data-testid="inquire-now-button"
-                >
-                  Inquire Now
+              <Link href="/auth">
+                <Button variant="outline" data-testid="sign-in-button">
+                  Sign In
                 </Button>
-              </div>
+              </Link>
             )}
           </div>
 
@@ -150,14 +139,6 @@ export default function Header() {
                     </Link>
                   )}
                 </div>
-                
-                <Button 
-                  onClick={handleInquireClick}
-                  className="w-full btn-accent mt-6 py-3 font-semibold"
-                  data-testid="mobile-inquire-button"
-                >
-                  Inquire Now
-                </Button>
               </div>
             </SheetContent>
           </Sheet>
