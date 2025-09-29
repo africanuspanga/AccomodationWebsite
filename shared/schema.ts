@@ -61,9 +61,10 @@ export const inquiries = pgTable("inquiries", {
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone"),
-  checkIn: text("check_in"),
-  checkOut: text("check_out"),
-  travelers: integer("travelers"),
+  arrivalDate: text("arrival_date"),
+  departureDate: text("departure_date"),
+  adults: integer("adults"),
+  children: integer("children"),
   message: text("message").notNull(),
   createdAt: text("created_at").default(sql`now()`),
 });

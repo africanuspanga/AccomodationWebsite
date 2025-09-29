@@ -72,11 +72,11 @@ export default function Contact() {
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
-          phone: phoneValue || null,
-          arrivalDate: data.arrivalDate || null,
-          departureDate: data.departureDate || null,
-          adults: data.adults ? parseInt(data.adults) : null,
-          children: data.children ? parseInt(data.children) : null,
+          ...(phoneValue && { phone: phoneValue }),
+          ...(data.arrivalDate && { arrivalDate: data.arrivalDate }),
+          ...(data.departureDate && { departureDate: data.departureDate }),
+          ...(data.adults && { adults: parseInt(data.adults) }),
+          ...(data.children && { children: parseInt(data.children) }),
           message: data.message,
         }),
       });
@@ -89,6 +89,7 @@ export default function Contact() {
           description: "Thank you for your inquiry. We'll get back to you within 24 hours.",
         });
         reset();
+        setPhoneValue(undefined);
       } else {
         throw new Error(result.error || 'Failed to send message');
       }
