@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, MapPin } from 'lucide-react';
+import { useLocation } from 'wouter';
 import type { Accommodation } from '@/hooks/use-content';
 
 interface AccommodationCardProps {
@@ -9,6 +10,7 @@ interface AccommodationCardProps {
 }
 
 export default function AccommodationCard({ accommodation, className = '' }: AccommodationCardProps) {
+  const [, setLocation] = useLocation();
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -105,6 +107,7 @@ export default function AccommodationCard({ accommodation, className = '' }: Acc
 
         <Button 
           className="w-full btn-primary py-3 font-semibold"
+          onClick={() => setLocation(`/accommodations/${accommodation.id}`)}
           data-testid={`view-details-${accommodation.id}`}
         >
           View Details

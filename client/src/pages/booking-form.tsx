@@ -75,10 +75,7 @@ export default function BookingForm() {
         specialRequests: values.specialRequests || '',
       };
 
-      return apiRequest('/api/bookings', {
-        method: 'POST',
-        body: JSON.stringify(bookingData),
-      });
+      return apiRequest('POST', '/api/bookings', bookingData);
     },
     onSuccess: () => {
       toast({

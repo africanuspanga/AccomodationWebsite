@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Users, Star } from 'lucide-react';
+import { useLocation } from 'wouter';
 import type { Itinerary } from '@/hooks/use-content';
 
 interface ItineraryCardProps {
@@ -9,6 +10,7 @@ interface ItineraryCardProps {
 }
 
 export default function ItineraryCard({ itinerary, className = '' }: ItineraryCardProps) {
+  const [, setLocation] = useLocation();
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -123,6 +125,7 @@ export default function ItineraryCard({ itinerary, className = '' }: ItineraryCa
 
         <Button 
           className="w-full btn-primary py-3 font-semibold"
+          onClick={() => setLocation(`/itineraries/${itinerary.id}`)}
           data-testid={`view-details-${itinerary.id}`}
         >
           View Details & Book
