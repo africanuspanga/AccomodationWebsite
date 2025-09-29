@@ -28,6 +28,7 @@ import TermsOfService from "@/pages/terms-of-service";
 import CookiePolicy from "@/pages/cookie-policy";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
+import AdminLogin from "@/pages/admin-login";
 import { AuthProvider } from "@/hooks/use-auth";
 
 function Router() {
@@ -56,6 +57,7 @@ function Router() {
           <Route path="/terms-of-service" component={TermsOfService} />
           <Route path="/cookie-policy" component={CookiePolicy} />
           <Route path="/auth" component={AuthPage} />
+          <Route path="/admin/login" component={AdminLogin} />
           <Route component={NotFound} />
         </Switch>
       </main>

@@ -118,6 +118,71 @@ export const bookings = pgTable("bookings", {
   createdAt: text("created_at").default(sql`now()`),
 });
 
+// Admin Blog Posts table (for new admin-created content)
+export const adminBlogs = pgTable("admin_blogs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  excerpt: text("excerpt").notNull(),
+  content: text("content").notNull(),
+  imageUrl: text("image_url").notNull(),
+  readTime: text("read_time").notNull(),
+  date: text("date").notNull(),
+  author: text("author").notNull(),
+  createdAt: text("created_at").default(sql`now()`),
+});
+
+// Admin Volunteer Programs table (for new admin-created content)
+export const adminVolunteerPrograms = pgTable("admin_volunteer_programs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  location: text("location").notNull(),
+  country: text("country").notNull(),
+  flag: text("flag").notNull(),
+  minAge: text("min_age").notNull(),
+  duration: text("duration").notNull(),
+  cost: text("cost").notNull(),
+  focusAreas: text("focus_areas").array().notNull(),
+  image: text("image").notNull(),
+  description: text("description").notNull(),
+  fullExplanation: text("full_explanation").notNull(),
+  activities: text("activities").notNull(), // JSON stringified object
+  highlights: text("highlights").array().notNull(),
+  createdAt: text("created_at").default(sql`now()`),
+});
+
+// Admin Accommodations table (for new admin-created content) 
+export const adminAccommodations = pgTable("admin_accommodations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  continental: text("continental").notNull(),
+  country: text("country").notNull(),
+  destination: text("destination").notNull(),
+  category: text("category").notNull(),
+  description: text("description").notNull(),
+  price: integer("price").notNull(),
+  rating: integer("rating").default(5),
+  features: text("features").array().notNull(),
+  imageUrl: text("image_url"),
+  createdAt: text("created_at").default(sql`now()`),
+});
+
+// Admin Itineraries table (for new admin-created content)
+export const adminItineraries = pgTable("admin_itineraries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  duration: text("duration").notNull(),
+  price: integer("price").notNull(),
+  category: text("category").notNull(),
+  description: text("description").notNull(),
+  highlights: text("highlights").array().notNull(),
+  includes: text("includes").array().notNull(),
+  difficulty: text("difficulty"),
+  groupSize: text("group_size"),
+  rating: integer("rating").default(5),
+  imageUrl: text("image_url"),
+  createdAt: text("created_at").default(sql`now()`),
+});
+
 // Schema definitions
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -151,6 +216,26 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   createdAt: true,
 });
 
+export const insertAdminBlogSchema = createInsertSchema(adminBlogs).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAdminVolunteerProgramSchema = createInsertSchema(adminVolunteerPrograms).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAdminAccommodationSchema = createInsertSchema(adminAccommodations).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAdminItinerarySchema = createInsertSchema(adminItineraries).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Type definitions
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -173,6 +258,18 @@ export type VolunteerApplication = typeof volunteerApplications.$inferSelect;
 
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
 export type Booking = typeof bookings.$inferSelect;
+
+export type InsertAdminBlog = z.infer<typeof insertAdminBlogSchema>;
+export type AdminBlog = typeof adminBlogs.$inferSelect;
+
+export type InsertAdminVolunteerProgram = z.infer<typeof insertAdminVolunteerProgramSchema>;
+export type AdminVolunteerProgram = typeof adminVolunteerPrograms.$inferSelect;
+
+export type InsertAdminAccommodation = z.infer<typeof insertAdminAccommodationSchema>;
+export type AdminAccommodation = typeof adminAccommodations.$inferSelect;
+
+export type InsertAdminItinerary = z.infer<typeof insertAdminItinerarySchema>;
+export type AdminItinerary = typeof adminItineraries.$inferSelect;
 
 // Flight data types for OpenSky Network API
 export const flightDataSchema = z.object({

@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
+import { registerAdminRoutes } from "./admin-routes";
 import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
 import { db } from "./db";
@@ -218,6 +219,9 @@ async function ensureDatabaseSeeded() {
 (async () => {
   // Ensure database is seeded before starting server
   await ensureDatabaseSeeded();
+  
+  // Register admin routes
+  registerAdminRoutes(app);
   
   const server = await registerRoutes(app);
 
