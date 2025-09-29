@@ -1,5 +1,6 @@
 import { Link } from 'wouter';
-import { Mountain, Facebook, Instagram, Twitter, Youtube, Phone, Mail, MapPin } from 'lucide-react';
+import { Mountain, Phone, Mail, MapPin } from 'lucide-react';
+import { SiInstagram, SiFacebook, SiYoutube, SiX } from 'react-icons/si';
 
 export default function Footer() {
   const quickLinks = [
@@ -21,10 +22,10 @@ export default function Footer() {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Youtube, href: '#', label: 'YouTube' },
+    { icon: SiInstagram, href: 'https://www.instagram.com/accommodationcollection?igsh=amtmazU2dmxqOGRh&utm_source=ig_contact_invite', label: 'Instagram' },
+    { icon: SiFacebook, href: 'https://www.facebook.com/share/1B8V3VVZ9j/?mibextid=wwXIfr', label: 'Facebook' },
+    { icon: SiYoutube, href: 'https://www.youtube.com/@AccommodationCollection', label: 'YouTube' },
+    { icon: SiX, href: 'https://x.com/africalodges?s=21', label: 'X (Twitter)' },
   ];
 
   return (
@@ -42,7 +43,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-primary-foreground/80 mb-6">
-              Premium Tanzania travel experiences with over 10 years of expertise in safari, 
+              Premium Africa travel experiences with over 10 years of expertise in safari, 
               accommodations, and personalized adventure planning.
             </p>
             <div className="flex space-x-3">
@@ -102,16 +103,16 @@ export default function Footer() {
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-primary-foreground/80 flex-shrink-0" />
-                <span className="text-primary-foreground/80">info@accommodationcollection.com</span>
+                <span className="text-primary-foreground/80">accommodationcollection@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-primary-foreground/80 flex-shrink-0" />
-                <span className="text-primary-foreground/80">+255 7XX XXX XXX</span>
+                <span className="text-primary-foreground/80">+255717523882</span>
               </div>
               <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 text-primary-foreground/80 flex-shrink-0 mt-1" />
                 <span className="text-primary-foreground/80">
-                  Plot 45, Nyerere Road<br />Dar es Salaam, Tanzania
+                  ACU Tower, Plot: 30 & 31, Block: J<br />Sokoine Road, Pangani Street<br />Arusha, Tanzania
                 </span>
               </div>
             </div>

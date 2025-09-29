@@ -17,7 +17,7 @@ export default function SEOHead({
 }: SEOHeadProps) {
   const fullTitle = title.includes('Accommodation Collection') 
     ? title 
-    : `${title} | Accommodation Collection - Tanzania Travel & Safari`;
+    : `${title} | Accommodation Collection - Africa Travel & Safari`;
   
   // Dynamically determine base URL - don't hardcode production domain
   const getBaseUrl = () => {
@@ -60,7 +60,7 @@ export default function SEOHead({
       {/* Additional SEO meta tags */}
       <meta name="author" content="Accommodation Collection" />
       <meta name="geo.region" content="TZ" />
-      <meta name="geo.placename" content="Tanzania" />
+      <meta name="geo.placename" content="Africa" />
       <meta name="geo.position" content="-6.369028;34.888822" />
       <meta name="ICBM" content="-6.369028, 34.888822" />
     </Helmet>

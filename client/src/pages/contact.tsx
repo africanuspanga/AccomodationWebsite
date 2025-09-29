@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 import { 
   Mail, 
   Phone, 
@@ -32,9 +34,10 @@ const contactFormSchema = z.object({
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   phone: z.string().optional(),
-  checkIn: z.string().optional(),
-  checkOut: z.string().optional(),
-  travelers: z.string().optional(),
+  arrivalDate: z.string().optional(),
+  departureDate: z.string().optional(),
+  adults: z.string().optional(),
+  children: z.string().optional(),
   message: z.string().min(10, 'Message must be at least 10 characters'),
 });
 
@@ -42,6 +45,7 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phoneValue, setPhoneValue] = useState<string | undefined>(undefined);
   const { toast } = useToast();
 
   const {
@@ -68,10 +72,11 @@ export default function Contact() {
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
-          phone: data.phone || null,
-          checkIn: data.checkIn || null,
-          checkOut: data.checkOut || null,
-          travelers: data.travelers ? parseInt(data.travelers.split(' ')[0]) : null,
+          phone: phoneValue || null,
+          arrivalDate: data.arrivalDate || null,
+          departureDate: data.departureDate || null,
+          adults: data.adults ? parseInt(data.adults) : null,
+          children: data.children ? parseInt(data.children) : null,
           message: data.message,
         }),
       });
@@ -121,7 +126,7 @@ export default function Contact() {
     {
       icon: MapPin,
       title: 'HQ Office Address',
-      value: 'ACU Tower, Plot: 30 & 31, Block: J\nHouse Number: 18, Sokoine Road\nPangani Street, Kati Ward\nArusha, Tanzania\nPostal Address: 13874, Post Code: 23102',
+      value: 'ACU Tower, Plot: 30 & 31, Block: J\nHouse Number: 18, Road: Sokoine Road\nStreet: Pangani, Ward: Kati\nRegion: Arusha, Country: Tanzania\nPostal Address: 13874, Post Code: 23102',
       description: 'Visit by appointment only',
     },
   ];
@@ -156,15 +161,15 @@ export default function Contact() {
   const whyContactUs = [
     'Free personalized consultation and itinerary planning',
     'Competitive pricing with no hidden fees',
-    '24/7 support during your Tanzania adventure',
+    '24/7 support during your Africa adventure',
     'Expert local knowledge and insider access',
   ];
 
   return (
     <>
       <SEOHead 
-        title="Contact Accommodation Collection - Tanzania Travel Specialists"
-        description="Contact our Tanzania travel experts in Arusha. Get personalized safari quotes, Kilimanjaro trek planning, and luxury accommodation bookings. Emergency contacts available 24/7."
+        title="Contact Accommodation Collection - Africa Travel Specialists"
+        description="Contact our Africa travel experts in Arusha. Get personalized safari quotes, Kilimanjaro trek planning, and luxury accommodation bookings. Emergency contacts available 24/7."
         canonical="/contact"
         ogImage="/attached_assets/Arusha_1757885640432.jpg"
       />
@@ -176,7 +181,7 @@ export default function Contact() {
             Let's Plan Your Perfect Escape
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Ready to embark on your Tanzania adventure? Our expert team is here to craft your personalized journey.
+            Ready to embark on your Africa adventure? Our expert team is here to craft your personalized journey.
           </p>
         </div>
 
@@ -241,12 +246,13 @@ export default function Contact() {
                 <Label htmlFor="phone" className="text-sm font-medium text-foreground">
                   Phone Number
                 </Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  {...register('phone')}
+                <PhoneInput
+                  international
+                  countryCallingCodeEditable={false}
+                  value={phoneValue}
+                  onChange={setPhoneValue}
                   placeholder="Enter your phone number"
-                  className="bg-background"
+                  className="phone-input bg-background border border-input rounded-md px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   data-testid="phone-input"
                 />
               </div>
@@ -255,44 +261,58 @@ export default function Contact() {
                 <Label className="text-sm font-medium text-foreground">Travel Dates</Label>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="checkIn" className="text-xs text-muted-foreground">Check-in</Label>
+                    <Label htmlFor="arrivalDate" className="text-xs text-muted-foreground">Arrival Date</Label>
                     <Input
-                      id="checkIn"
+                      id="arrivalDate"
                       type="date"
-                      {...register('checkIn')}
+                      {...register('arrivalDate')}
                       className="bg-background"
-                      data-testid="check-in-date-input"
+                      data-testid="arrival-date-input"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="checkOut" className="text-xs text-muted-foreground">Check-out</Label>
+                    <Label htmlFor="departureDate" className="text-xs text-muted-foreground">Departure Date</Label>
                     <Input
-                      id="checkOut"
+                      id="departureDate"
                       type="date"
-                      {...register('checkOut')}
+                      {...register('departureDate')}
                       className="bg-background"
-                      data-testid="check-out-date-input"
+                      data-testid="departure-date-input"
                     />
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="travelers" className="text-sm font-medium text-foreground">
-                  Number of Travelers
-                </Label>
-                <Select onValueChange={(value) => setValue('travelers', value)}>
-                  <SelectTrigger className="bg-background" data-testid="travelers-select">
-                    <SelectValue placeholder="Select number of travelers" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 person</SelectItem>
-                    <SelectItem value="2">2 people</SelectItem>
-                    <SelectItem value="3-4">3-4 people</SelectItem>
-                    <SelectItem value="5-8">5-8 people</SelectItem>
-                    <SelectItem value="9+">9+ people</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="text-sm font-medium text-foreground">Number of Travelers</Label>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="adults" className="text-xs text-muted-foreground">Adults</Label>
+                    <Input
+                      id="adults"
+                      type="number"
+                      min="1"
+                      max="20"
+                      {...register('adults')}
+                      placeholder="Number of adults"
+                      className="bg-background"
+                      data-testid="adults-input"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="children" className="text-xs text-muted-foreground">Children</Label>
+                    <Input
+                      id="children"
+                      type="number"
+                      min="0"
+                      max="10"
+                      {...register('children')}
+                      placeholder="Number of children"
+                      className="bg-background"
+                      data-testid="children-input"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -303,7 +323,7 @@ export default function Contact() {
                   id="message"
                   rows={6}
                   {...register('message')}
-                  placeholder="Tell us about your dream Tanzania adventure - preferred destinations, accommodation style, special interests, or any questions you have..."
+                  placeholder="Tell us about your dream Africa adventure - preferred destinations, accommodation style, special interests, or any questions you have..."
                   className="bg-background resize-none"
                   data-testid="message-textarea"
                 />

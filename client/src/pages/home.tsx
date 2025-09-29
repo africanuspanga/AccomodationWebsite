@@ -27,7 +27,7 @@ export default function Home() {
     {
       icon: Star,
       title: '10+ Years Experience',
-      description: 'A decade of crafting unforgettable journeys has given us deep insights into Tanzania\'s hidden gems.',
+      description: 'A decade of crafting unforgettable journeys has given us deep insights into Africa\'s hidden gems.',
     },
     {
       icon: Heart,
@@ -52,7 +52,7 @@ export default function Home() {
       name: 'James & Linda Roberts',
       location: 'Couple, London',
       rating: 5,
-      quote: 'Our 10th anniversary trip to Tanzania was pure magic. From the Serengeti to Zanzibar, everything exceeded our expectations. We can\'t wait to return!',
+      quote: 'Our 10th anniversary trip to Africa was pure magic. From the Serengeti to Zanzibar, everything exceeded our expectations. We can\'t wait to return!',
     },
     {
       name: 'Michael Peterson',
@@ -65,8 +65,8 @@ export default function Home() {
   return (
     <>
       <SEOHead 
-        title="Accommodation Collection - Premium Tanzania Travel & Safari Experiences"
-        description="Discover luxury Tanzania safaris, Mt. Kilimanjaro treks, and premium accommodations. Expert-guided adventures featuring the Big Five, Great Migration, and pristine beaches in Zanzibar."
+        title="Accommodation Collection - Premium Africa Travel & Safari Experiences"
+        description="Discover luxury Africa safaris, Mt. Kilimanjaro treks, and premium accommodations. Expert-guided adventures featuring the Big Five, Great Migration, and pristine beaches in Zanzibar."
         canonical="/"
         ogImage="/attached_assets/beautiful-african-elephant_1757883583699.jpg"
       />
@@ -85,7 +85,7 @@ export default function Home() {
             Curating Your Perfect<br />Getaway
           </h1>
           <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed animate-slide-up">
-            Discover Tanzania's breathtaking landscapes, extraordinary wildlife, and luxury accommodations with over 10 years of trusted expertise.
+            Discover Africa's breathtaking landscapes, extraordinary wildlife, and luxury accommodations with over 10 years of trusted expertise.
           </p>
           
           <SearchWidget className="max-w-2xl mx-auto animate-slide-up" />
@@ -100,7 +100,7 @@ export default function Home() {
               Why Our Clients Trust Us
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              With over a decade of expertise in Tanzania tourism, we deliver exceptional experiences that exceed expectations.
+              With over a decade of expertise in Africa tourism, we deliver exceptional experiences that exceed expectations.
             </p>
           </div>
 
@@ -126,7 +126,7 @@ export default function Home() {
               Top Destinations
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Explore Tanzania's most spectacular national parks and conservation areas, each offering unique wildlife experiences.
+              Explore Africa's most spectacular national parks and conservation areas, each offering unique wildlife experiences.
             </p>
           </div>
 
@@ -192,7 +192,7 @@ export default function Home() {
               What Our Clients Say
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Real experiences from families who trusted us with their Tanzania adventures.
+              Real experiences from families who trusted us with their Africa adventures.
             </p>
           </div>
 

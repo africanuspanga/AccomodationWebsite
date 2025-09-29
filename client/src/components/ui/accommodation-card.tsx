@@ -85,7 +85,7 @@ export default function AccommodationCard({ accommodation, className = '' }: Acc
 
         <div className="flex items-center text-muted-foreground mb-4">
           <MapPin className="h-4 w-4 mr-2" />
-          <span className="text-sm">{formatDestination(accommodation.destination)}, Tanzania</span>
+          <span className="text-sm">{formatDestination(accommodation.destination)}, Africa</span>
         </div>
 
         <p className="text-sm text-muted-foreground mb-6 leading-relaxed">

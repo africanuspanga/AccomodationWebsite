@@ -35,7 +35,7 @@ export default function Header() {
             </div>
             <div>
               <h1 className="text-xl font-bold font-serif text-primary">Accommodation Collection</h1>
-              <p className="text-xs text-muted-foreground">Premium Tanzania Experiences</p>
+              <p className="text-xs text-muted-foreground">Premium Africa Experiences</p>
             </div>
           </Link>
 

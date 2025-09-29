@@ -32,7 +32,7 @@ export default function AccommodationFilters({ onFilterChange, className = '' }:
   ];
 
   const countries = [
-    { value: 'tanzania', label: 'Tanzania' },
+    { value: 'africa', label: 'Africa' },
     { value: 'kenya', label: 'Kenya' },
     { value: 'uganda', label: 'Uganda' },
     { value: 'rwanda', label: 'Rwanda' },
