@@ -5,6 +5,15 @@ import SearchWidget from '@/components/ui/search-widget';
 import AccommodationCard from '@/components/ui/accommodation-card';
 import DestinationCard from '@/components/ui/destination-card';
 import { Shield, Star, Heart, Users, ArrowRight } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import Autoplay from 'embla-carousel-autoplay';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import { useContent } from '@/hooks/use-content';
 import { Link } from 'wouter';
 import elephantHeroImage from '@assets/beautiful-african-elephant_1757883583699.jpg';
@@ -59,6 +68,24 @@ export default function Home() {
       location: 'Solo Traveler, Germany',
       rating: 5,
       quote: 'Professional, knowledgeable, and incredibly accommodating. The guides were fantastic and the lodge recommendations were spot-on. Highly recommended!',
+    },
+    {
+      name: 'Sophie Dubois',
+      location: 'Couple, France',
+      rating: 5,
+      quote: 'Our Kenyan safari was nothing short of spectacular! Witnessing the Great Migration in the Maasai Mara was a dream come true. The accommodations were luxurious and the guides exceptional.',
+    },
+    {
+      name: 'Marco & Elena Rossi',
+      location: 'Family of 3, Italy',
+      rating: 5,
+      quote: 'Tracking mountain gorillas in Rwanda was the most profound wildlife experience of our lives. The organization was flawless, and our guides were incredibly knowledgeable about conservation.',
+    },
+    {
+      name: 'Henrik Andersson',
+      location: 'Solo Traveler, Sweden',
+      rating: 5,
+      quote: 'Victoria Falls took my breath away! The combination of Zimbabwe and Zambia exploration was perfectly planned. Adventure activities were thrilling and accommodations were top-notch.',
     },
   ];
 
@@ -196,31 +223,50 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-card rounded-2xl p-8 shadow-lg" data-testid={`testimonial-${index}`}>
-                <div className="flex text-accent mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-current" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-6 italic leading-relaxed">
-                  "{testimonial.quote}"
-                </p>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mr-4">
-                    <span className="font-semibold text-sm">
-                      {testimonial.name.split(' ').map(n => n[0]).join('')}
-                    </span>
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: 4000,
+              }),
+            ]}
+            className="w-full max-w-6xl mx-auto"
+          >
+            <CarouselContent>
+              {testimonials.map((testimonial, index) => (
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                  <div className="p-1">
+                    <Card className="bg-card rounded-2xl p-8 shadow-lg h-full" data-testid={`testimonial-${index}`}>
+                      <div className="flex text-accent mb-4">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="h-5 w-5 fill-current" />
+                        ))}
+                      </div>
+                      <p className="text-muted-foreground mb-6 italic leading-relaxed">
+                        "{testimonial.quote}"
+                      </p>
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mr-4">
+                          <span className="font-semibold text-sm">
+                            {testimonial.name.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-primary">{testimonial.name}</h4>
+                          <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                        </div>
+                      </div>
+                    </Card>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-primary">{testimonial.name}</h4>
-                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-12" />
+            <CarouselNext className="-right-12" />
+          </Carousel>
         </div>
       </section>
       </div>
