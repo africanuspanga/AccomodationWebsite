@@ -100,6 +100,24 @@ export const volunteerApplications = pgTable("volunteer_applications", {
   createdAt: text("created_at").default(sql`now()`),
 });
 
+// Bookings table
+export const bookings = pgTable("bookings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  bookingType: text("booking_type").notNull(), // 'accommodation' or 'itinerary'
+  itemId: text("item_id").notNull(), // ID of the accommodation or itinerary
+  itemName: text("item_name").notNull(), // Name for reference
+  fullName: text("full_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(), // includes country code
+  checkInDate: text("check_in_date").notNull(),
+  checkOutDate: text("check_out_date").notNull(),
+  numberOfDays: integer("number_of_days").notNull(),
+  adults: integer("adults").notNull(),
+  children: integer("children").notNull().default(0),
+  specialRequests: text("special_requests"),
+  createdAt: text("created_at").default(sql`now()`),
+});
+
 // Schema definitions
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -128,6 +146,11 @@ export const insertVolunteerApplicationSchema = createInsertSchema(volunteerAppl
   createdAt: true,
 });
 
+export const insertBookingSchema = createInsertSchema(bookings).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Type definitions
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -147,6 +170,9 @@ export type Inquiry = typeof inquiries.$inferSelect;
 
 export type InsertVolunteerApplication = z.infer<typeof insertVolunteerApplicationSchema>;
 export type VolunteerApplication = typeof volunteerApplications.$inferSelect;
+
+export type InsertBooking = z.infer<typeof insertBookingSchema>;
+export type Booking = typeof bookings.$inferSelect;
 
 // Flight data types for OpenSky Network API
 export const flightDataSchema = z.object({
