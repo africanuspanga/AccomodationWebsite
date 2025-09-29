@@ -69,6 +69,37 @@ export const inquiries = pgTable("inquiries", {
   createdAt: text("created_at").default(sql`now()`),
 });
 
+// Volunteer applications table
+export const volunteerApplications = pgTable("volunteer_applications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  programId: text("program_id").notNull(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  dateOfBirth: text("date_of_birth").notNull(),
+  gender: text("gender").notNull(),
+  fullAddress: text("full_address").notNull(),
+  country: text("country").notNull(),
+  telephone: text("telephone").notNull(),
+  mobile: text("mobile").notNull(),
+  email: text("email").notNull(),
+  nationality: text("nationality").notNull(),
+  passportNumber: text("passport_number").notNull(),
+  educationProfession: text("education_profession").notNull(),
+  language: text("language").notNull(),
+  workingExperience: text("working_experience").notNull(),
+  howFoundUs: text("how_found_us").notNull(),
+  expectedArrivalDate: text("expected_arrival_date").notNull(),
+  volunteerDuration: text("volunteer_duration").notNull(),
+  dietaryRestrictions: boolean("dietary_restrictions").default(false),
+  dietaryDetails: text("dietary_details"),
+  excursions: text("excursions").array(),
+  emergencyContactName: text("emergency_contact_name").notNull(),
+  emergencyRelation: text("emergency_relation").notNull(),
+  emergencyPhone: text("emergency_phone").notNull(),
+  emergencyEmail: text("emergency_email").notNull(),
+  createdAt: text("created_at").default(sql`now()`),
+});
+
 // Schema definitions
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -92,6 +123,11 @@ export const insertInquirySchema = createInsertSchema(inquiries).omit({
   createdAt: true,
 });
 
+export const insertVolunteerApplicationSchema = createInsertSchema(volunteerApplications).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Type definitions
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -108,3 +144,6 @@ export type Itinerary = typeof itineraries.$inferSelect;
 
 export type InsertInquiry = z.infer<typeof insertInquirySchema>;
 export type Inquiry = typeof inquiries.$inferSelect;
+
+export type InsertVolunteerApplication = z.infer<typeof insertVolunteerApplicationSchema>;
+export type VolunteerApplication = typeof volunteerApplications.$inferSelect;

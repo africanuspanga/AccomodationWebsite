@@ -4,7 +4,8 @@ import {
   type Destination, type InsertDestination, 
   type Itinerary, type InsertItinerary,
   type Inquiry, type InsertInquiry,
-  users, accommodations, destinations, itineraries, inquiries
+  type VolunteerApplication, type InsertVolunteerApplication,
+  users, accommodations, destinations, itineraries, inquiries, volunteerApplications
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -50,6 +51,12 @@ export interface IStorage {
   createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
   getAllInquiries(): Promise<Inquiry[]>;
   getInquiry(id: string): Promise<Inquiry | undefined>;
+  
+  // Volunteer Application operations
+  createVolunteerApplication(application: InsertVolunteerApplication): Promise<VolunteerApplication>;
+  getAllVolunteerApplications(): Promise<VolunteerApplication[]>;
+  getVolunteerApplication(id: string): Promise<VolunteerApplication | undefined>;
+  getVolunteerApplicationsByProgram(programId: string): Promise<VolunteerApplication[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -168,6 +175,25 @@ export class DatabaseStorage implements IStorage {
   async getInquiry(id: string): Promise<Inquiry | undefined> {
     const [inquiry] = await db.select().from(inquiries).where(eq(inquiries.id, id));
     return inquiry || undefined;
+  }
+
+  // Volunteer Application operations
+  async createVolunteerApplication(application: InsertVolunteerApplication): Promise<VolunteerApplication> {
+    const [created] = await db.insert(volunteerApplications).values(application).returning();
+    return created;
+  }
+
+  async getAllVolunteerApplications(): Promise<VolunteerApplication[]> {
+    return await db.select().from(volunteerApplications);
+  }
+
+  async getVolunteerApplication(id: string): Promise<VolunteerApplication | undefined> {
+    const [application] = await db.select().from(volunteerApplications).where(eq(volunteerApplications.id, id));
+    return application || undefined;
+  }
+
+  async getVolunteerApplicationsByProgram(programId: string): Promise<VolunteerApplication[]> {
+    return await db.select().from(volunteerApplications).where(eq(volunteerApplications.programId, programId));
   }
 }
 

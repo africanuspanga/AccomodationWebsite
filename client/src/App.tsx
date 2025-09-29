@@ -14,6 +14,9 @@ import Itineraries from "@/pages/itineraries";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
 import FAQ from "@/pages/faq";
+import VolunteersProgram from "@/pages/volunteers-program";
+import VolunteerProgramDetail from "@/pages/volunteer-program-detail";
+import VolunteerApplication from "@/pages/volunteer-application";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
@@ -33,6 +36,9 @@ function Router() {
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:id" component={BlogPost} />
           <Route path="/faq" component={FAQ} />
+          <Route path="/volunteers-program" component={VolunteersProgram} />
+          <Route path="/volunteer-program/:id" component={VolunteerProgramDetail} />
+          <Route path="/volunteer-application/:id" component={VolunteerApplication} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
           <Route path="/auth" component={AuthPage} />

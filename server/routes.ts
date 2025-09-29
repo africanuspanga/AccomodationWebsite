@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema, insertItinerarySchema } from "@shared/schema";
+import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema, insertItinerarySchema, insertVolunteerApplicationSchema } from "@shared/schema";
 import { setupAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -221,6 +221,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting itinerary:", error);
       res.status(500).json({ error: "Failed to delete itinerary" });
+    }
+  });
+
+  // Volunteer Application routes
+  app.post("/api/volunteer-applications", async (req, res) => {
+    try {
+      const validatedData = insertVolunteerApplicationSchema.parse(req.body);
+      const application = await storage.createVolunteerApplication(validatedData);
+      res.json({ success: true, application });
+    } catch (error) {
+      console.error("Error creating volunteer application:", error);
+      res.status(400).json({ success: false, error: error instanceof Error ? error.message : "Invalid data" });
+    }
+  });
+
+  app.get("/api/volunteer-applications", async (req, res) => {
+    try {
+      const applications = await storage.getAllVolunteerApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching volunteer applications:", error);
+      res.status(500).json({ error: "Failed to fetch volunteer applications" });
+    }
+  });
+
+  app.get("/api/volunteer-applications/:id", async (req, res) => {
+    try {
+      const application = await storage.getVolunteerApplication(req.params.id);
+      if (!application) {
+        return res.status(404).json({ error: "Volunteer application not found" });
+      }
+      res.json(application);
+    } catch (error) {
+      console.error("Error fetching volunteer application:", error);
+      res.status(500).json({ error: "Failed to fetch volunteer application" });
+    }
+  });
+
+  app.get("/api/volunteer-applications/program/:programId", async (req, res) => {
+    try {
+      const applications = await storage.getVolunteerApplicationsByProgram(req.params.programId);
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching volunteer applications for program:", error);
+      res.status(500).json({ error: "Failed to fetch volunteer applications for program" });
     }
   });
 

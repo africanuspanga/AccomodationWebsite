@@ -9,6 +9,7 @@ export default function Footer() {
     { name: 'Accommodations', href: '/accommodations' },
     { name: 'Destinations', href: '/destinations' },
     { name: 'Itineraries', href: '/itineraries' },
+    { name: 'Volunteers', href: '/volunteers-program' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },
   ];
