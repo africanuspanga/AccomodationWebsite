@@ -1,41 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Note: This sitemap template is for production deployment at www.accommodations.guide -->
-<!-- For development, this file should be dynamically generated or updated during deployment -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.accommodations.guide/</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://accommodations.guide/</loc>
+    <lastmod>2025-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.accommodations.guide/accommodations</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://accommodations.guide/accommodations</loc>
+    <lastmod>2025-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.accommodations.guide/destinations</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://accommodations.guide/itineraries</loc>
+    <lastmod>2025-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.accommodations.guide/itineraries</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://accommodations.guide/destinations</loc>
+    <lastmod>2025-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.accommodations.guide/about</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://accommodations.guide/flights</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.accommodations.guide/contact</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://accommodations.guide/volunteers-program</loc>
+    <lastmod>2025-09-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://accommodations.guide/blog</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://accommodations.guide/faq</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://accommodations.guide/about</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://accommodations.guide/contact</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://accommodations.guide/privacy-policy</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://accommodations.guide/terms-of-service</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://accommodations.guide/cookie-policy</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>
