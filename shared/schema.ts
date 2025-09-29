@@ -124,10 +124,9 @@ export const adminBlogs = pgTable("admin_blogs", {
   title: text("title").notNull(),
   excerpt: text("excerpt").notNull(),
   content: text("content").notNull(),
-  imageUrl: text("image_url").notNull(),
-  readTime: text("read_time").notNull(),
-  date: text("date").notNull(),
   author: text("author").notNull(),
+  category: text("category").notNull(),
+  imageUrl: text("image_url"),
   createdAt: text("created_at").default(sql`now()`),
 });
 

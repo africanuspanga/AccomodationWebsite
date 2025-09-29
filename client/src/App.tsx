@@ -29,6 +29,8 @@ import CookiePolicy from "@/pages/cookie-policy";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import AdminLogin from "@/pages/admin-login";
+import AdminDashboard from "@/pages/admin";
+import AdminBlogForm from "@/pages/admin-blog-form";
 import { AuthProvider } from "@/hooks/use-auth";
 
 function Router() {
@@ -58,6 +60,8 @@ function Router() {
           <Route path="/cookie-policy" component={CookiePolicy} />
           <Route path="/auth" component={AuthPage} />
           <Route path="/admin/login" component={AdminLogin} />
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/admin/blogs/:id" component={AdminBlogForm} />
           <Route component={NotFound} />
         </Switch>
       </main>

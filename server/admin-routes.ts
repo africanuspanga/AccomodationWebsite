@@ -45,10 +45,32 @@ export function registerAdminRoutes(app: Express) {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        // If table doesn't exist, return empty array
+        if (error.message.includes('does not exist') || error.message.includes('relation')) {
+          return res.json([]);
+        }
+        throw error;
+      }
       res.json(data || []);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get single admin blog
+  app.get("/api/admin/blogs/:id", isAdmin, async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_blogs')
+        .select('*')
+        .eq('id', req.params.id)
+        .single();
+
+      if (error) throw error;
+      res.json(data);
+    } catch (error: any) {
+      res.status(404).json({ error: 'Blog not found' });
     }
   });
 
@@ -114,10 +136,31 @@ export function registerAdminRoutes(app: Express) {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('does not exist') || error.message.includes('relation')) {
+          return res.json([]);
+        }
+        throw error;
+      }
       res.json(data || []);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get single admin volunteer program
+  app.get("/api/admin/volunteer-programs/:id", isAdmin, async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_volunteer_programs')
+        .select('*')
+        .eq('id', req.params.id)
+        .single();
+
+      if (error) throw error;
+      res.json(data);
+    } catch (error: any) {
+      res.status(404).json({ error: 'Volunteer program not found' });
     }
   });
 
@@ -183,10 +226,31 @@ export function registerAdminRoutes(app: Express) {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('does not exist') || error.message.includes('relation')) {
+          return res.json([]);
+        }
+        throw error;
+      }
       res.json(data || []);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get single admin accommodation
+  app.get("/api/admin/accommodations/:id", isAdmin, async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_accommodations')
+        .select('*')
+        .eq('id', req.params.id)
+        .single();
+
+      if (error) throw error;
+      res.json(data);
+    } catch (error: any) {
+      res.status(404).json({ error: 'Accommodation not found' });
     }
   });
 
@@ -252,10 +316,31 @@ export function registerAdminRoutes(app: Express) {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('does not exist') || error.message.includes('relation')) {
+          return res.json([]);
+        }
+        throw error;
+      }
       res.json(data || []);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get single admin itinerary
+  app.get("/api/admin/itineraries/:id", isAdmin, async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_itineraries')
+        .select('*')
+        .eq('id', req.params.id)
+        .single();
+
+      if (error) throw error;
+      res.json(data);
+    } catch (error: any) {
+      res.status(404).json({ error: 'Itinerary not found' });
     }
   });
 
