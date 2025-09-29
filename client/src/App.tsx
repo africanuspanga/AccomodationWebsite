@@ -31,7 +31,8 @@ import AuthPage from "@/pages/auth-page";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin";
 import AdminBlogForm from "@/pages/admin-blog-form";
-import { AuthProvider } from "@/hooks/use-auth";
+import UserDashboard from "@/pages/user-dashboard";
+import { SupabaseAuthProvider } from "@/hooks/use-supabase-auth";
 
 function Router() {
   return (
@@ -59,6 +60,7 @@ function Router() {
           <Route path="/terms-of-service" component={TermsOfService} />
           <Route path="/cookie-policy" component={CookiePolicy} />
           <Route path="/auth" component={AuthPage} />
+          <Route path="/dashboard" component={UserDashboard} />
           <Route path="/admin/login" component={AdminLogin} />
           <Route path="/admin" component={AdminDashboard} />
           <Route path="/admin/blogs/:id" component={AdminBlogForm} />
@@ -75,12 +77,12 @@ function App() {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
+        <SupabaseAuthProvider>
           <TooltipProvider>
             <Toaster />
             <Router />
           </TooltipProvider>
-        </AuthProvider>
+        </SupabaseAuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );

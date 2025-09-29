@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "@/hooks/use-auth";
+import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
 import { Redirect } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,30 +10,43 @@ import { Loader2, MapPin, Star, Users } from "lucide-react";
 import SEOHead from '@/components/seo/seo-head';
 
 export default function AuthPage() {
-  const { user, loginMutation, registerMutation } = useAuth();
-  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
-  const [registerForm, setRegisterForm] = useState({ username: "", password: "", confirmPassword: "" });
+  const { user, signIn, signUp } = useSupabaseAuth();
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+  const [registerForm, setRegisterForm] = useState({ email: "", password: "", confirmPassword: "" });
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   // Redirect if user is already logged in
   if (user) {
-    return <Redirect to="/" />;
+    return <Redirect to="/dashboard" />;
   }
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    loginMutation.mutate(loginForm);
+    setIsLoggingIn(true);
+    try {
+      await signIn(loginForm.email, loginForm.password);
+    } catch (error) {
+      // Error toast already shown in signIn
+    } finally {
+      setIsLoggingIn(false);
+    }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (registerForm.password !== registerForm.confirmPassword) {
       alert("Passwords don't match!");
       return;
     }
-    registerMutation.mutate({
-      username: registerForm.username,
-      password: registerForm.password,
-    });
+    setIsRegistering(true);
+    try {
+      await signUp(registerForm.email, registerForm.password);
+    } catch (error) {
+      // Error toast already shown in signUp
+    } finally {
+      setIsRegistering(false);
+    }
   };
 
   return (
@@ -107,14 +120,14 @@ export default function AuthPage() {
                 <TabsContent value="login" className="space-y-4">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="login-username">Username</Label>
+                      <Label htmlFor="login-email">Email</Label>
                       <Input
-                        id="login-username"
-                        data-testid="input-login-username"
-                        type="text"
-                        placeholder="Enter your username"
-                        value={loginForm.username}
-                        onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
+                        id="login-email"
+                        data-testid="input-login-email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={loginForm.email}
+                        onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                         required
                       />
                     </div>
@@ -134,9 +147,9 @@ export default function AuthPage() {
                       type="submit" 
                       className="w-full" 
                       data-testid="button-login"
-                      disabled={loginMutation.isPending}
+                      disabled={isLoggingIn}
                     >
-                      {loginMutation.isPending ? (
+                      {isLoggingIn ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Signing In...
@@ -151,14 +164,14 @@ export default function AuthPage() {
                 <TabsContent value="register" className="space-y-4">
                   <form onSubmit={handleRegister} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="register-username">Username</Label>
+                      <Label htmlFor="register-email">Email</Label>
                       <Input
-                        id="register-username"
-                        data-testid="input-register-username"
-                        type="text"
-                        placeholder="Choose a username"
-                        value={registerForm.username}
-                        onChange={(e) => setRegisterForm({ ...registerForm, username: e.target.value })}
+                        id="register-email"
+                        data-testid="input-register-email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={registerForm.email}
+                        onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
                         required
                       />
                     </div>
@@ -168,10 +181,11 @@ export default function AuthPage() {
                         id="register-password"
                         data-testid="input-register-password"
                         type="password"
-                        placeholder="Create a password"
+                        placeholder="Create a password (min 6 characters)"
                         value={registerForm.password}
                         onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
                         required
+                        minLength={6}
                       />
                     </div>
                     <div className="space-y-2">
@@ -190,9 +204,9 @@ export default function AuthPage() {
                       type="submit" 
                       className="w-full" 
                       data-testid="button-register"
-                      disabled={registerMutation.isPending}
+                      disabled={isRegistering}
                     >
-                      {registerMutation.isPending ? (
+                      {isRegistering ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Creating Account...
