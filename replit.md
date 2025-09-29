@@ -2,7 +2,16 @@
 
 ## Overview
 
-Accommodation Collection is a premium Tanzania travel web application specializing in curating tours, accommodations, and travel services. The application is built as a full-stack web platform using modern technologies to provide users with an immersive experience for discovering and booking Tanzania travel experiences. The frontend is built with React and TypeScript, utilizing a component-based architecture with shadcn/ui design system, while the backend uses Express.js with plans for PostgreSQL database integration.
+Accommodation Collection is a premium Tanzania travel web application specializing in curating tours, accommodations, and travel services. The application is built as a full-stack web platform using modern technologies to provide users with an immersive experience for discovering and booking Tanzania travel experiences. The frontend is built with React and TypeScript, utilizing a component-based architecture with shadcn/ui design system, while the backend uses Express.js with PostgreSQL database integration.
+
+## Recent Changes (September 2025)
+
+### Booking System Implementation
+- **Detail Pages**: Created comprehensive detail pages for accommodations and itineraries showing full information with imagery, features/highlights, pricing, and booking options
+- **Airbnb-Style Booking Form**: Implemented professional booking form with fields for full name, email, phone (with country code), check-in/check-out dates with calendar pickers, guest counts (adults/children), and optional special requests
+- **Booking Flow**: Complete user journey from browsing cards → viewing details → submitting bookings with form validation and success notifications
+- **Database Schema**: Added bookings table to store all booking information including booking type, item details, guest information, dates, and special requests
+- **API Integration**: Created REST endpoints for booking creation and retrieval with proper validation using Zod schemas
 
 ## User Preferences
 
@@ -21,7 +30,7 @@ Preferred communication style: Simple, everyday language.
 ### Backend Architecture
 - **Server Framework**: Express.js with TypeScript
 - **Database ORM**: Drizzle ORM configured for PostgreSQL with type-safe database operations
-- **Database Schema**: Defined schema for users, accommodations, destinations, and itineraries with proper relationships
+- **Database Schema**: Defined schema for users, accommodations, destinations, itineraries, bookings, volunteer applications, and inquiries with proper relationships
 - **Development Setup**: Hot reload and development middleware with Vite integration
 - **Memory Storage**: Temporary in-memory storage implementation for development with interface for easy database migration
 
