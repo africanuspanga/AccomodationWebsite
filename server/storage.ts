@@ -5,7 +5,8 @@ import {
   type Itinerary, type InsertItinerary,
   type Inquiry, type InsertInquiry,
   type VolunteerApplication, type InsertVolunteerApplication,
-  users, accommodations, destinations, itineraries, inquiries, volunteerApplications
+  type Booking, type InsertBooking,
+  users, accommodations, destinations, itineraries, inquiries, volunteerApplications, bookings
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -57,6 +58,11 @@ export interface IStorage {
   getAllVolunteerApplications(): Promise<VolunteerApplication[]>;
   getVolunteerApplication(id: string): Promise<VolunteerApplication | undefined>;
   getVolunteerApplicationsByProgram(programId: string): Promise<VolunteerApplication[]>;
+  
+  // Booking operations
+  createBooking(booking: InsertBooking): Promise<Booking>;
+  getAllBookings(): Promise<Booking[]>;
+  getBooking(id: string): Promise<Booking | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -194,6 +200,21 @@ export class DatabaseStorage implements IStorage {
 
   async getVolunteerApplicationsByProgram(programId: string): Promise<VolunteerApplication[]> {
     return await db.select().from(volunteerApplications).where(eq(volunteerApplications.programId, programId));
+  }
+
+  // Booking operations
+  async createBooking(booking: InsertBooking): Promise<Booking> {
+    const [created] = await db.insert(bookings).values(booking).returning();
+    return created;
+  }
+
+  async getAllBookings(): Promise<Booking[]> {
+    return await db.select().from(bookings);
+  }
+
+  async getBooking(id: string): Promise<Booking | undefined> {
+    const [booking] = await db.select().from(bookings).where(eq(bookings.id, id));
+    return booking || undefined;
   }
 }
 

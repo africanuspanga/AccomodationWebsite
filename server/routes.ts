@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema, insertItinerarySchema, insertVolunteerApplicationSchema } from "@shared/schema";
+import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema, insertItinerarySchema, insertVolunteerApplicationSchema, insertBookingSchema } from "@shared/schema";
 import { setupAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -266,6 +266,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching volunteer applications for program:", error);
       res.status(500).json({ error: "Failed to fetch volunteer applications for program" });
+    }
+  });
+
+  // Booking routes
+  app.post("/api/bookings", async (req, res) => {
+    try {
+      const validatedData = insertBookingSchema.parse(req.body);
+      const booking = await storage.createBooking(validatedData);
+      res.json({ success: true, booking });
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      res.status(400).json({ success: false, error: error instanceof Error ? error.message : "Invalid data" });
+    }
+  });
+
+  app.get("/api/bookings", async (req, res) => {
+    try {
+      const bookings = await storage.getAllBookings();
+      res.json(bookings);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      res.status(500).json({ error: "Failed to fetch bookings" });
+    }
+  });
+
+  app.get("/api/bookings/:id", async (req, res) => {
+    try {
+      const booking = await storage.getBooking(req.params.id);
+      if (!booking) {
+        return res.status(404).json({ error: "Booking not found" });
+      }
+      res.json(booking);
+    } catch (error) {
+      console.error("Error fetching booking:", error);
+      res.status(500).json({ error: "Failed to fetch booking" });
     }
   });
 
