@@ -9,8 +9,11 @@ import Footer from "@/components/layout/footer";
 import FloatingWhatsApp from "@/components/floating-whatsapp";
 import Home from "@/pages/home";
 import Accommodations from "@/pages/accommodations";
+import AccommodationDetail from "@/pages/accommodation-detail";
 import Destinations from "@/pages/destinations";
 import Itineraries from "@/pages/itineraries";
+import ItineraryDetail from "@/pages/itinerary-detail";
+import BookingForm from "@/pages/booking-form";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
 import FAQ from "@/pages/faq";
@@ -35,8 +38,11 @@ function Router() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/accommodations" component={Accommodations} />
+          <Route path="/accommodations/:id" component={AccommodationDetail} />
           <Route path="/destinations" component={Destinations} />
           <Route path="/itineraries" component={Itineraries} />
+          <Route path="/itineraries/:id" component={ItineraryDetail} />
+          <Route path="/book/:type/:id" component={BookingForm} />
           <Route path="/flights" component={Flights} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:id" component={BlogPost} />
