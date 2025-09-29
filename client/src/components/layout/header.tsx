@@ -16,6 +16,7 @@ export default function Header() {
     { name: 'Accommodations', href: '/accommodations' },
     { name: 'Destinations', href: '/destinations' },
     { name: 'Itineraries', href: '/itineraries' },
+    { name: 'Flights', href: '/flights' },
     { name: 'Blogs', href: '/blog' },
     { name: 'About Us', href: '/about' },
     { name: 'Contact', href: '/contact' },

@@ -147,3 +147,38 @@ export type Inquiry = typeof inquiries.$inferSelect;
 
 export type InsertVolunteerApplication = z.infer<typeof insertVolunteerApplicationSchema>;
 export type VolunteerApplication = typeof volunteerApplications.$inferSelect;
+
+// Flight data types for OpenSky Network API
+export const flightDataSchema = z.object({
+  icao24: z.string(),
+  callsign: z.string().nullable(),
+  origin_country: z.string(),
+  time_position: z.number().nullable(),
+  last_contact: z.number(),
+  longitude: z.number().nullable(),
+  latitude: z.number().nullable(),
+  baro_altitude: z.number().nullable(),
+  on_ground: z.boolean(),
+  velocity: z.number().nullable(),
+  true_track: z.number().nullable(),
+  vertical_rate: z.number().nullable(),
+  sensors: z.array(z.number()).nullable(),
+  geo_altitude: z.number().nullable(),
+  squawk: z.string().nullable(),
+  spi: z.boolean(),
+  position_source: z.number(),
+});
+
+export const openSkyRawResponseSchema = z.object({
+  time: z.number(),
+  states: z.array(z.array(z.union([z.string(), z.number(), z.boolean(), z.null()]))).nullable(),
+});
+
+export const openSkyResponseSchema = z.object({
+  time: z.number(),
+  states: z.array(flightDataSchema).nullable(),
+});
+
+export type FlightData = z.infer<typeof flightDataSchema>;
+export type OpenSkyRawResponse = z.infer<typeof openSkyRawResponseSchema>;
+export type OpenSkyResponse = z.infer<typeof openSkyResponseSchema>;

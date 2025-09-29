@@ -14,6 +14,7 @@ import Itineraries from "@/pages/itineraries";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
 import FAQ from "@/pages/faq";
+import Flights from "@/pages/flights";
 import VolunteersProgram from "@/pages/volunteers-program";
 import VolunteerProgramDetail from "@/pages/volunteer-program-detail";
 import VolunteerApplication from "@/pages/volunteer-application";
@@ -33,6 +34,7 @@ function Router() {
           <Route path="/accommodations" component={Accommodations} />
           <Route path="/destinations" component={Destinations} />
           <Route path="/itineraries" component={Itineraries} />
+          <Route path="/flights" component={Flights} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:id" component={BlogPost} />
           <Route path="/faq" component={FAQ} />

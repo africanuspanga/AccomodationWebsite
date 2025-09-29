@@ -269,6 +269,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Flight tracking route - proxy to OpenSky Network API
+  app.get("/api/flights/east-africa", async (req, res) => {
+    try {
+      const params = new URLSearchParams({
+        lamin: '-12',    // Southern boundary (Southern Tanzania)
+        lamax: '6',      // Northern boundary (Northern Kenya/Ethiopia border)
+        lomin: '28',     // Western boundary (Western Tanzania/Kenya)
+        lomax: '45'      // Eastern boundary (Indian Ocean coast)
+      });
+
+      const response = await fetch(`https://opensky-network.org/api/states/all?${params}`);
+      
+      if (!response.ok) {
+        throw new Error(`OpenSky API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Transform OpenSky array format to object format
+      const transformedResponse = {
+        time: data.time,
+        states: data.states?.map((state: any[]) => ({
+          icao24: state[0] || '',
+          callsign: state[1],
+          origin_country: state[2] || '',
+          time_position: state[3],
+          last_contact: state[4] || 0,
+          longitude: state[5],
+          latitude: state[6],
+          baro_altitude: state[7],
+          on_ground: state[8] || false,
+          velocity: state[9],
+          true_track: state[10],
+          vertical_rate: state[11],
+          sensors: state[12],
+          geo_altitude: state[13],
+          squawk: state[14],
+          spi: state[15] || false,
+          position_source: state[16] || 0,
+        })) || []
+      };
+
+      res.json(transformedResponse);
+    } catch (error) {
+      console.error("Error fetching flight data:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch flight data",
+        message: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
