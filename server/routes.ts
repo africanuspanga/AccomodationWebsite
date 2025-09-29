@@ -2,7 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema, insertItinerarySchema, insertVolunteerApplicationSchema, insertBookingSchema } from "@shared/schema";
-import { setupAuth } from "./auth";
+// Old auth system removed - now using Supabase Auth for users
+// import { setupAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoint for deployment monitoring
@@ -14,8 +15,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Setup authentication routes: /api/register, /api/login, /api/logout, /api/user
-  setupAuth(app);
+  // Old auth routes removed - now using Supabase Auth for users
+  // setupAuth(app);
   // Contact/Inquiry routes
   app.post("/api/inquiries", async (req, res) => {
     try {

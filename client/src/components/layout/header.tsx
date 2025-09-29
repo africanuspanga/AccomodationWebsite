@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Menu, Mountain, User, LogOut } from 'lucide-react';
-import { useAuth } from '@/hooks/use-auth';
+import { useSupabaseAuth } from '@/hooks/use-supabase-auth';
 
 export default function Header() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logoutMutation } = useAuth();
+  const { user, signOut } = useSupabaseAuth();
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -63,12 +63,12 @@ export default function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="flex items-center space-x-2" data-testid="user-menu-trigger">
                     <User className="h-4 w-4" />
-                    <span>{user.username}</span>
+                    <span>{user.email}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem 
-                    onClick={() => logoutMutation.mutate()}
+                    onClick={() => signOut()}
                     className="flex items-center space-x-2 cursor-pointer"
                     data-testid="logout-button"
                   >
@@ -117,11 +117,11 @@ export default function Header() {
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <User className="h-4 w-4" />
-                        <span>Signed in as {user.username}</span>
+                        <span>Signed in as {user.email}</span>
                       </div>
                       <Button 
                         onClick={() => {
-                          logoutMutation.mutate();
+                          signOut();
                           setIsOpen(false);
                         }}
                         variant="outline"
