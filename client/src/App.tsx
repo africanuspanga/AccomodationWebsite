@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from 'react-helmet-async';
@@ -35,10 +35,14 @@ import UserDashboard from "@/pages/user-dashboard";
 import { SupabaseAuthProvider } from "@/hooks/use-supabase-auth";
 
 function Router() {
+  const [location] = useLocation();
+  const isDashboard = location === '/dashboard';
+  const isAdmin = location.startsWith('/admin');
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
+      {!isDashboard && !isAdmin && <Header />}
+      <main className={isDashboard || isAdmin ? '' : 'flex-1'}>
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/accommodations" component={Accommodations} />
@@ -67,8 +71,8 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </main>
-      <Footer />
-      <FloatingWhatsApp />
+      {!isDashboard && !isAdmin && <Footer />}
+      {!isDashboard && !isAdmin && <FloatingWhatsApp />}
     </div>
   );
 }
