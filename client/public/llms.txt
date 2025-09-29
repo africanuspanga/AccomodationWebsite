@@ -1,0 +1,144 @@
+# Accommodation Collection - Africa Travel & Safari
+
+> Premium Tanzania travel website specializing in luxury accommodations, safari packages, Mount Kilimanjaro treks, and volunteer programs
+
+## Website Information
+
+- **Domain**: https://accommodations.guide
+- **Company**: Accommodation Collection
+- **Email**: accommodationcollection@gmail.com
+- **WhatsApp**: +255764863068
+- **Location**: Arusha, Tanzania
+- **Established**: 2014 (10+ years of experience)
+- **Specialization**: Tanzania safaris, luxury accommodations, Kilimanjaro trekking, Zanzibar beach holidays
+
+## Main Pages
+
+### Core Services
+- `/` - Homepage with featured destinations and accommodations
+- `/accommodations` - Luxury hotels, safari lodges, and beach resorts
+- `/itineraries` - Safari packages, Kilimanjaro treks, day trips, and tours
+- `/destinations` - Tanzania destinations including national parks and attractions
+- `/flights` - Live flight tracker for East Africa
+- `/volunteers-program` - Volunteer opportunities across Africa
+
+### Information & Contact
+- `/about` - Company history, mission, and team
+- `/contact` - Contact form and information
+- `/blog` - Travel guides and insights
+- `/faq` - Frequently asked questions
+
+### Legal
+- `/privacy-policy` - Privacy policy and data protection
+- `/terms-of-service` - Terms and conditions
+- `/cookie-policy` - Cookie usage policy
+
+## Featured Destinations
+
+### National Parks & Wildlife
+- Serengeti National Park (Great Migration, Big Five)
+- Ngorongoro Crater (UNESCO World Heritage Site)
+- Tarangire National Park (Elephant herds)
+- Lake Manyara National Park (Tree-climbing lions)
+- Arusha National Park (Mount Meru)
+
+### Mountains & Trekking
+- Mount Kilimanjaro (Africa's highest peak - 5,895m)
+- Mount Meru (4,566m)
+
+### Islands & Beaches
+- Zanzibar (Stone Town, spice tours, beaches)
+- Mafia Island (Marine park, diving)
+- Pemba Island (Clove island, diving)
+
+### Cultural Sites
+- Olduvai Gorge (Archaeological site)
+- Maasai Villages (Cultural experiences)
+
+## Accommodation Categories
+
+1. **Ultra-Luxury** - Premium lodges and resorts (Four Seasons, Singita, etc.)
+2. **Luxury** - High-end safari camps and beach resorts
+3. **Mid-Range** - Comfortable lodges and hotels
+4. **Budget** - Affordable accommodations
+
+## Safari Packages
+
+### Types
+- Classic Safaris (3-14 days)
+- Luxury Expeditions (7-21 days)
+- Day Trips (1 day)
+- Kilimanjaro Treks (5-9 days)
+- Beach Holidays (3-7 days)
+- Family Safaris (Customized)
+
+### Popular Itineraries
+- Northern Circuit Safari (Serengeti, Ngorongoro, Tarangire)
+- Kilimanjaro Climb + Zanzibar Beach
+- Great Migration Safari (Seasonal)
+- Tanzania Explorer (Wildlife + Culture)
+
+## Booking Process
+
+1. Browse accommodations or safari packages
+2. View detailed information on individual pages
+3. Click "Book Now" to access booking form
+4. Fill in details: name, email, phone, dates, guests
+5. Submit booking request
+6. Receive confirmation via email
+
+## Key Features
+
+- **Airbnb-style booking forms** with date pickers and guest selection
+- **Real-time flight tracking** for East Africa
+- **Comprehensive destination guides** with best times to visit
+- **Volunteer programs** for meaningful travel experiences
+- **Multilevel filtering** for accommodations by location and category
+- **Mobile-responsive design** for all devices
+
+## Company Values
+
+1. **Safety First** - 10+ years ensuring secure adventures
+2. **Personalized Service** - Tailored itineraries for each client
+3. **Family Friendly** - Specialized family travel experiences
+4. **Local Expertise** - Deep knowledge of Tanzania and East Africa
+5. **Sustainable Tourism** - Responsible travel practices
+
+## Contact Methods
+
+- **Email**: accommodationcollection@gmail.com
+- **WhatsApp**: +255764863068 (Instant messaging)
+- **Contact Form**: https://accommodations.guide/contact
+- **Office Hours**: 24/7 emergency support available
+
+## Technical Information
+
+- **Framework**: React with TypeScript
+- **Styling**: Tailwind CSS with warm, earthy color palette
+- **Forms**: React Hook Form with validation
+- **Database**: PostgreSQL for bookings and user data
+- **SEO**: Optimized meta tags, Open Graph, and structured data
+
+## Target Audience
+
+- **Luxury Travelers** seeking premium African experiences
+- **Families** planning safari vacations
+- **Adventure Seekers** for Kilimanjaro treks
+- **Honeymooners** for romantic getaways
+- **Volunteers** for meaningful cultural experiences
+- **Wildlife Enthusiasts** for Big Five safaris
+
+## Best Time to Visit Tanzania
+
+- **June-October**: Peak safari season (dry season, Great Migration)
+- **January-February**: Green season, calving season in Serengeti
+- **July-September**: Best for Kilimanjaro climbing
+- **Year-round**: Zanzibar beach holidays
+
+## Last Updated
+
+2025-09-29
+
+---
+
+For the most current information, visit https://accommodations.guide
