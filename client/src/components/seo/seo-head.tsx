@@ -19,20 +19,8 @@ export default function SEOHead({
     ? title 
     : `${title} | Accommodation Collection - Africa Travel & Safari`;
   
-  // Dynamically determine base URL - don't hardcode production domain
-  const getBaseUrl = () => {
-    if (typeof window !== 'undefined') {
-      // In browser - use current origin
-      return window.location.origin;
-    }
-    // For SSR/server contexts, use VITE_BASE_URL env var or fallback to current host
-    return import.meta.env.VITE_BASE_URL || 'http://localhost:5000';
-  };
-  
-  const baseUrl = getBaseUrl();
-  
-  // Only set canonical and og:image if we have a valid base URL, avoid hardcoded production URLs
-  const fullCanonical = canonical && baseUrl !== 'http://localhost:5000' ? `${baseUrl}${canonical}` : undefined;
+  const baseUrl = 'https://accommodations.guide';
+  const fullCanonical = canonical ? `${baseUrl}${canonical}` : undefined;
   const fullOgImage = ogImage.startsWith('http') ? ogImage : `${baseUrl}${ogImage}`;
 
   return (
