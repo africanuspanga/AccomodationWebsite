@@ -127,27 +127,27 @@ export default function Footer() {
               &copy; 2025 Accommodation Collection. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a
-                href="#"
+              <Link
+                href="/privacy-policy"
                 className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm"
                 data-testid="privacy-policy-link"
               >
                 Privacy Policy
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/terms-of-service"
                 className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm"
                 data-testid="terms-link"
               >
                 Terms of Service
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/cookie-policy"
                 className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm"
                 data-testid="cookie-policy-link"
               >
                 Cookie Policy
-              </a>
+              </Link>
             </div>
           </div>
         </div>

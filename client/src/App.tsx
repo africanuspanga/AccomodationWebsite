@@ -20,6 +20,9 @@ import VolunteerProgramDetail from "@/pages/volunteer-program-detail";
 import VolunteerApplication from "@/pages/volunteer-application";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
+import PrivacyPolicy from "@/pages/privacy-policy";
+import TermsOfService from "@/pages/terms-of-service";
+import CookiePolicy from "@/pages/cookie-policy";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import { AuthProvider } from "@/hooks/use-auth";
@@ -43,6 +46,9 @@ function Router() {
           <Route path="/volunteer-application/:id" component={VolunteerApplication} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/terms-of-service" component={TermsOfService} />
+          <Route path="/cookie-policy" component={CookiePolicy} />
           <Route path="/auth" component={AuthPage} />
           <Route component={NotFound} />
         </Switch>
