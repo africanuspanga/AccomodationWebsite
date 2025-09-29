@@ -497,7 +497,7 @@ export default function Contact() {
             <div>
               <h4 className="font-serif text-lg font-semibold text-primary mb-2">Emergency Contact</h4>
               <p className="text-muted-foreground">24/7 support during your trip</p>
-              <p className="text-muted-foreground font-semibold">+255 7XX XXX XXX</p>
+              <p className="text-muted-foreground font-semibold">+255768512626</p>
             </div>
             <div>
               <h4 className="font-serif text-lg font-semibold text-primary mb-2">Languages</h4>
