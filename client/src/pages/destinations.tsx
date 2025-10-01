@@ -92,9 +92,9 @@ export default function Destinations() {
             </div>
           )}
 
-          {/* Mountains & Coast */}
+          {/* Beaches & Islands */}
           <div className="mb-12">
-            <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">Mountains & Coast</h3>
+            <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">Beaches & Islands</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {coastalRegions.map((destination) => (
                 <DestinationCard 
@@ -104,12 +104,34 @@ export default function Destinations() {
                 />
               ))}
               
-              {/* Additional mountain destinations */}
+              {/* Additional beach/island destinations */}
               <div className="group cursor-pointer">
                 <div className="relative overflow-hidden rounded-xl mb-4">
-                  <div className="image-placeholder aspect-[4/3] w-full group-hover:scale-105 transition-transform duration-300">
-                    <span className="text-sm">Mount Kilimanjaro</span>
-                  </div>
+                  <img 
+                    src="/attached_assets/Pemba_1757886056293.jpg" 
+                    alt="Pemba Island"
+                    className="aspect-[4/3] w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    data-testid="img-destination-pemba-island"
+                  />
+                </div>
+                <h4 className="font-serif text-lg font-semibold mb-2 text-primary">Pemba Island</h4>
+                <p className="text-muted-foreground text-sm">Unspoiled island paradise perfect for diving and pristine beaches</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Mountains & Hills */}
+          <div className="mb-12">
+            <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">Mountains & Hills</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="group cursor-pointer">
+                <div className="relative overflow-hidden rounded-xl mb-4">
+                  <img 
+                    src="/attached_assets/Mount kILIMANAJRO _1757885640431.jpg" 
+                    alt="Mount Kilimanjaro"
+                    className="aspect-[4/3] w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    data-testid="img-destination-kilimanjaro"
+                  />
                 </div>
                 <h4 className="font-serif text-lg font-semibold mb-2 text-primary">Mount Kilimanjaro</h4>
                 <p className="text-muted-foreground text-sm">Africa's highest peak with multiple trekking routes to the summit</p>
@@ -117,22 +139,15 @@ export default function Destinations() {
               
               <div className="group cursor-pointer">
                 <div className="relative overflow-hidden rounded-xl mb-4">
-                  <div className="image-placeholder aspect-[4/3] w-full group-hover:scale-105 transition-transform duration-300">
-                    <span className="text-sm">Mount Meru</span>
-                  </div>
+                  <img 
+                    src="/attached_assets/Mount mERU_1757886056294.jpg" 
+                    alt="Mount Meru"
+                    className="aspect-[4/3] w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    data-testid="img-destination-mount-meru"
+                  />
                 </div>
                 <h4 className="font-serif text-lg font-semibold mb-2 text-primary">Mount Meru</h4>
                 <p className="text-muted-foreground text-sm">Tanzania's second-highest mountain with excellent acclimatization treks</p>
-              </div>
-              
-              <div className="group cursor-pointer">
-                <div className="relative overflow-hidden rounded-xl mb-4">
-                  <div className="image-placeholder aspect-[4/3] w-full group-hover:scale-105 transition-transform duration-300">
-                    <span className="text-sm">Pemba Island</span>
-                  </div>
-                </div>
-                <h4 className="font-serif text-lg font-semibold mb-2 text-primary">Pemba Island</h4>
-                <p className="text-muted-foreground text-sm">Unspoiled island paradise perfect for diving and pristine beaches</p>
               </div>
             </div>
           </div>

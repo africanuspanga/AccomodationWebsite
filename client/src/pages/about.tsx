@@ -18,11 +18,11 @@ export default function About() {
     },
     {
       title: 'Expert Local Knowledge',
-      description: 'Our team\'s deep understanding of Tanzania ensures authentic, off-the-beaten-path experiences',
+      description: 'Our team\'s deep understanding of East Africa ensures authentic, off-the-beaten-path experiences',
     },
     {
       title: 'Premium Partnerships',
-      description: 'Exclusive relationships with Tanzania\'s finest lodges, camps, and service providers',
+      description: 'Exclusive relationships with East Africa\'s finest lodges, camps, and service providers',
     },
     {
       title: '24/7 Support',
@@ -56,8 +56,8 @@ export default function About() {
   return (
     <>
       <SEOHead 
-        title="About Accommodation Collection - 10+ Years Tanzania Travel Expertise"
-        description="Learn about Accommodation Collection's 10+ years of experience creating unforgettable Tanzania safaris, Kilimanjaro treks, and luxury travel experiences. Family-owned, safety-first approach."
+        title="About Accommodation Collection - 10+ Years East Africa Travel Expertise"
+        description="Learn about Accommodation Collection's 10+ years of experience creating unforgettable East Africa safaris, Kilimanjaro treks, and luxury travel experiences. Family-owned, safety-first approach."
         canonical="/about"
         ogImage="/attached_assets/beautiful-african-elephant_1757883583699.jpg"
       />
@@ -79,8 +79,8 @@ export default function About() {
           <div className="bg-card p-8 rounded-2xl border border-border shadow-lg">
             <p className="text-xl leading-relaxed text-muted-foreground">
               For over 10 years, <strong className="text-primary">Accommodation Collection</strong> has been 
-              crafting extraordinary travel experiences across Tanzania's most spectacular destinations. What began 
-              as a passion for sharing the unparalleled beauty of East Africa has evolved into a trusted partnership 
+              crafting extraordinary travel experiences across East Africa's most spectacular destinations. What began 
+              as a passion for sharing the unparalleled beauty of Africa has evolved into a trusted partnership 
               with travelers from around the world who seek authentic, safe, and transformative adventures.
             </p>
           </div>
@@ -90,7 +90,7 @@ export default function About() {
             <div className="bg-muted/30 p-8 rounded-2xl">
               <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">Our Mission</h2>
               <p className="text-muted-foreground leading-relaxed">
-                To provide seamless, safe, and memorable journeys that connect travelers with Tanzania's 
+                To provide seamless, safe, and memorable journeys that connect travelers with East Africa's 
                 incredible wildlife, diverse landscapes, and rich cultural heritage while ensuring sustainable 
                 tourism practices that benefit local communities.
               </p>
@@ -100,7 +100,7 @@ export default function About() {
               <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">Our Promise</h2>
               <p className="text-muted-foreground leading-relaxed">
                 Every detail of your adventure is carefully planned and executed with precision, from luxury 
-                lodge selections to expert guide assignments, ensuring your Tanzania experience exceeds all expectations.
+                lodge selections to expert guide assignments, ensuring your East Africa experience exceeds all expectations.
               </p>
             </div>
           </div>
@@ -123,10 +123,10 @@ export default function About() {
             <h2 className="font-serif text-3xl font-semibold text-foreground mb-6">A Decade of Expertise</h2>
             <div className="space-y-6 text-muted-foreground leading-relaxed">
               <p className="text-lg">
-                Our extensive experience spanning more than 10 years has given us unmatched insights into Tanzania's 
+                Our extensive experience spanning more than 10 years has given us unmatched insights into East Africa's 
                 seasonal patterns, wildlife behavior, and the hidden gems that make each safari truly special. We've 
                 guided thousands of families, couples, solo adventurers, and groups through the Serengeti's endless 
-                plains, into the depths of Ngorongoro Crater, and across the diverse landscapes that make Tanzania 
+                plains, into the depths of Ngorongoro Crater, and across the diverse landscapes that make East Africa 
                 Africa's premier safari destination.
               </p>
             </div>
@@ -139,7 +139,7 @@ export default function About() {
               <p className="text-lg">
                 Safety is not just our priority—it's our foundation. Our comprehensive safety protocols, professional 
                 guides, and carefully vetted accommodation partners ensure that families with children of all ages can 
-                enjoy Tanzania's wonders with complete peace of mind. From infant-friendly lodges to adventure activities 
+                enjoy East Africa's wonders with complete peace of mind. From infant-friendly lodges to adventure activities 
                 for teenagers, we specialize in creating seamless experiences that bring families closer together through 
                 shared wonder and discovery.
               </p>
@@ -188,7 +188,7 @@ export default function About() {
                 We believe that the best travel experiences are those that not only create lasting memories for our 
                 guests but also contribute positively to the destinations we visit. Through partnerships with 
                 community-based tourism initiatives and conservation projects, we ensure that your adventure supports 
-                wildlife protection, local employment, and community development across Tanzania.
+                wildlife protection, local employment, and community development across East Africa.
               </p>
             </div>
           </div>
@@ -196,10 +196,10 @@ export default function About() {
           {/* Call to Action */}
           <div className="text-center bg-muted/30 p-12 rounded-2xl">
             <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">
-              Ready to Begin Your Tanzania Adventure?
+              Ready to Begin Your East Africa Adventure?
             </h3>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Let our decade of expertise transform your Tanzania dreams into an unforgettable reality. 
+              Let our decade of expertise transform your East Africa dreams into an unforgettable reality. 
               From the Great Migration to pristine Zanzibar beaches, from Kilimanjaro's summit to intimate 
               cultural encounters—your perfect getaway awaits.
             </p>

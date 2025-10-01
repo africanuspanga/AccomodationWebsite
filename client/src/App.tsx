@@ -1,4 +1,5 @@
 import { Switch, Route, useLocation } from "wouter";
+import { useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from 'react-helmet-async';
@@ -34,6 +35,16 @@ import AdminBlogForm from "@/pages/admin-blog-form";
 import UserDashboard from "@/pages/user-dashboard";
 import { SupabaseAuthProvider } from "@/hooks/use-supabase-auth";
 
+function ScrollToTop() {
+  const [location] = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
+  return null;
+}
+
 function Router() {
   const [location] = useLocation();
   const isDashboard = location === '/dashboard';
@@ -41,6 +52,7 @@ function Router() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <ScrollToTop />
       {!isDashboard && !isAdmin && <Header />}
       <main className={isDashboard || isAdmin ? '' : 'flex-1'}>
         <Switch>

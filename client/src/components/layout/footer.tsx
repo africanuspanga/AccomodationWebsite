@@ -1,6 +1,8 @@
 import { Link } from 'wouter';
 import { Mountain, Phone, Mail, MapPin } from 'lucide-react';
-import { SiInstagram, SiFacebook, SiYoutube, SiX } from 'react-icons/si';
+import { SiInstagram, SiFacebook, SiYoutube, SiX, SiTiktok, SiLinkedin, SiWhatsapp, SiPinterest } from 'react-icons/si';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default function Footer() {
   const quickLinks = [
@@ -28,6 +30,10 @@ export default function Footer() {
     { icon: SiFacebook, href: 'https://www.facebook.com/share/1B8V3VVZ9j/?mibextid=wwXIfr', label: 'Facebook' },
     { icon: SiYoutube, href: 'https://www.youtube.com/@AccommodationCollection', label: 'YouTube' },
     { icon: SiX, href: 'https://x.com/africalodges?s=21', label: 'X (Twitter)' },
+    { icon: SiTiktok, href: 'https://www.tiktok.com/@accommodationcollection', label: 'TikTok' },
+    { icon: SiLinkedin, href: 'https://www.linkedin.com/company/accommodation-collection', label: 'LinkedIn' },
+    { icon: SiWhatsapp, href: 'https://wa.me/255768512626', label: 'WhatsApp' },
+    { icon: SiPinterest, href: 'https://www.pinterest.com/accommodationcollection', label: 'Pinterest' },
   ];
 
   return (
@@ -48,11 +54,13 @@ export default function Footer() {
               Premium Africa travel experiences with over 10 years of expertise in safari, 
               accommodations, and personalized adventure planning.
             </p>
-            <div className="flex space-x-3">
+            <div className="flex flex-wrap gap-3">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center hover:bg-accent/30 transition-colors"
                   aria-label={social.label}
                   data-testid={`social-link-${social.label.toLowerCase()}`}
@@ -103,20 +111,47 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-6">Contact Info</h3>
             <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <Mail className="h-4 w-4 text-primary-foreground/80 flex-shrink-0" />
-                <span className="text-primary-foreground/80">accommodationcollection@gmail.com</span>
+              <div className="flex items-start space-x-3">
+                <Mail className="h-4 w-4 text-primary-foreground/80 flex-shrink-0 mt-1" />
+                <span className="text-primary-foreground/80 text-sm break-all">accommodationcollection@gmail.com</span>
               </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="h-4 w-4 text-primary-foreground/80 flex-shrink-0" />
-                <span className="text-primary-foreground/80">+255717523882</span>
+              <div className="flex items-start space-x-3">
+                <Phone className="h-4 w-4 text-primary-foreground/80 flex-shrink-0 mt-1" />
+                <div className="text-primary-foreground/80 text-sm">
+                  <div>+255717523882</div>
+                  <div>+255789631010</div>
+                </div>
               </div>
               <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 text-primary-foreground/80 flex-shrink-0 mt-1" />
-                <span className="text-primary-foreground/80">
+                <span className="text-primary-foreground/80 text-sm">
                   ACU Tower, Plot: 30 & 31, Block: J<br />Sokoine Road, Pangani Street<br />Arusha, Tanzania
                 </span>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Newsletter Section */}
+        <div className="mt-12 p-8 bg-accent/10 rounded-2xl">
+          <div className="max-w-2xl mx-auto text-center">
+            <h3 className="text-2xl font-bold font-serif mb-3">Subscribe to Our Newsletter</h3>
+            <p className="text-primary-foreground/80 mb-6">
+              Get the latest travel tips, exclusive offers, and destination updates delivered to your inbox
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                className="bg-background text-foreground flex-1"
+                data-testid="newsletter-email-input"
+              />
+              <Button 
+                className="btn-accent whitespace-nowrap"
+                data-testid="newsletter-subscribe-button"
+              >
+                Subscribe
+              </Button>
             </div>
           </div>
         </div>

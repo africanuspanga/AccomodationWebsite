@@ -29,8 +29,8 @@ export default function Header() {
         <nav className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3" data-testid="logo-link">
-            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-              <Mountain className="h-6 w-6 text-primary-foreground" />
+            <div className="w-12 h-12 flex items-center justify-center">
+              <img src="/logo.png" alt="Accommodation Collection Logo" className="w-12 h-12 object-contain" />
             </div>
             <div>
               <h1 className="text-xl font-bold font-serif text-primary">Accommodation Collection</h1>

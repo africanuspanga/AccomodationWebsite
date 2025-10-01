@@ -3,7 +3,7 @@ import { SiWhatsapp } from 'react-icons/si';
 import { Button } from '@/components/ui/button';
 
 export default function FloatingWhatsApp() {
-  const whatsappNumber = '+255764863068';
+  const whatsappNumber = '+255768512626';
   const whatsappUrl = `https://wa.me/${whatsappNumber.replace('+', '')}`;
 
   return (
