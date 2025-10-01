@@ -12,6 +12,7 @@ export default function Footer() {
     { name: 'Destinations', href: '/destinations' },
     { name: 'Itineraries', href: '/itineraries' },
     { name: 'Volunteers', href: '/volunteers-program' },
+    { name: 'Agent Partnerships', href: '/agent-partnerships' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },
   ];

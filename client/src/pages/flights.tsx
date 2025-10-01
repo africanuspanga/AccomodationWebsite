@@ -22,14 +22,26 @@ const MAJOR_AIRPORTS = {
 };
 
 const fetchFlights = async (): Promise<OpenSkyResponse> => {
-  const response = await fetch('/api/flights/east-africa');
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch flight data');
-  }
+  try {
+    const response = await fetch('/api/flights/east-africa', {
+      headers: {
+        'Accept': 'application/json',
+      },
+      credentials: 'same-origin',
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Flight API error:', response.status, errorText);
+      throw new Error(`Failed to fetch flight data: ${response.status} ${response.statusText}`);
+    }
 
-  const data = await response.json();
-  return data;
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Flight fetch error:', error);
+    throw error;
+  }
 };
 
 const formatAltitude = (altitude: number | null): string => {
@@ -180,8 +192,20 @@ export default function Flights() {
             <Card className="mb-8 border-destructive">
               <CardContent className="pt-6">
                 <div className="text-center">
-                  <p className="text-destructive mb-4">
-                    Unable to fetch flight data. This might be due to API rate limits or network issues.
+                  <p className="text-destructive font-semibold mb-2">
+                    Unable to fetch flight data
+                  </p>
+                  <p className="text-muted-foreground mb-4 text-sm">
+                    This could be due to:
+                  </p>
+                  <ul className="text-sm text-muted-foreground space-y-1 max-w-md mx-auto mb-6 text-left">
+                    <li>• OpenSky Network API rate limits (429 error)</li>
+                    <li>• Temporary network connectivity issues</li>
+                    <li>• High traffic volume to the external API</li>
+                    <li>• API service temporarily unavailable</li>
+                  </ul>
+                  <p className="text-xs text-muted-foreground mb-6">
+                    Error details: {error instanceof Error ? error.message : 'Unknown error'}
                   </p>
                   <Button onClick={handleRefresh} variant="outline">
                     Try Again
