@@ -37,6 +37,26 @@ Accommodation Collection is a premium Tanzania travel web application specializi
 - **Responsive Design**: Shows 1 testimonial on mobile, 2 on tablet, 3 on desktop
 - **Infinite Loop**: Continuous carousel rotation for better user engagement
 
+### UI/UX Enhancements (October 2025)
+- **WhatsApp Integration**: Updated floating WhatsApp button to link to wa.me/255768512626 for direct customer communication
+- **Brand Identity**: Replaced Mountain icon logo with custom company logo image in navbar for professional branding
+- **Cascading Search Filters**: Implemented hierarchical continent → country → destination filters with intelligent state management
+  - Default selection: Africa → Tanzania for streamlined user experience
+  - Auto-updates dependent dropdowns when parent selection changes
+  - Prevents invalid location combinations across continents
+  - Expanded data coverage for multiple African countries (Tanzania, Kenya, Uganda, Rwanda, South Africa, Botswana)
+- **Destination Categories**: Updated from "Mountains & Coast" to more descriptive categories:
+  - "Beaches & Islands" (featuring Zanzibar, Pemba Island, etc.)
+  - "Mountains & Hills" (featuring Kilimanjaro, Mount Meru, etc.)
+  - Added corresponding imagery for new destinations
+- **About Page Scope**: Expanded regional focus from "Tanzania" to "East Africa" and from "East Africa" to "Africa" for broader market appeal
+- **Footer Enhancements**:
+  - Added dual contact numbers: +255717523882 and +255789631010
+  - Fixed email overflow issue with proper word-break styling
+  - Newsletter subscription section with email input and subscribe button
+  - Expanded social media presence to 8 platforms: Facebook, Twitter, Instagram, YouTube, TikTok, LinkedIn, WhatsApp Business, Pinterest
+- **Navigation Improvements**: Implemented global scroll-to-top functionality for all page navigations, ensuring users always start at the top when navigating to new pages (Privacy Policy, Terms of Service, Cookie Policy, etc.)
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
