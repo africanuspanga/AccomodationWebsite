@@ -12,11 +12,15 @@ Accommodation Collection is a premium Tanzania travel web application specializi
 - **Admin Accommodation Forms**: Comprehensive CRUD forms with fields for name, location (continental/country/destination), category, pricing, rating, features array, main image, and gallery images
 - **Admin Itinerary Forms**: Complete CRUD forms with duration, pricing, category, highlights array, includes array, difficulty, group size, main image, and gallery images
 - **Admin Destination Forms**: Complete CRUD forms with name, location (continental/country/region), destination type (safari-circuit/beach/mountain/city/country), description, highlights array, best time to visit, sub-destinations array, main image, and gallery images
+- **Admin Blog Forms**: Complete CRUD forms with Cloudinary featured image upload, title, category selection, author, excerpt, and full content fields
+- **Admin Volunteer Program Forms**: Comprehensive CRUD forms with all fields including dynamic focus areas array, highlights array, activities checkboxes (safari, hiking, mountain climbing, cultural tours), main image upload, and full program details
 - **Image Upload Component**: Reusable ImageUpload component with drag-and-drop, preview, delete, and Cloudinary integration
 - **Content Merging Hook**: Updated use-content.ts to automatically fetch admin content from Supabase and merge with hardcoded content for unified display
-- **Unified Public Endpoints**: All content types (accommodations, itineraries, destinations) use /api/public/* endpoints for consistent content merging
-- **Form Validation**: Zod schemas with z.coerce.number() for proper numeric field handling (price, rating)
-- **Admin Routes**: Added /admin/accommodations/:id, /admin/itineraries/:id, and /admin/destinations/:id routes for content management
+- **Blog Page Integration**: Fetches admin blogs from /api/public/blogs, transforms to match BlogPost interface, merges with hardcoded blogs for seamless display
+- **Volunteer Programs Integration**: Fetches admin volunteer programs from /api/public/volunteer-programs, parses activities JSON, merges with hardcoded programs for unified display
+- **Unified Public Endpoints**: All content types (accommodations, itineraries, destinations, blogs, volunteer programs) use /api/public/* endpoints for consistent content merging
+- **Form Validation**: Zod schemas with z.coerce.number() for proper numeric field handling (price, rating), array validation for focus areas and highlights
+- **Admin Routes**: Added /admin/accommodations/:id, /admin/itineraries/:id, /admin/destinations/:id, /admin/blogs/:id, and /admin/volunteer-programs/:id routes for content management
 - **Admin Dashboard**: 5-tab dashboard (Accommodations, Destinations, Blogs, Volunteer Programs, Itineraries) with full CRUD operations
 - **Environment Variables**: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_UPLOAD_PRESET configured
 - **Seamless User Experience**: No visual distinction between admin-created and hardcoded content on public pages
