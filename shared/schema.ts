@@ -224,6 +224,24 @@ export const itineraryDetails = pgTable("itinerary_details", {
   updatedAt: text("updated_at").default(sql`now()`),
 });
 
+// Accommodation Details table (for facilities, rooms, and gallery)
+export const accommodationDetails = pgTable("accommodation_details", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  accommodationId: text("accommodation_id").notNull().unique(), // References accommodation.id
+  
+  // Facilities Tab
+  facilities: text("facilities").array(), // Array of facility names
+  
+  // Rooms Tab
+  rooms: text("rooms"), // JSON stringified array of room objects with {name, description, images, units, guests, amenities}
+  
+  // Gallery Tab
+  galleryImages: text("gallery_images").array(), // Array of image URLs for gallery
+  
+  createdAt: text("created_at").default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
 // Schema definitions
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -289,6 +307,12 @@ export const insertItineraryDetailSchema = createInsertSchema(itineraryDetails).
   updatedAt: true,
 });
 
+export const insertAccommodationDetailSchema = createInsertSchema(accommodationDetails).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Type definitions
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -329,6 +353,9 @@ export type DestinationDetail = typeof destinationDetails.$inferSelect;
 
 export type InsertItineraryDetail = z.infer<typeof insertItineraryDetailSchema>;
 export type ItineraryDetail = typeof itineraryDetails.$inferSelect;
+
+export type InsertAccommodationDetail = z.infer<typeof insertAccommodationDetailSchema>;
+export type AccommodationDetail = typeof accommodationDetails.$inferSelect;
 
 // Flight data types for OpenSky Network API
 export const flightDataSchema = z.object({

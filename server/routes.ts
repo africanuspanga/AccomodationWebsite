@@ -101,6 +101,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Accommodation Details routes
+  app.get("/api/accommodations/:id/details", async (req, res) => {
+    try {
+      const details = await storage.getAccommodationDetail(req.params.id);
+      if (!details) {
+        return res.status(404).json({ error: "Accommodation details not found" });
+      }
+      res.json(details);
+    } catch (error) {
+      console.error("Error fetching accommodation details:", error);
+      res.status(500).json({ error: "Failed to fetch accommodation details" });
+    }
+  });
+
   // Destination routes
   app.get("/api/destinations", async (req, res) => {
     try {

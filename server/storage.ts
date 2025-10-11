@@ -8,7 +8,8 @@ import {
   type Booking, type InsertBooking,
   type DestinationDetail, type InsertDestinationDetail,
   type ItineraryDetail, type InsertItineraryDetail,
-  users, accommodations, destinations, itineraries, inquiries, volunteerApplications, bookings, destinationDetails, itineraryDetails
+  type AccommodationDetail, type InsertAccommodationDetail,
+  users, accommodations, destinations, itineraries, inquiries, volunteerApplications, bookings, destinationDetails, itineraryDetails, accommodationDetails
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -35,6 +36,9 @@ export interface IStorage {
   createAccommodation(accommodation: InsertAccommodation): Promise<Accommodation>;
   updateAccommodation(id: string, accommodation: Partial<InsertAccommodation>): Promise<Accommodation | undefined>;
   deleteAccommodation(id: string): Promise<boolean>;
+  
+  // Accommodation Details operations
+  getAccommodationDetail(accommodationId: string): Promise<AccommodationDetail | undefined>;
   
   // Destination operations
   getAllDestinations(): Promise<Destination[]>;
@@ -124,6 +128,12 @@ export class DatabaseStorage implements IStorage {
   async deleteAccommodation(id: string): Promise<boolean> {
     const result = await db.delete(accommodations).where(eq(accommodations.id, id));
     return (result.rowCount ?? 0) > 0;
+  }
+
+  // Accommodation Details operations
+  async getAccommodationDetail(accommodationId: string): Promise<AccommodationDetail | undefined> {
+    const [detail] = await db.select().from(accommodationDetails).where(eq(accommodationDetails.accommodationId, accommodationId));
+    return detail || undefined;
   }
 
   // Destination operations
