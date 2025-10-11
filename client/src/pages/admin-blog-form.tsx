@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
+import { ImageUpload } from '@/components/ui/image-upload';
 import {
   Form,
   FormControl,
@@ -249,9 +250,12 @@ export default function AdminBlogForm() {
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image URL (Optional)</FormLabel>
+                  <FormLabel>Featured Image</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter image URL" {...field} data-testid="input-image-url" />
+                    <ImageUpload
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

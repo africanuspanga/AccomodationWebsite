@@ -37,6 +37,7 @@ import AdminBlogForm from "@/pages/admin-blog-form";
 import AdminAccommodationForm from "@/pages/admin-accommodation-form";
 import AdminItineraryForm from "@/pages/admin-itinerary-form";
 import AdminDestinationForm from "@/pages/admin-destination-form";
+import AdminVolunteerForm from "@/pages/admin-volunteer-form";
 import UserDashboard from "@/pages/user-dashboard";
 import { SupabaseAuthProvider } from "@/hooks/use-supabase-auth";
 
@@ -90,6 +91,7 @@ function Router() {
           <Route path="/admin/accommodations/:id" component={AdminAccommodationForm} />
           <Route path="/admin/itineraries/:id" component={AdminItineraryForm} />
           <Route path="/admin/destinations/:id" component={AdminDestinationForm} />
+          <Route path="/admin/volunteer-programs/:id" component={AdminVolunteerForm} />
           <Route component={NotFound} />
         </Switch>
       </main>
