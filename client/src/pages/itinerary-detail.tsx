@@ -1,16 +1,54 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useParams, useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Star, ArrowLeft, Clock, Users, Check } from 'lucide-react';
-import { useContent } from '@/hooks/use-content';
 import SEOHead from '@/components/seo/seo-head';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { MapPin, ArrowLeft, Check, X, Star, ChevronDown, ChevronUp } from 'lucide-react';
+import { useContent } from '@/hooks/use-content';
+import type { ItineraryDetail } from '@shared/schema';
+
+interface DayByDayItem {
+  day: number;
+  title: string;
+  description: string;
+}
+
+interface PricingPackage {
+  name: string;
+  prices: {
+    '1person': string;
+    '2persons': string;
+    '4persons': string;
+    '6+persons': string;
+  };
+}
+
+interface PricingData {
+  lowSeason: {
+    months: string;
+    packages: PricingPackage[];
+  };
+  highSeason: {
+    months: string;
+    packages: PricingPackage[];
+  };
+}
 
 export default function ItineraryDetail() {
-  const params = useParams<{ id: string }>();
+  const params = useParams();
+  const itineraryId = params.id;
   const [, setLocation] = useLocation();
   const { itineraries } = useContent();
-  
-  const itinerary = itineraries.find(i => i.id === params.id);
+  const [activeTab, setActiveTab] = useState<'tour-details' | 'itinerary' | 'prices'>('tour-details');
+  const [expandedDay, setExpandedDay] = useState<number | null>(null);
+
+  const itinerary = itineraries.find(i => i.id === itineraryId);
+
+  const { data: itineraryDetail, isLoading } = useQuery<ItineraryDetail>({
+    queryKey: [`/api/itineraries/${itineraryId}/details`],
+    enabled: !!itineraryId,
+  });
 
   if (!itinerary) {
     return (
@@ -33,28 +71,17 @@ export default function ItineraryDetail() {
     }).format(price);
   };
 
-  const formatCategory = (category: string) => {
-    return category
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
+  // Parse JSON data from itineraryDetail
+  const dayByDay: DayByDayItem[] = itineraryDetail?.dayByDay 
+    ? JSON.parse(itineraryDetail.dayByDay) 
+    : [];
+  
+  const pricingData: PricingData | null = itineraryDetail?.pricingData 
+    ? JSON.parse(itineraryDetail.pricingData) 
+    : null;
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'premium':
-        return 'bg-accent text-accent-foreground';
-      case 'popular':
-        return 'bg-primary text-primary-foreground';
-      case 'day-trip':
-        return 'bg-secondary text-secondary-foreground';
-      case 'kilimanjaro':
-        return 'bg-muted text-muted-foreground';
-      case 'trekking':
-        return 'bg-destructive/20 text-destructive';
-      default:
-        return 'bg-muted text-muted-foreground';
-    }
+  const toggleDay = (day: number) => {
+    setExpandedDay(expandedDay === day ? null : day);
   };
 
   return (
@@ -93,116 +120,298 @@ export default function ItineraryDetail() {
                 <span className="text-lg">{itinerary.name}</span>
               </div>
             )}
-            <div className="absolute top-6 left-6">
-              <Badge className={`${getCategoryColor(itinerary.category)} text-sm px-4 py-2`}>
-                {formatCategory(itinerary.category)}
-              </Badge>
-            </div>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2">
               <div className="mb-6">
-                <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-4" data-testid="itinerary-name">
+                <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4" data-testid="itinerary-name">
                   {itinerary.name}
                 </h1>
-                
-                <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
-                  <div className="flex items-center space-x-6 text-muted-foreground">
-                    <div className="flex items-center space-x-2">
-                      <Clock className="h-5 w-5" />
-                      <span className="text-lg">{itinerary.duration}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Users className="h-5 w-5" />
-                      <span className="text-lg">{itinerary.groupSize}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-1 text-accent">
-                    {[...Array(itinerary.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-current" />
-                    ))}
-                  </div>
-                </div>
-
-                {itinerary.difficulty && (
-                  <Badge variant="secondary" className="text-sm mb-4">
-                    {itinerary.difficulty}
-                  </Badge>
-                )}
               </div>
 
-              <div className="prose prose-lg max-w-none mb-8">
-                <p className="text-muted-foreground leading-relaxed" data-testid="itinerary-description">
-                  {itinerary.description}
-                </p>
+              {/* Tab Navigation */}
+              <div className="flex flex-wrap gap-3 mb-8 border-b border-border">
+                <button
+                  onClick={() => setActiveTab('tour-details')}
+                  className={`px-6 py-3 font-serif text-lg font-semibold transition-all duration-200 border-b-2 ${
+                    activeTab === 'tour-details'
+                      ? 'border-primary text-primary bg-primary/5'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                  }`}
+                  data-testid="tab-tour-details"
+                >
+                  TOUR DETAILS
+                </button>
+                <button
+                  onClick={() => setActiveTab('itinerary')}
+                  className={`px-6 py-3 font-serif text-lg font-semibold transition-all duration-200 border-b-2 ${
+                    activeTab === 'itinerary'
+                      ? 'border-primary text-primary bg-primary/5'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                  }`}
+                  data-testid="tab-itinerary"
+                >
+                  ITINERARY
+                </button>
+                <button
+                  onClick={() => setActiveTab('prices')}
+                  className={`px-6 py-3 font-serif text-lg font-semibold transition-all duration-200 border-b-2 ${
+                    activeTab === 'prices'
+                      ? 'border-primary text-primary bg-primary/5'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                  }`}
+                  data-testid="tab-prices"
+                >
+                  PRICES & TERMS
+                </button>
               </div>
 
-              {/* Highlights */}
-              {itinerary.highlights && itinerary.highlights.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Tour Highlights</h2>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    {itinerary.highlights.map((highlight) => (
-                      <div key={highlight} className="flex items-center space-x-2">
-                        <Check className="h-5 w-5 text-accent flex-shrink-0" />
-                        <span className="text-foreground">{highlight}</span>
-                      </div>
-                    ))}
-                  </div>
+              {/* Tab Content */}
+              {isLoading ? (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">Loading details...</p>
                 </div>
-              )}
+              ) : (
+                <>
+                  {/* Tour Details Tab */}
+                  {activeTab === 'tour-details' && (
+                    <div className="space-y-8">
+                      {/* What's Included */}
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">What's Included</h2>
+                        <div className="grid md:grid-cols-2 gap-3">
+                          {itineraryDetail?.whatsIncluded?.map((item, index) => (
+                            <div key={index} className="flex items-start space-x-3">
+                              <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                              <span className="text-foreground">{item}</span>
+                            </div>
+                          )) || (
+                            <p className="text-muted-foreground col-span-2">No information available</p>
+                          )}
+                        </div>
+                      </div>
 
-              {/* Includes */}
-              {itinerary.includes && itinerary.includes.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="font-serif text-2xl font-bold text-foreground mb-4">What's Included</h2>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    {itinerary.includes.map((item) => (
-                      <div key={item} className="flex items-center space-x-2">
-                        <Check className="h-5 w-5 text-accent flex-shrink-0" />
-                        <span className="text-foreground">{item}</span>
+                      {/* What's Not Included */}
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">What's Not Included</h2>
+                        <div className="grid md:grid-cols-2 gap-3">
+                          {itineraryDetail?.whatsNotIncluded?.map((item, index) => (
+                            <div key={index} className="flex items-start space-x-3">
+                              <X className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                              <span className="text-foreground">{item}</span>
+                            </div>
+                          )) || (
+                            <p className="text-muted-foreground col-span-2">No information available</p>
+                          )}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
+
+                      {/* What to Bring */}
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">What to Bring</h2>
+                        <div className="grid md:grid-cols-2 gap-3">
+                          {itineraryDetail?.whatToBring?.map((item, index) => (
+                            <div key={index} className="flex items-start space-x-3">
+                              <Star className="h-5 w-5 text-accent fill-current flex-shrink-0 mt-0.5" />
+                              <span className="text-foreground">{item}</span>
+                            </div>
+                          )) || (
+                            <p className="text-muted-foreground col-span-2">No information available</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Itinerary Tab */}
+                  {activeTab === 'itinerary' && (
+                    <div className="space-y-6">
+                      {/* Itinerary Overview */}
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">Itinerary Overview</h2>
+                        <p className="text-foreground leading-relaxed">
+                          {itineraryDetail?.itineraryOverview || itinerary.description}
+                        </p>
+                      </div>
+
+                      {/* Day by Day */}
+                      <div className="space-y-4 mt-8">
+                        {dayByDay.length > 0 ? (
+                          dayByDay.map((day) => (
+                            <div key={day.day} className="border border-border rounded-lg overflow-hidden">
+                              <button
+                                onClick={() => toggleDay(day.day)}
+                                className="w-full flex items-center justify-between p-4 bg-primary/5 hover:bg-primary/10 transition-colors"
+                                data-testid={`day-${day.day}-toggle`}
+                              >
+                                <div className="flex items-center space-x-4">
+                                  <Badge className="bg-primary text-primary-foreground">
+                                    DAY {day.day}
+                                  </Badge>
+                                  <h3 className="font-serif text-lg font-semibold text-foreground text-left uppercase">
+                                    {day.title}
+                                  </h3>
+                                </div>
+                                {expandedDay === day.day ? (
+                                  <ChevronUp className="h-5 w-5 text-primary" />
+                                ) : (
+                                  <ChevronDown className="h-5 w-5 text-primary" />
+                                )}
+                              </button>
+                              {expandedDay === day.day && (
+                                <div className="p-4 bg-card">
+                                  <p className="text-foreground leading-relaxed">{day.description}</p>
+                                </div>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-muted-foreground">No day-by-day itinerary available</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Prices & Terms Tab */}
+                  {activeTab === 'prices' && (
+                    <div className="space-y-8">
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-2 uppercase">Prices</h2>
+                        <p className="text-muted-foreground mb-6">
+                          The total Seasonal cost of this itinerary is <span className="font-semibold">Per person</span>
+                        </p>
+
+                        {pricingData ? (
+                          <>
+                            {/* Low Season */}
+                            <div className="mb-8">
+                              <h3 className="font-serif text-xl font-bold text-foreground mb-2 uppercase">Low Season</h3>
+                              <p className="text-sm text-muted-foreground mb-4">{pricingData.lowSeason.months}</p>
+                              
+                              <div className="overflow-x-auto">
+                                <table className="w-full border border-border">
+                                  <thead>
+                                    <tr className="bg-primary text-primary-foreground">
+                                      <th className="px-4 py-3 text-left font-serif">Level</th>
+                                      <th className="px-4 py-3 text-center font-serif">1 person</th>
+                                      <th className="px-4 py-3 text-center font-serif">2 persons</th>
+                                      <th className="px-4 py-3 text-center font-serif">4 persons</th>
+                                      <th className="px-4 py-3 text-center font-serif">6+ persons</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {pricingData.lowSeason.packages.map((pkg, index) => (
+                                      <tr key={index} className={index % 2 === 0 ? 'bg-muted/30' : 'bg-card'}>
+                                        <td className="px-4 py-3 font-medium border-r border-border">{pkg.name}</td>
+                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['1person']}</td>
+                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['2persons']}</td>
+                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['4persons']}</td>
+                                        <td className="px-4 py-3 text-center">{pkg.prices['6+persons']}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+
+                            {/* High Season */}
+                            <div>
+                              <h3 className="font-serif text-xl font-bold text-foreground mb-2 uppercase">High Season</h3>
+                              <p className="text-sm text-muted-foreground mb-4">{pricingData.highSeason.months}</p>
+                              
+                              <div className="overflow-x-auto">
+                                <table className="w-full border border-border">
+                                  <thead>
+                                    <tr className="bg-primary text-primary-foreground">
+                                      <th className="px-4 py-3 text-left font-serif">Level</th>
+                                      <th className="px-4 py-3 text-center font-serif">1 person</th>
+                                      <th className="px-4 py-3 text-center font-serif">2 persons</th>
+                                      <th className="px-4 py-3 text-center font-serif">4 persons</th>
+                                      <th className="px-4 py-3 text-center font-serif">6+ persons</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {pricingData.highSeason.packages.map((pkg, index) => (
+                                      <tr key={index} className={index % 2 === 0 ? 'bg-muted/30' : 'bg-card'}>
+                                        <td className="px-4 py-3 font-medium border-r border-border">{pkg.name}</td>
+                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['1person']}</td>
+                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['2persons']}</td>
+                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['4persons']}</td>
+                                        <td className="px-4 py-3 text-center">{pkg.prices['6+persons']}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <p className="text-muted-foreground">No pricing information available. Starting from {formatPrice(itinerary.price)} per person.</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
-            {/* Booking Card */}
+            {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-card border-2 border-primary/10 rounded-2xl p-6 sticky top-24">
-                <div className="mb-6">
-                  <p className="text-sm text-muted-foreground mb-2">Starting from</p>
-                  <p className="text-4xl font-bold text-primary" data-testid="itinerary-price">
+              <div className="bg-card border-2 border-primary/10 rounded-2xl p-6 sticky top-24 space-y-6">
+                {/* Price Display */}
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">From</p>
+                  <p className="text-4xl font-bold text-primary font-serif" data-testid="itinerary-price">
                     {formatPrice(itinerary.price)}
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">per person</p>
+                  <p className="text-sm text-muted-foreground mt-1">/ Per Person</p>
                 </div>
 
+                {/* Tour Highlights */}
+                {(itineraryDetail?.tourHighlights && itineraryDetail.tourHighlights.length > 0) || (itinerary.highlights && itinerary.highlights.length > 0) ? (
+                  <div className="pt-6 border-t border-border">
+                    <h3 className="font-serif text-lg font-bold text-foreground mb-4 uppercase">Tour Highlights</h3>
+                    <div className="space-y-2">
+                      {(itineraryDetail?.tourHighlights || itinerary.highlights)?.map((highlight, index) => (
+                        <div key={index} className="flex items-start space-x-2">
+                          <Check className="h-4 w-4 text-primary flex-shrink-0 mt-1" />
+                          <span className="text-sm text-foreground">{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {/* Enquiry Button */}
                 <Button
                   className="w-full btn-primary py-6 text-lg font-semibold"
                   onClick={() => setLocation(`/book/itinerary/${itinerary.id}`)}
-                  data-testid="book-now-button"
+                  data-testid="enquiry-now-button"
                 >
-                  Book Now
+                  ENQUIRY NOW
                 </Button>
 
-                <div className="mt-6 pt-6 border-t border-border">
-                  <p className="text-sm text-muted-foreground text-center">
-                    Questions? Contact us for personalized assistance
-                  </p>
-                  <Button
-                    variant="outline"
-                    className="w-full mt-3"
-                    onClick={() => setLocation('/contact')}
-                    data-testid="contact-us-button"
-                  >
-                    Contact Us
-                  </Button>
-                </div>
+                {/* Map */}
+                {itineraryDetail?.mapImageUrl && (
+                  <div className="pt-6 border-t border-border">
+                    <img 
+                      src={itineraryDetail.mapImageUrl} 
+                      alt="Tour Map"
+                      className="w-full rounded-lg"
+                      data-testid="tour-map"
+                    />
+                    <Button
+                      variant="outline"
+                      className="w-full mt-3"
+                      onClick={() => itineraryDetail.mapImageUrl && window.open(itineraryDetail.mapImageUrl, '_blank')}
+                      data-testid="enlarge-map-button"
+                    >
+                      ENLARGE MAP
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
