@@ -34,6 +34,8 @@ import AuthPage from "@/pages/auth-page";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin";
 import AdminBlogForm from "@/pages/admin-blog-form";
+import AdminAccommodationForm from "@/pages/admin-accommodation-form";
+import AdminItineraryForm from "@/pages/admin-itinerary-form";
 import UserDashboard from "@/pages/user-dashboard";
 import { SupabaseAuthProvider } from "@/hooks/use-supabase-auth";
 
@@ -84,6 +86,8 @@ function Router() {
           <Route path="/admin/login" component={AdminLogin} />
           <Route path="/admin" component={AdminDashboard} />
           <Route path="/admin/blogs/:id" component={AdminBlogForm} />
+          <Route path="/admin/accommodations/:id" component={AdminAccommodationForm} />
+          <Route path="/admin/itineraries/:id" component={AdminItineraryForm} />
           <Route component={NotFound} />
         </Switch>
       </main>

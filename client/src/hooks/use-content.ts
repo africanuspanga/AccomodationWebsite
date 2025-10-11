@@ -1,7 +1,19 @@
+import { useQuery } from '@tanstack/react-query';
 import { type Accommodation, type Destination, type Itinerary } from '@shared/schema';
 import contentData from '@/data/content.json';
 
 export function useContent() {
+  // Fetch admin-created accommodations from Supabase
+  const { data: adminAccommodations = [] } = useQuery<Accommodation[]>({
+    queryKey: ['/api/admin/accommodations'],
+    enabled: true,
+  });
+
+  // Fetch admin-created itineraries from Supabase
+  const { data: adminItineraries = [] } = useQuery<Itinerary[]>({
+    queryKey: ['/api/admin/itineraries'],
+    enabled: true,
+  });
   // Static data with images - no API calls needed!
   const accommodationImages: Record<string, string> = {
     '1': '/attached_assets/four-seasons-serengeti-night_1757883337619.jpg',
@@ -154,11 +166,14 @@ export function useContent() {
     }
   ];
 
-  // Add images to accommodations
-  const accommodations: Accommodation[] = contentData.accommodations.map(acc => ({
+  // Add images to hardcoded accommodations
+  const hardcodedAccommodations: Accommodation[] = contentData.accommodations.map(acc => ({
     ...acc,
     imageUrl: accommodationImages[acc.id] || null
   }));
+
+  // Merge hardcoded and admin-created accommodations
+  const accommodations: Accommodation[] = [...hardcodedAccommodations, ...adminAccommodations];
 
   // Add images to destinations  
   const destinations: Destination[] = [
@@ -169,12 +184,15 @@ export function useContent() {
     ...additionalDestinations
   ];
 
-  // Add images to itineraries
-  const itineraries: Itinerary[] = contentData.itineraries.map(itin => ({
+  // Add images to hardcoded itineraries
+  const hardcodedItineraries: Itinerary[] = contentData.itineraries.map(itin => ({
     ...itin,
     difficulty: itin.difficulty || null,
     imageUrl: itineraryImages[itin.id] || null
   }));
+
+  // Merge hardcoded and admin-created itineraries
+  const itineraries: Itinerary[] = [...hardcodedItineraries, ...adminItineraries];
 
   const isLoading = false; // No loading since it's static data
 
