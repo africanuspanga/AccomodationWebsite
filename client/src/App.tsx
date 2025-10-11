@@ -12,6 +12,7 @@ import Home from "@/pages/home";
 import Accommodations from "@/pages/accommodations";
 import AccommodationDetail from "@/pages/accommodation-detail";
 import Destinations from "@/pages/destinations";
+import DestinationDetail from "@/pages/destination-detail";
 import Itineraries from "@/pages/itineraries";
 import ItineraryDetail from "@/pages/itinerary-detail";
 import BookingForm from "@/pages/booking-form";
@@ -61,6 +62,7 @@ function Router() {
           <Route path="/accommodations" component={Accommodations} />
           <Route path="/accommodations/:id" component={AccommodationDetail} />
           <Route path="/destinations" component={Destinations} />
+          <Route path="/destinations/:id" component={DestinationDetail} />
           <Route path="/itineraries" component={Itineraries} />
           <Route path="/itineraries/:id" component={ItineraryDetail} />
           <Route path="/book/:type/:id" component={BookingForm} />

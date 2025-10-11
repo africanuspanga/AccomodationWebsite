@@ -3,6 +3,7 @@ import { Mountain, Phone, Mail, MapPin } from 'lucide-react';
 import { SiInstagram, SiFacebook, SiYoutube, SiX, SiTiktok, SiLinkedin, SiWhatsapp, SiPinterest } from 'react-icons/si';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import likeeIcon from '@assets/images-removebg-preview_1760198548949.png';
 
 export default function Footer() {
   const quickLinks = [
@@ -35,6 +36,7 @@ export default function Footer() {
     { icon: SiLinkedin, href: 'https://www.linkedin.com/company/accommodation-collection', label: 'LinkedIn' },
     { icon: SiWhatsapp, href: 'https://wa.me/255768512626', label: 'WhatsApp' },
     { icon: SiPinterest, href: 'https://www.pinterest.com/accommodationcollection', label: 'Pinterest' },
+    { iconImage: likeeIcon, href: 'https://l.likee.video/p/NYkOhC', label: 'Likee' },
   ];
 
   return (
@@ -66,7 +68,11 @@ export default function Footer() {
                   aria-label={social.label}
                   data-testid={`social-link-${social.label.toLowerCase()}`}
                 >
-                  <social.icon className="h-4 w-4 text-accent" />
+                  {'iconImage' in social ? (
+                    <img src={social.iconImage} alt={social.label} className="h-4 w-4 object-contain" />
+                  ) : (
+                    <social.icon className="h-4 w-4 text-accent" />
+                  )}
                 </a>
               ))}
             </div>

@@ -163,6 +163,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Destination Details routes
+  app.get("/api/destinations/:id/details", async (req, res) => {
+    try {
+      const detail = await storage.getDestinationDetail(req.params.id);
+      if (!detail) {
+        return res.status(404).json({ error: "Destination details not found" });
+      }
+      res.json(detail);
+    } catch (error) {
+      console.error("Error fetching destination details:", error);
+      res.status(500).json({ error: "Failed to fetch destination details" });
+    }
+  });
+
   // Itinerary routes
   app.get("/api/itineraries", async (req, res) => {
     try {

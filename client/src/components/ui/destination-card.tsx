@@ -1,5 +1,7 @@
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MapPin, Clock, ArrowRight } from 'lucide-react';
+import { Link } from 'wouter';
 import type { Destination } from '@/hooks/use-content';
 
 interface DestinationCardProps {
@@ -72,6 +74,17 @@ export default function DestinationCard({ destination, className = '' }: Destina
             <span>Best time: {destination.bestTime}</span>
           </div>
         )}
+        
+        <Link href={`/destinations/${destination.id}`}>
+          <Button 
+            variant="outline" 
+            className="w-full mt-4 group/btn"
+            data-testid={`button-learn-more-${destination.id}`}
+          >
+            Learn More
+            <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+          </Button>
+        </Link>
       </div>
     </div>
   );
