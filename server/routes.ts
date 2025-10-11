@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema, insertItinerarySchema, insertVolunteerApplicationSchema, insertBookingSchema } from "@shared/schema";
+import { generateUploadSignature } from "./cloudinary";
 // Old auth system removed - now using Supabase Auth for users
 // import { setupAuth } from "./auth";
 
@@ -264,6 +265,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching itinerary details:", error);
       res.status(500).json({ error: "Failed to fetch itinerary details" });
+    }
+  });
+
+  // Cloudinary upload signature endpoint
+  app.post("/api/cloudinary/signature", async (req, res) => {
+    try {
+      const { folder, public_id } = req.body;
+      const paramsToSign: Record<string, any> = {
+        upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET
+      };
+
+      if (folder) paramsToSign.folder = folder;
+      if (public_id) paramsToSign.public_id = public_id;
+
+      const signatureData = generateUploadSignature(paramsToSign);
+      res.json(signatureData);
+    } catch (error) {
+      console.error("Error generating upload signature:", error);
+      res.status(500).json({ error: "Failed to generate upload signature" });
     }
   });
 

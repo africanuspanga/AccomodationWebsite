@@ -162,6 +162,7 @@ export const adminAccommodations = pgTable("admin_accommodations", {
   rating: integer("rating").default(5),
   features: text("features").array().notNull(),
   imageUrl: text("image_url"),
+  galleryImages: text("gallery_images").array(), // Array of gallery image URLs
   createdAt: text("created_at").default(sql`now()`),
 });
 
@@ -179,6 +180,7 @@ export const adminItineraries = pgTable("admin_itineraries", {
   groupSize: text("group_size"),
   rating: integer("rating").default(5),
   imageUrl: text("image_url"),
+  galleryImages: text("gallery_images").array(), // Array of gallery image URLs
   createdAt: text("created_at").default(sql`now()`),
 });
 
