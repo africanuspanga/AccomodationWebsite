@@ -3,8 +3,45 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, User } from 'lucide-react';
 import { blogPosts } from '@/data/blog-data';
 import SEOHead from '@/components/seo/seo-head';
+import { useQuery } from '@tanstack/react-query';
+
+interface AdminBlog {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  category: string;
+  imageUrl?: string;
+  createdAt?: string;
+}
 
 export default function Blog() {
+  // Fetch admin-created blogs
+  const { data: adminBlogs = [] } = useQuery<AdminBlog[]>({
+    queryKey: ['/api/public/blogs'],
+    enabled: true,
+  });
+
+  // Transform admin blogs to match BlogPost interface
+  const transformedAdminBlogs = adminBlogs.map(blog => ({
+    id: blog.id,
+    title: blog.title,
+    excerpt: blog.excerpt,
+    content: blog.content,
+    imageUrl: blog.imageUrl || '/attached_assets/victoria fals_1759175723488.jpg',
+    readTime: '5 min read', // Default value
+    date: blog.createdAt ? new Date(blog.createdAt).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    }) : 'Recently published',
+    author: blog.author,
+  }));
+
+  // Merge admin blogs with hardcoded blogs
+  const allBlogs = [...transformedAdminBlogs, ...blogPosts];
+
   return (
     <>
       <SEOHead 
@@ -28,7 +65,7 @@ export default function Blog() {
 
           {/* Blog Posts Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post) => (
+            {allBlogs.map((post) => (
               <article 
                 key={post.id} 
                 className="bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
