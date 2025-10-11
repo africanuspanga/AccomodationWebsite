@@ -4,6 +4,20 @@
 
 Accommodation Collection is a premium Tanzania travel web application specializing in curating tours, accommodations, and travel services. The application is built as a full-stack web platform using modern technologies to provide users with an immersive experience for discovering and booking Tanzania travel experiences. The frontend is built with React and TypeScript, utilizing a component-based architecture with shadcn/ui design system, while the backend uses Express.js with PostgreSQL database integration.
 
+## Recent Changes (October 2025)
+
+### Admin Content Management System with Cloudinary (October 2025)
+- **Dual-Source Content Architecture**: Implemented seamless merging of admin-created content (Supabase) with hardcoded JSON content
+- **Cloudinary Integration**: Full cloud-based image management with single and multiple image upload capabilities
+- **Admin Accommodation Forms**: Comprehensive CRUD forms with fields for name, location (continental/country/destination), category, pricing, rating, features array, main image, and gallery images
+- **Admin Itinerary Forms**: Complete CRUD forms with duration, pricing, category, highlights array, includes array, difficulty, group size, main image, and gallery images
+- **Image Upload Component**: Reusable ImageUpload component with drag-and-drop, preview, delete, and Cloudinary integration
+- **Content Merging Hook**: Updated use-content.ts to automatically fetch admin content from Supabase and merge with hardcoded content for unified display
+- **Form Validation**: Zod schemas with z.coerce.number() for proper numeric field handling (price, rating)
+- **Admin Routes**: Added /admin/accommodations/:id and /admin/itineraries/:id routes for content management
+- **Environment Variables**: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_UPLOAD_PRESET configured
+- **Seamless User Experience**: No visual distinction between admin-created and hardcoded content on public pages
+
 ## Recent Changes (September 2025)
 
 ### User Authentication System (Supabase Auth)
