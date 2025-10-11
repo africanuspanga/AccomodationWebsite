@@ -184,6 +184,23 @@ export const adminItineraries = pgTable("admin_itineraries", {
   createdAt: text("created_at").default(sql`now()`),
 });
 
+// Admin Destinations table (for new admin-created content)
+export const adminDestinations = pgTable("admin_destinations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  continental: text("continental").notNull(),
+  country: text("country").notNull(),
+  region: text("region"), // 'northern-circuit', 'southern-circuit', 'coast', null for cities/mountains/countries
+  destinationType: text("destination_type").notNull(), // 'safari-circuit', 'beach', 'mountain', 'city', 'country'
+  description: text("description").notNull(),
+  highlights: text("highlights").array(),
+  bestTime: text("best_time"),
+  imageUrl: text("image_url"),
+  galleryImages: text("gallery_images").array(),
+  subDestinations: text("sub_destinations").array(), // For countries with multiple destinations
+  createdAt: text("created_at").default(sql`now()`),
+});
+
 // Destination Details table (for admin-editable detailed destination information)
 export const destinationDetails = pgTable("destination_details", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -297,6 +314,11 @@ export const insertAdminItinerarySchema = createInsertSchema(adminItineraries).o
   createdAt: true,
 });
 
+export const insertAdminDestinationSchema = createInsertSchema(adminDestinations).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertDestinationDetailSchema = createInsertSchema(destinationDetails).omit({
   id: true,
   createdAt: true,
@@ -349,6 +371,9 @@ export type AdminAccommodation = typeof adminAccommodations.$inferSelect;
 
 export type InsertAdminItinerary = z.infer<typeof insertAdminItinerarySchema>;
 export type AdminItinerary = typeof adminItineraries.$inferSelect;
+
+export type InsertAdminDestination = z.infer<typeof insertAdminDestinationSchema>;
+export type AdminDestination = typeof adminDestinations.$inferSelect;
 
 export type InsertDestinationDetail = z.infer<typeof insertDestinationDetailSchema>;
 export type DestinationDetail = typeof destinationDetails.$inferSelect;
