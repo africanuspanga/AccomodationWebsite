@@ -7,7 +7,8 @@ import {
   type VolunteerApplication, type InsertVolunteerApplication,
   type Booking, type InsertBooking,
   type DestinationDetail, type InsertDestinationDetail,
-  users, accommodations, destinations, itineraries, inquiries, volunteerApplications, bookings, destinationDetails
+  type ItineraryDetail, type InsertItineraryDetail,
+  users, accommodations, destinations, itineraries, inquiries, volunteerApplications, bookings, destinationDetails, itineraryDetails
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -51,6 +52,9 @@ export interface IStorage {
   createItinerary(itinerary: InsertItinerary): Promise<Itinerary>;
   updateItinerary(id: string, itinerary: Partial<InsertItinerary>): Promise<Itinerary | undefined>;
   deleteItinerary(id: string): Promise<boolean>;
+  
+  // Itinerary Details operations
+  getItineraryDetail(itineraryId: string): Promise<ItineraryDetail | undefined>;
   
   // Inquiry operations
   createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
@@ -176,6 +180,12 @@ export class DatabaseStorage implements IStorage {
   async deleteItinerary(id: string): Promise<boolean> {
     const result = await db.delete(itineraries).where(eq(itineraries.id, id));
     return (result.rowCount ?? 0) > 0;
+  }
+
+  // Itinerary Details operations
+  async getItineraryDetail(itineraryId: string): Promise<ItineraryDetail | undefined> {
+    const [detail] = await db.select().from(itineraryDetails).where(eq(itineraryDetails.itineraryId, itineraryId));
+    return detail || undefined;
   }
 
   // Inquiry operations

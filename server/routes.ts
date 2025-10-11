@@ -239,6 +239,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Itinerary Details routes
+  app.get("/api/itineraries/:id/details", async (req, res) => {
+    try {
+      const details = await storage.getItineraryDetail(req.params.id);
+      if (!details) {
+        return res.status(404).json({ error: "Itinerary details not found" });
+      }
+      res.json(details);
+    } catch (error) {
+      console.error("Error fetching itinerary details:", error);
+      res.status(500).json({ error: "Failed to fetch itinerary details" });
+    }
+  });
+
   // Volunteer Application routes
   app.post("/api/volunteer-applications", async (req, res) => {
     try {
