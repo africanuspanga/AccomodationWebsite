@@ -5,15 +5,22 @@ import contentData from '@/data/content.json';
 export function useContent() {
   // Fetch admin-created accommodations from Supabase
   const { data: adminAccommodations = [] } = useQuery<Accommodation[]>({
-    queryKey: ['/api/admin/accommodations'],
+    queryKey: ['/api/public/accommodations'],
     enabled: true,
   });
 
   // Fetch admin-created itineraries from Supabase
   const { data: adminItineraries = [] } = useQuery<Itinerary[]>({
-    queryKey: ['/api/admin/itineraries'],
+    queryKey: ['/api/public/itineraries'],
     enabled: true,
   });
+
+  // Fetch admin-created destinations from Supabase
+  const { data: adminDestinations = [] } = useQuery<Destination[]>({
+    queryKey: ['/api/public/destinations'],
+    enabled: true,
+  });
+  
   // Static data with images - no API calls needed!
   const accommodationImages: Record<string, string> = {
     '1': '/attached_assets/four-seasons-serengeti-night_1757883337619.jpg',
@@ -175,14 +182,17 @@ export function useContent() {
   // Merge hardcoded and admin-created accommodations
   const accommodations: Accommodation[] = [...hardcodedAccommodations, ...adminAccommodations];
 
-  // Add images to destinations  
-  const destinations: Destination[] = [
+  // Add images to hardcoded destinations  
+  const hardcodedDestinations: Destination[] = [
     ...contentData.destinations.map(dest => ({
       ...dest,
       imageUrl: destinationImages[dest.id] || null
     })),
     ...additionalDestinations
   ];
+
+  // Merge hardcoded and admin-created destinations
+  const destinations: Destination[] = [...hardcodedDestinations, ...adminDestinations];
 
   // Add images to hardcoded itineraries
   const hardcodedItineraries: Itinerary[] = contentData.itineraries.map(itin => ({

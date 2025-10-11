@@ -102,9 +102,12 @@ export default function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="accommodations" data-testid="tab-accommodations">
               Accommodations
+            </TabsTrigger>
+            <TabsTrigger value="destinations" data-testid="tab-destinations">
+              Destinations
             </TabsTrigger>
             <TabsTrigger value="blogs" data-testid="tab-blogs">
               Blogs
@@ -130,6 +133,22 @@ export default function AdminDashboard() {
               type="accommodations" 
               token={adminToken} 
               onDelete={(id) => setDeleteDialog({ open: true, type: 'accommodations', id })}
+            />
+          </TabsContent>
+
+          <TabsContent value="destinations">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Manage Destinations</h2>
+              <Button onClick={() => setLocation('/admin/destinations/new')} data-testid="button-add-destination">
+                <Plus className="mr-2 h-4 w-4" />
+                Add New
+              </Button>
+            </div>
+            <AdminContentTable 
+              key={refreshKey}
+              type="destinations" 
+              token={adminToken} 
+              onDelete={(id) => setDeleteDialog({ open: true, type: 'destinations', id })}
             />
           </TabsContent>
 
