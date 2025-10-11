@@ -199,6 +199,31 @@ export const destinationDetails = pgTable("destination_details", {
   updatedAt: text("updated_at").default(sql`now()`),
 });
 
+// Itinerary Details table (for comprehensive tour details, itinerary, and pricing)
+export const itineraryDetails = pgTable("itinerary_details", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  itineraryId: text("itinerary_id").notNull().unique(), // References itinerary.id
+  
+  // Tour Details Tab
+  whatsIncluded: text("whats_included").array(), // Array of included items
+  whatsNotIncluded: text("whats_not_included").array(), // Array of excluded items
+  whatToBring: text("what_to_bring").array(), // Array of items to bring
+  
+  // Itinerary Tab
+  itineraryOverview: text("itinerary_overview"), // Overview paragraph
+  dayByDay: text("day_by_day"), // JSON stringified array of {day: number, title: string, description: string}
+  
+  // Prices & Terms Tab
+  pricingData: text("pricing_data"), // JSON stringified pricing structure with seasons, packages, and group sizes
+  
+  // Map and other details
+  mapImageUrl: text("map_image_url"),
+  tourHighlights: text("tour_highlights").array(), // For sidebar
+  
+  createdAt: text("created_at").default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
 // Schema definitions
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -258,6 +283,12 @@ export const insertDestinationDetailSchema = createInsertSchema(destinationDetai
   updatedAt: true,
 });
 
+export const insertItineraryDetailSchema = createInsertSchema(itineraryDetails).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Type definitions
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -295,6 +326,9 @@ export type AdminItinerary = typeof adminItineraries.$inferSelect;
 
 export type InsertDestinationDetail = z.infer<typeof insertDestinationDetailSchema>;
 export type DestinationDetail = typeof destinationDetails.$inferSelect;
+
+export type InsertItineraryDetail = z.infer<typeof insertItineraryDetailSchema>;
+export type ItineraryDetail = typeof itineraryDetails.$inferSelect;
 
 // Flight data types for OpenSky Network API
 export const flightDataSchema = z.object({
