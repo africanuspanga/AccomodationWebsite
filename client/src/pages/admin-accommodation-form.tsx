@@ -32,8 +32,8 @@ const accommodationFormSchema = z.object({
   destination: z.string().min(1, 'Destination is required'),
   category: z.string().min(1, 'Category is required'),
   description: z.string().min(1, 'Description is required'),
-  price: z.number().min(1, 'Price is required'),
-  rating: z.number().min(1).max(5).default(5),
+  price: z.coerce.number().min(1, 'Price is required'),
+  rating: z.coerce.number().min(1).max(5).default(5),
   features: z.array(z.string()).min(1, 'At least one feature is required'),
   imageUrl: z.string().optional(),
   galleryImages: z.array(z.string()).optional(),
@@ -314,7 +314,6 @@ export default function AdminAccommodationForm() {
                         type="number"
                         placeholder="500"
                         {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -334,7 +333,6 @@ export default function AdminAccommodationForm() {
                         min="1"
                         max="5"
                         {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />

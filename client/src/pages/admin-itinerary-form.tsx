@@ -28,14 +28,14 @@ import { ImageUpload } from '@/components/ui/image-upload';
 const itineraryFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   duration: z.string().min(1, 'Duration is required'),
-  price: z.number().min(1, 'Price is required'),
+  price: z.coerce.number().min(1, 'Price is required'),
   category: z.string().min(1, 'Category is required'),
   description: z.string().min(1, 'Description is required'),
   highlights: z.array(z.string()).min(1, 'At least one highlight is required'),
   includes: z.array(z.string()).min(1, 'At least one inclusion is required'),
   difficulty: z.string().optional(),
   groupSize: z.string().optional(),
-  rating: z.number().min(1).max(5).default(5),
+  rating: z.coerce.number().min(1).max(5).default(5),
   imageUrl: z.string().optional(),
   galleryImages: z.array(z.string()).optional(),
 });
@@ -284,7 +284,6 @@ export default function AdminItineraryForm() {
                         type="number"
                         placeholder="2500"
                         {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -333,7 +332,6 @@ export default function AdminItineraryForm() {
                       min="1"
                       max="5"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
