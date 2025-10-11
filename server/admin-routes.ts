@@ -4,7 +4,8 @@ import {
   insertAdminBlogSchema,
   insertAdminVolunteerProgramSchema,
   insertAdminAccommodationSchema,
-  insertAdminItinerarySchema 
+  insertAdminItinerarySchema,
+  insertAdminDestinationSchema
 } from "@shared/schema";
 
 // Simple admin check middleware
@@ -396,6 +397,96 @@ export function registerAdminRoutes(app: Express) {
     }
   });
 
+  // ===== DESTINATION ROUTES =====
+  
+  // Get all admin destinations
+  app.get("/api/admin/destinations", isAdmin, async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_destinations')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        if (error.message.includes('does not exist') || error.message.includes('relation')) {
+          return res.json([]);
+        }
+        throw error;
+      }
+      res.json(data || []);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get single admin destination
+  app.get("/api/admin/destinations/:id", isAdmin, async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_destinations')
+        .select('*')
+        .eq('id', req.params.id)
+        .single();
+
+      if (error) throw error;
+      res.json(data);
+    } catch (error: any) {
+      res.status(404).json({ error: 'Destination not found' });
+    }
+  });
+
+  // Create destination
+  app.post("/api/admin/destinations", isAdmin, async (req, res) => {
+    try {
+      const validated = insertAdminDestinationSchema.parse(req.body);
+      
+      const { data, error } = await supabase
+        .from('admin_destinations')
+        .insert([validated])
+        .select()
+        .single();
+
+      if (error) throw error;
+      res.json(data);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  // Update destination
+  app.put("/api/admin/destinations/:id", isAdmin, async (req, res) => {
+    try {
+      const validated = insertAdminDestinationSchema.parse(req.body);
+      
+      const { data, error } = await supabase
+        .from('admin_destinations')
+        .update(validated)
+        .eq('id', req.params.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      res.json(data);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  // Delete destination
+  app.delete("/api/admin/destinations/:id", isAdmin, async (req, res) => {
+    try {
+      const { error } = await supabase
+        .from('admin_destinations')
+        .delete()
+        .eq('id', req.params.id);
+
+      if (error) throw error;
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // ===== PUBLIC ROUTES FOR MERGED CONTENT =====
   
   // Get all blogs (hardcoded + admin)
@@ -450,6 +541,21 @@ export function registerAdminRoutes(app: Express) {
     try {
       const { data, error } = await supabase
         .from('admin_itineraries')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      res.json(data || []);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get all destinations (hardcoded + admin)
+  app.get("/api/public/destinations", async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_destinations')
         .select('*')
         .order('created_at', { ascending: false });
 
