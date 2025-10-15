@@ -29,7 +29,7 @@ export function ImageUpload({ value, onChange, multiple = false, folder = 'uploa
         throw new Error('Failed to get upload signature');
       }
 
-      const { signature, timestamp, cloudName, apiKey } = await signatureResponse.json();
+      const { signature, timestamp, cloudName, apiKey, uploadPreset } = await signatureResponse.json();
 
       // Create form data for upload
       const formData = new FormData();
@@ -38,7 +38,7 @@ export function ImageUpload({ value, onChange, multiple = false, folder = 'uploa
       formData.append('timestamp', timestamp.toString());
       formData.append('signature', signature);
       formData.append('folder', folder);
-      formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default');
+      formData.append('upload_preset', uploadPreset);
 
       // Upload to Cloudinary
       const uploadResponse = await fetch(
@@ -50,7 +50,9 @@ export function ImageUpload({ value, onChange, multiple = false, folder = 'uploa
       );
 
       if (!uploadResponse.ok) {
-        throw new Error('Upload failed');
+        const errorData = await uploadResponse.json();
+        console.error('Cloudinary upload error:', errorData);
+        throw new Error(errorData.error?.message || 'Upload failed');
       }
 
       const data = await uploadResponse.json();
