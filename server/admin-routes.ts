@@ -1,11 +1,17 @@
 import type { Express, Request, Response } from "express";
-import { supabase } from "./supabase";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 import { 
   insertAdminBlogSchema,
   insertAdminVolunteerProgramSchema,
   insertAdminAccommodationSchema,
   insertAdminItinerarySchema,
-  insertAdminDestinationSchema
+  insertAdminDestinationSchema,
+  adminBlogs,
+  adminVolunteerPrograms,
+  adminAccommodations,
+  adminItineraries,
+  adminDestinations
 } from "@shared/schema";
 
 // Simple admin check middleware
@@ -41,19 +47,8 @@ export function registerAdminRoutes(app: Express) {
   // Get all admin blogs
   app.get("/api/admin/blogs", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_blogs')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        // If table doesn't exist, return empty array
-        if (error.message.includes('does not exist') || error.message.includes('relation')) {
-          return res.json([]);
-        }
-        throw error;
-      }
-      res.json(data || []);
+      const blogs = await db.select().from(adminBlogs).orderBy(desc(adminBlogs.createdAt));
+      res.json(blogs);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -62,88 +57,58 @@ export function registerAdminRoutes(app: Express) {
   // Get single admin blog
   app.get("/api/admin/blogs/:id", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_blogs')
-        .select('*')
-        .eq('id', req.params.id)
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const blog = await db.select().from(adminBlogs).where(eq(adminBlogs.id, req.params.id)).limit(1);
+      if (blog.length === 0) {
+        return res.status(404).json({ error: 'Blog not found' });
+      }
+      res.json(blog[0]);
     } catch (error: any) {
       res.status(404).json({ error: 'Blog not found' });
     }
   });
 
-  // Create blog
+  // Create admin blog
   app.post("/api/admin/blogs", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminBlogSchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_blogs')
-        .insert([validated])
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminBlogSchema.parse(req.body);
+      const [blog] = await db.insert(adminBlogs).values(validatedData).returning();
+      res.json(blog);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Update blog
+  // Update admin blog
   app.put("/api/admin/blogs/:id", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminBlogSchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_blogs')
-        .update(validated)
-        .eq('id', req.params.id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminBlogSchema.partial().parse(req.body);
+      const [blog] = await db.update(adminBlogs).set(validatedData).where(eq(adminBlogs.id, req.params.id)).returning();
+      if (!blog) {
+        return res.status(404).json({ error: 'Blog not found' });
+      }
+      res.json(blog);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Delete blog
+  // Delete admin blog
   app.delete("/api/admin/blogs/:id", isAdmin, async (req, res) => {
     try {
-      const { error } = await supabase
-        .from('admin_blogs')
-        .delete()
-        .eq('id', req.params.id);
-
-      if (error) throw error;
+      await db.delete(adminBlogs).where(eq(adminBlogs.id, req.params.id));
       res.json({ success: true });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
   });
 
-  // ===== VOLUNTEER PROGRAM ROUTES =====
+  // ===== VOLUNTEER PROGRAMS ROUTES =====
   
   // Get all admin volunteer programs
   app.get("/api/admin/volunteer-programs", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_volunteer_programs')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        if (error.message.includes('does not exist') || error.message.includes('relation')) {
-          return res.json([]);
-        }
-        throw error;
-      }
-      res.json(data || []);
+      const programs = await db.select().from(adminVolunteerPrograms).orderBy(desc(adminVolunteerPrograms.createdAt));
+      res.json(programs);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -152,88 +117,58 @@ export function registerAdminRoutes(app: Express) {
   // Get single admin volunteer program
   app.get("/api/admin/volunteer-programs/:id", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_volunteer_programs')
-        .select('*')
-        .eq('id', req.params.id)
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const program = await db.select().from(adminVolunteerPrograms).where(eq(adminVolunteerPrograms.id, req.params.id)).limit(1);
+      if (program.length === 0) {
+        return res.status(404).json({ error: 'Volunteer program not found' });
+      }
+      res.json(program[0]);
     } catch (error: any) {
       res.status(404).json({ error: 'Volunteer program not found' });
     }
   });
 
-  // Create volunteer program
+  // Create admin volunteer program
   app.post("/api/admin/volunteer-programs", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminVolunteerProgramSchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_volunteer_programs')
-        .insert([validated])
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminVolunteerProgramSchema.parse(req.body);
+      const [program] = await db.insert(adminVolunteerPrograms).values(validatedData).returning();
+      res.json(program);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Update volunteer program
+  // Update admin volunteer program
   app.put("/api/admin/volunteer-programs/:id", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminVolunteerProgramSchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_volunteer_programs')
-        .update(validated)
-        .eq('id', req.params.id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminVolunteerProgramSchema.partial().parse(req.body);
+      const [program] = await db.update(adminVolunteerPrograms).set(validatedData).where(eq(adminVolunteerPrograms.id, req.params.id)).returning();
+      if (!program) {
+        return res.status(404).json({ error: 'Volunteer program not found' });
+      }
+      res.json(program);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Delete volunteer program
+  // Delete admin volunteer program
   app.delete("/api/admin/volunteer-programs/:id", isAdmin, async (req, res) => {
     try {
-      const { error } = await supabase
-        .from('admin_volunteer_programs')
-        .delete()
-        .eq('id', req.params.id);
-
-      if (error) throw error;
+      await db.delete(adminVolunteerPrograms).where(eq(adminVolunteerPrograms.id, req.params.id));
       res.json({ success: true });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
   });
 
-  // ===== ACCOMMODATION ROUTES =====
+  // ===== ACCOMMODATIONS ROUTES =====
   
   // Get all admin accommodations
   app.get("/api/admin/accommodations", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_accommodations')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        if (error.message.includes('does not exist') || error.message.includes('relation')) {
-          return res.json([]);
-        }
-        throw error;
-      }
-      res.json(data || []);
+      const accommodations = await db.select().from(adminAccommodations).orderBy(desc(adminAccommodations.createdAt));
+      res.json(accommodations);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -242,88 +177,58 @@ export function registerAdminRoutes(app: Express) {
   // Get single admin accommodation
   app.get("/api/admin/accommodations/:id", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_accommodations')
-        .select('*')
-        .eq('id', req.params.id)
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const accommodation = await db.select().from(adminAccommodations).where(eq(adminAccommodations.id, req.params.id)).limit(1);
+      if (accommodation.length === 0) {
+        return res.status(404).json({ error: 'Accommodation not found' });
+      }
+      res.json(accommodation[0]);
     } catch (error: any) {
       res.status(404).json({ error: 'Accommodation not found' });
     }
   });
 
-  // Create accommodation
+  // Create admin accommodation
   app.post("/api/admin/accommodations", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminAccommodationSchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_accommodations')
-        .insert([validated])
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminAccommodationSchema.parse(req.body);
+      const [accommodation] = await db.insert(adminAccommodations).values(validatedData).returning();
+      res.json(accommodation);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Update accommodation
+  // Update admin accommodation
   app.put("/api/admin/accommodations/:id", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminAccommodationSchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_accommodations')
-        .update(validated)
-        .eq('id', req.params.id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminAccommodationSchema.partial().parse(req.body);
+      const [accommodation] = await db.update(adminAccommodations).set(validatedData).where(eq(adminAccommodations.id, req.params.id)).returning();
+      if (!accommodation) {
+        return res.status(404).json({ error: 'Accommodation not found' });
+      }
+      res.json(accommodation);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Delete accommodation
+  // Delete admin accommodation
   app.delete("/api/admin/accommodations/:id", isAdmin, async (req, res) => {
     try {
-      const { error } = await supabase
-        .from('admin_accommodations')
-        .delete()
-        .eq('id', req.params.id);
-
-      if (error) throw error;
+      await db.delete(adminAccommodations).where(eq(adminAccommodations.id, req.params.id));
       res.json({ success: true });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
   });
 
-  // ===== ITINERARY ROUTES =====
+  // ===== ITINERARIES ROUTES =====
   
   // Get all admin itineraries
   app.get("/api/admin/itineraries", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_itineraries')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        if (error.message.includes('does not exist') || error.message.includes('relation')) {
-          return res.json([]);
-        }
-        throw error;
-      }
-      res.json(data || []);
+      const itineraries = await db.select().from(adminItineraries).orderBy(desc(adminItineraries.createdAt));
+      res.json(itineraries);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -332,88 +237,58 @@ export function registerAdminRoutes(app: Express) {
   // Get single admin itinerary
   app.get("/api/admin/itineraries/:id", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_itineraries')
-        .select('*')
-        .eq('id', req.params.id)
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const itinerary = await db.select().from(adminItineraries).where(eq(adminItineraries.id, req.params.id)).limit(1);
+      if (itinerary.length === 0) {
+        return res.status(404).json({ error: 'Itinerary not found' });
+      }
+      res.json(itinerary[0]);
     } catch (error: any) {
       res.status(404).json({ error: 'Itinerary not found' });
     }
   });
 
-  // Create itinerary
+  // Create admin itinerary
   app.post("/api/admin/itineraries", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminItinerarySchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_itineraries')
-        .insert([validated])
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminItinerarySchema.parse(req.body);
+      const [itinerary] = await db.insert(adminItineraries).values(validatedData).returning();
+      res.json(itinerary);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Update itinerary
+  // Update admin itinerary
   app.put("/api/admin/itineraries/:id", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminItinerarySchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_itineraries')
-        .update(validated)
-        .eq('id', req.params.id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminItinerarySchema.partial().parse(req.body);
+      const [itinerary] = await db.update(adminItineraries).set(validatedData).where(eq(adminItineraries.id, req.params.id)).returning();
+      if (!itinerary) {
+        return res.status(404).json({ error: 'Itinerary not found' });
+      }
+      res.json(itinerary);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Delete itinerary
+  // Delete admin itinerary
   app.delete("/api/admin/itineraries/:id", isAdmin, async (req, res) => {
     try {
-      const { error } = await supabase
-        .from('admin_itineraries')
-        .delete()
-        .eq('id', req.params.id);
-
-      if (error) throw error;
+      await db.delete(adminItineraries).where(eq(adminItineraries.id, req.params.id));
       res.json({ success: true });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
   });
 
-  // ===== DESTINATION ROUTES =====
+  // ===== DESTINATIONS ROUTES =====
   
   // Get all admin destinations
   app.get("/api/admin/destinations", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_destinations')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        if (error.message.includes('does not exist') || error.message.includes('relation')) {
-          return res.json([]);
-        }
-        throw error;
-      }
-      res.json(data || []);
+      const destinations = await db.select().from(adminDestinations).orderBy(desc(adminDestinations.createdAt));
+      res.json(destinations);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -422,145 +297,98 @@ export function registerAdminRoutes(app: Express) {
   // Get single admin destination
   app.get("/api/admin/destinations/:id", isAdmin, async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_destinations')
-        .select('*')
-        .eq('id', req.params.id)
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const destination = await db.select().from(adminDestinations).where(eq(adminDestinations.id, req.params.id)).limit(1);
+      if (destination.length === 0) {
+        return res.status(404).json({ error: 'Destination not found' });
+      }
+      res.json(destination[0]);
     } catch (error: any) {
       res.status(404).json({ error: 'Destination not found' });
     }
   });
 
-  // Create destination
+  // Create admin destination
   app.post("/api/admin/destinations", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminDestinationSchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_destinations')
-        .insert([validated])
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminDestinationSchema.parse(req.body);
+      const [destination] = await db.insert(adminDestinations).values(validatedData).returning();
+      res.json(destination);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Update destination
+  // Update admin destination
   app.put("/api/admin/destinations/:id", isAdmin, async (req, res) => {
     try {
-      const validated = insertAdminDestinationSchema.parse(req.body);
-      
-      const { data, error } = await supabase
-        .from('admin_destinations')
-        .update(validated)
-        .eq('id', req.params.id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      res.json(data);
+      const validatedData = insertAdminDestinationSchema.partial().parse(req.body);
+      const [destination] = await db.update(adminDestinations).set(validatedData).where(eq(adminDestinations.id, req.params.id)).returning();
+      if (!destination) {
+        return res.status(404).json({ error: 'Destination not found' });
+      }
+      res.json(destination);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  // Delete destination
+  // Delete admin destination
   app.delete("/api/admin/destinations/:id", isAdmin, async (req, res) => {
     try {
-      const { error } = await supabase
-        .from('admin_destinations')
-        .delete()
-        .eq('id', req.params.id);
-
-      if (error) throw error;
+      await db.delete(adminDestinations).where(eq(adminDestinations.id, req.params.id));
       res.json({ success: true });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
   });
 
-  // ===== PUBLIC ROUTES FOR MERGED CONTENT =====
+  // ===== PUBLIC ROUTES (no auth required) =====
   
-  // Get all blogs (hardcoded + admin)
+  // Get all public blogs
   app.get("/api/public/blogs", async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_blogs')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      
-      // Return admin blogs - hardcoded ones are handled in the frontend
-      res.json(data || []);
+      const blogs = await db.select().from(adminBlogs).orderBy(desc(adminBlogs.createdAt));
+      res.json(blogs);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   });
 
-  // Get all volunteer programs (hardcoded + admin)
+  // Get all public volunteer programs
   app.get("/api/public/volunteer-programs", async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_volunteer_programs')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      res.json(data || []);
+      const programs = await db.select().from(adminVolunteerPrograms).orderBy(desc(adminVolunteerPrograms.createdAt));
+      res.json(programs);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   });
 
-  // Get all accommodations (hardcoded + admin)
+  // Get all public accommodations
   app.get("/api/public/accommodations", async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_accommodations')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      res.json(data || []);
+      const accommodations = await db.select().from(adminAccommodations).orderBy(desc(adminAccommodations.createdAt));
+      res.json(accommodations);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   });
 
-  // Get all itineraries (hardcoded + admin)
+  // Get all public itineraries
   app.get("/api/public/itineraries", async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_itineraries')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      res.json(data || []);
+      const itineraries = await db.select().from(adminItineraries).orderBy(desc(adminItineraries.createdAt));
+      res.json(itineraries);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   });
 
-  // Get all destinations (hardcoded + admin)
+  // Get all public destinations
   app.get("/api/public/destinations", async (req, res) => {
     try {
-      const { data, error } = await supabase
-        .from('admin_destinations')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      res.json(data || []);
+      const destinations = await db.select().from(adminDestinations).orderBy(desc(adminDestinations.createdAt));
+      res.json(destinations);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
