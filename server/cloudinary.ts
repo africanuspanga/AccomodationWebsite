@@ -22,7 +22,8 @@ export function generateUploadSignature(paramsToSign: Record<string, any>) {
     signature,
     timestamp,
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-    apiKey: process.env.CLOUDINARY_API_KEY
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    uploadPreset: paramsToSign.upload_preset || process.env.CLOUDINARY_UPLOAD_PRESET
   };
 }
 
