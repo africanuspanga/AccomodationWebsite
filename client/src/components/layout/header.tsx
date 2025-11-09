@@ -33,7 +33,7 @@ export default function Header() {
               <img src="/logo.png" alt="Accommodation Collection Logo" className="w-12 h-12 object-contain" />
             </div>
             <div>
-              <h1 className="text-xl font-bold font-serif text-primary">Accommodation Collection</h1>
+              <h1 className="text-lg font-bold font-serif text-primary">Accommodation Collection</h1>
               <p className="text-xs text-muted-foreground">Premium Africa Experiences</p>
             </div>
           </Link>

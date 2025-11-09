@@ -17,6 +17,13 @@ import {
 import { useContent } from '@/hooks/use-content';
 import { Link } from 'wouter';
 import elephantHeroImage from '@assets/beautiful-african-elephant_1757883583699.jpg';
+import googleReviewsLogo from '@assets/google-reviews-logo_1762719328160.png';
+import tripadvisorLogo from '@assets/tripadvisor-logo-vector-png-trip-advisor-logo-png-720_1762719328162.webp';
+import getyourguideLogo from '@assets/get-your-guide-old6003.logowik.com-removebg-preview_1762719328159.png';
+import trustpilotLogo from '@assets/Trustpilot4-removebg-preview_1762719328163.png';
+import tanzaniaLogo from '@assets/Tanzania-tourist-board_1762719328161.jpg';
+import aptaLogo from '@assets/association_for_the_promotion_of_tourism_to_africa_small-e1605455307548_1762719328158.jpg';
+import safarigoLogo from '@assets/images-removebg-preview_1762719328161.png';
 
 export default function Home() {
   const { accommodations, destinations } = useContent();
@@ -267,6 +274,64 @@ export default function Home() {
             <CarouselPrevious className="-left-12" />
             <CarouselNext className="-right-12" />
           </Carousel>
+        </div>
+      </section>
+
+      {/* Recommended By Section */}
+      <section className="section-padding bg-muted/30">
+        <div className="container-custom">
+          <div className="text-center mb-12">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Recommended By
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Trusted by leading travel platforms and tourism organizations
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 items-center justify-items-center">
+            <div className="flex items-center justify-center p-4 bg-card rounded-xl hover:shadow-lg transition-shadow">
+              <img src={googleReviewsLogo} alt="Google Reviews" className="h-12 md:h-16 object-contain" />
+            </div>
+            <div className="flex items-center justify-center p-4 bg-card rounded-xl hover:shadow-lg transition-shadow">
+              <img src={tripadvisorLogo} alt="TripAdvisor" className="h-12 md:h-16 object-contain" />
+            </div>
+            <div className="flex items-center justify-center p-4 bg-card rounded-xl hover:shadow-lg transition-shadow">
+              <img src={getyourguideLogo} alt="GetYourGuide" className="h-12 md:h-16 object-contain" />
+            </div>
+            <div className="flex items-center justify-center p-4 bg-card rounded-xl hover:shadow-lg transition-shadow">
+              <img src={trustpilotLogo} alt="Trustpilot" className="h-12 md:h-16 object-contain" />
+            </div>
+            <div className="flex items-center justify-center p-4 bg-card rounded-xl hover:shadow-lg transition-shadow">
+              <img src={tanzaniaLogo} alt="Tanzania Tourist Board" className="h-12 md:h-16 object-contain" />
+            </div>
+            <div className="flex items-center justify-center p-4 bg-card rounded-xl hover:shadow-lg transition-shadow">
+              <img src={aptaLogo} alt="APTA - Association for the Promotion of Tourism to Africa" className="h-12 md:h-16 object-contain" />
+            </div>
+            <div className="flex items-center justify-center p-4 bg-card rounded-xl hover:shadow-lg transition-shadow">
+              <img src={safarigoLogo} alt="Safarigo" className="h-12 md:h-16 object-contain" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action Section */}
+      <section className="section-padding bg-gradient-to-r from-primary to-primary/80">
+        <div className="container-custom">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
+              Let Us Help You Have a Great Trip in Africa and Around the World
+            </h2>
+            <p className="text-xl text-white/90 mb-8 leading-relaxed">
+              Whether you're dreaming of witnessing the Great Migration, climbing Mount Kilimanjaro, or relaxing on pristine beaches, our expert team is ready to craft your perfect adventure.
+            </p>
+            <Link href="/contact">
+              <Button size="lg" className="bg-accent text-primary hover:bg-accent/90 px-10 py-6 text-lg font-bold shadow-xl hover:shadow-2xl transition-all" data-testid="book-tour-button">
+                BOOK TOUR
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
       </div>

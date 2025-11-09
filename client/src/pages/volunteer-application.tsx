@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, Link } from 'wouter';
@@ -18,6 +18,8 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import SEOHead from '@/components/seo/seo-head';
 import { volunteerPrograms } from '@/data/volunteer-programs';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 const volunteerApplicationSchema = z.object({
   programId: z.string(),
@@ -285,11 +287,19 @@ export default function VolunteerApplication() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="telephone">Telephone *</Label>
-                    <Input
-                      id="telephone"
-                      {...form.register('telephone')}
-                      className="bg-background"
-                      data-testid="telephone-input"
+                    <Controller
+                      control={form.control}
+                      name="telephone"
+                      render={({ field }) => (
+                        <PhoneInput
+                          international
+                          defaultCountry="TZ"
+                          value={field.value}
+                          onChange={field.onChange}
+                          className="phone-input-volunteer"
+                          data-testid="telephone-input"
+                        />
+                      )}
                     />
                     {form.formState.errors.telephone && (
                       <p className="text-red-500 text-sm mt-1">{form.formState.errors.telephone.message}</p>
@@ -297,11 +307,19 @@ export default function VolunteerApplication() {
                   </div>
                   <div>
                     <Label htmlFor="mobile">Mobile *</Label>
-                    <Input
-                      id="mobile"
-                      {...form.register('mobile')}
-                      className="bg-background"
-                      data-testid="mobile-input"
+                    <Controller
+                      control={form.control}
+                      name="mobile"
+                      render={({ field }) => (
+                        <PhoneInput
+                          international
+                          defaultCountry="TZ"
+                          value={field.value}
+                          onChange={field.onChange}
+                          className="phone-input-volunteer"
+                          data-testid="mobile-input"
+                        />
+                      )}
                     />
                     {form.formState.errors.mobile && (
                       <p className="text-red-500 text-sm mt-1">{form.formState.errors.mobile.message}</p>
@@ -526,11 +544,19 @@ export default function VolunteerApplication() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="emergencyPhone">Phone *</Label>
-                    <Input
-                      id="emergencyPhone"
-                      {...form.register('emergencyPhone')}
-                      className="bg-background"
-                      data-testid="emergency-phone-input"
+                    <Controller
+                      control={form.control}
+                      name="emergencyPhone"
+                      render={({ field }) => (
+                        <PhoneInput
+                          international
+                          defaultCountry="TZ"
+                          value={field.value}
+                          onChange={field.onChange}
+                          className="phone-input-volunteer"
+                          data-testid="emergency-phone-input"
+                        />
+                      )}
                     />
                     {form.formState.errors.emergencyPhone && (
                       <p className="text-red-500 text-sm mt-1">{form.formState.errors.emergencyPhone.message}</p>

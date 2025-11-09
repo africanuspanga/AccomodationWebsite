@@ -16,6 +16,8 @@ import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import SEOHead from '@/components/seo/seo-head';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 const bookingFormSchema = z.object({
   fullName: z.string().min(2, 'Please enter your full name'),
@@ -246,13 +248,15 @@ export default function BookingForm() {
                       <FormItem>
                         <FormLabel className="flex items-center space-x-2">
                           <Phone className="h-4 w-4" />
-                          <span>Phone Number (with country code)</span>
+                          <span>Phone Number</span>
                         </FormLabel>
                         <FormControl>
-                          <Input 
-                            type="tel" 
-                            placeholder="+255 XXX XXX XXX" 
-                            {...field} 
+                          <PhoneInput
+                            international
+                            defaultCountry="TZ"
+                            value={field.value}
+                            onChange={field.onChange}
+                            className="phone-input-booking"
                             data-testid="input-phone"
                           />
                         </FormControl>

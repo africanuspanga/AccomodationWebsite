@@ -16,10 +16,10 @@ export default function Accommodations() {
   const filteredAccommodations = useMemo(() => {
     return accommodations
       .filter((accommodation) => {
-        if (filters.continental && filters.continental !== 'all' && accommodation.continental !== filters.continental) return false;
-        if (filters.country && filters.country !== 'all' && accommodation.country !== filters.country) return false;
-        if (filters.destination && filters.destination !== 'all' && accommodation.destination !== filters.destination) return false;
-        if (filters.category && filters.category !== 'all' && accommodation.category !== filters.category) return false;
+        if (filters.continental && filters.continental !== 'all' && accommodation.continental?.toLowerCase() !== filters.continental.toLowerCase()) return false;
+        if (filters.country && filters.country !== 'all' && accommodation.country?.toLowerCase() !== filters.country.toLowerCase()) return false;
+        if (filters.destination && filters.destination !== 'all' && !accommodation.destination?.toLowerCase().includes(filters.destination.toLowerCase())) return false;
+        if (filters.category && filters.category !== 'all' && accommodation.category?.toLowerCase().replace(/\s+/g, '-') !== filters.category.toLowerCase()) return false;
         return true;
       })
       .sort((a, b) => {

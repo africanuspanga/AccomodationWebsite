@@ -65,7 +65,7 @@ export default function About() {
       <div className="pt-32 pb-20">
       <div className="container-custom max-w-4xl">
         <div className="text-center mb-16">
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
+          <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
             Your Journey, Our Passion
           </h1>
           <div className="w-24 h-1 bg-accent mx-auto mb-6"></div>

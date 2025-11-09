@@ -46,8 +46,8 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-                <Mountain className="h-5 w-5 text-primary" />
+              <div className="w-16 h-16 flex items-center justify-center">
+                <img src="/favicon.png" alt="Accommodation Collection Logo" className="w-16 h-16 object-contain" />
               </div>
               <div>
                 <h3 className="text-lg font-bold font-serif">Accommodation Collection</h3>
@@ -165,7 +165,7 @@ export default function Footer() {
 
         <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-primary-foreground/80">
+            <p className="text-primary-foreground/80 text-sm md:text-base">
               &copy; 2025 Accommodation Collection. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
