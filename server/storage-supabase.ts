@@ -11,6 +11,27 @@ import {
   type ItineraryDetail, type InsertItineraryDetail,
   type AccommodationDetail, type InsertAccommodationDetail,
 } from "@shared/schema-supabase";
+import {
+  mapAccommodationFromDB,
+  mapAccommodationToDB,
+  mapDestinationFromDB,
+  mapDestinationToDB,
+  mapItineraryFromDB,
+  mapItineraryToDB,
+  mapInquiryFromDB,
+  mapInquiryToDB,
+  mapBookingFromDB,
+  mapBookingToDB,
+  mapVolunteerApplicationFromDB,
+  mapVolunteerApplicationToDB,
+  mapDestinationDetailFromDB,
+  mapDestinationDetailToDB,
+  mapItineraryDetailFromDB,
+  mapItineraryDetailToDB,
+  mapAccommodationDetailFromDB,
+  mapAccommodationDetailToDB,
+  mapArrayFromDB,
+} from './db-mappings';
 import session from "express-session";
 import createMemoryStore from "memorystore";
 
@@ -129,7 +150,7 @@ export class SupabaseStorage implements IStorage {
       .select('*');
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapAccommodationFromDB);
   }
 
   async getAccommodation(id: string): Promise<Accommodation | undefined> {
@@ -143,24 +164,26 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAccommodationFromDB(data) : undefined;
   }
 
   async createAccommodation(accommodation: InsertAccommodation): Promise<Accommodation> {
+    const dbData = mapAccommodationToDB(accommodation);
     const { data, error } = await supabase
       .from(TABLES.ACCOMMODATIONS)
-      .insert(accommodation)
+      .insert(dbData)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapAccommodationFromDB(data!);
   }
 
   async updateAccommodation(id: string, accommodation: Partial<InsertAccommodation>): Promise<Accommodation | undefined> {
+    const dbData = mapAccommodationToDB(accommodation);
     const { data, error } = await supabase
       .from(TABLES.ACCOMMODATIONS)
-      .update(accommodation)
+      .update(dbData)
       .eq('id', id)
       .select()
       .single();
@@ -169,7 +192,7 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAccommodationFromDB(data) : undefined;
   }
 
   async deleteAccommodation(id: string): Promise<boolean> {
@@ -190,14 +213,14 @@ export class SupabaseStorage implements IStorage {
     const { data, error } = await supabase
       .from(TABLES.ACCOMMODATION_DETAILS)
       .select('*')
-      .eq('accommodationId', accommodationId)
+      .eq('accommodation_id', accommodationId)
       .single();
     
     if (error) {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAccommodationDetailFromDB(data) : undefined;
   }
 
   // Destination operations
@@ -207,7 +230,7 @@ export class SupabaseStorage implements IStorage {
       .select('*');
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapDestinationFromDB);
   }
 
   async getDestination(id: string): Promise<Destination | undefined> {
@@ -221,24 +244,26 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapDestinationFromDB(data) : undefined;
   }
 
   async createDestination(destination: InsertDestination): Promise<Destination> {
+    const dbData = mapDestinationToDB(destination);
     const { data, error } = await supabase
       .from(TABLES.DESTINATIONS)
-      .insert(destination)
+      .insert(dbData)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapDestinationFromDB(data!);
   }
 
   async updateDestination(id: string, destination: Partial<InsertDestination>): Promise<Destination | undefined> {
+    const dbData = mapDestinationToDB(destination);
     const { data, error } = await supabase
       .from(TABLES.DESTINATIONS)
-      .update(destination)
+      .update(dbData)
       .eq('id', id)
       .select()
       .single();
@@ -247,7 +272,7 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapDestinationFromDB(data) : undefined;
   }
 
   async deleteDestination(id: string): Promise<boolean> {
@@ -268,14 +293,14 @@ export class SupabaseStorage implements IStorage {
     const { data, error } = await supabase
       .from(TABLES.DESTINATION_DETAILS)
       .select('*')
-      .eq('destinationId', destinationId)
+      .eq('destination_id', destinationId)
       .single();
     
     if (error) {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapDestinationDetailFromDB(data) : undefined;
   }
 
   // Itinerary operations
@@ -285,7 +310,7 @@ export class SupabaseStorage implements IStorage {
       .select('*');
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapItineraryFromDB);
   }
 
   async getItinerary(id: string): Promise<Itinerary | undefined> {
@@ -299,24 +324,26 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapItineraryFromDB(data) : undefined;
   }
 
   async createItinerary(itinerary: InsertItinerary): Promise<Itinerary> {
+    const dbData = mapItineraryToDB(itinerary);
     const { data, error } = await supabase
       .from(TABLES.ITINERARIES)
-      .insert(itinerary)
+      .insert(dbData)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapItineraryFromDB(data!);
   }
 
   async updateItinerary(id: string, itinerary: Partial<InsertItinerary>): Promise<Itinerary | undefined> {
+    const dbData = mapItineraryToDB(itinerary);
     const { data, error } = await supabase
       .from(TABLES.ITINERARIES)
-      .update(itinerary)
+      .update(dbData)
       .eq('id', id)
       .select()
       .single();
@@ -325,7 +352,7 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapItineraryFromDB(data) : undefined;
   }
 
   async deleteItinerary(id: string): Promise<boolean> {
@@ -346,26 +373,27 @@ export class SupabaseStorage implements IStorage {
     const { data, error } = await supabase
       .from(TABLES.ITINERARY_DETAILS)
       .select('*')
-      .eq('itineraryId', itineraryId)
+      .eq('itinerary_id', itineraryId)
       .single();
     
     if (error) {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapItineraryDetailFromDB(data) : undefined;
   }
 
   // Inquiry operations
   async createInquiry(inquiry: InsertInquiry): Promise<Inquiry> {
+    const dbData = mapInquiryToDB(inquiry);
     const { data, error } = await supabase
       .from(TABLES.INQUIRIES)
-      .insert(inquiry)
+      .insert(dbData)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapInquiryFromDB(data!);
   }
 
   async getAllInquiries(): Promise<Inquiry[]> {
@@ -374,7 +402,7 @@ export class SupabaseStorage implements IStorage {
       .select('*');
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapInquiryFromDB);
   }
 
   async getInquiry(id: string): Promise<Inquiry | undefined> {
@@ -388,19 +416,20 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapInquiryFromDB(data) : undefined;
   }
 
   // Volunteer Application operations
   async createVolunteerApplication(application: InsertVolunteerApplication): Promise<VolunteerApplication> {
+    const dbData = mapVolunteerApplicationToDB(application);
     const { data, error } = await supabase
       .from(TABLES.VOLUNTEER_APPLICATIONS)
-      .insert(application)
+      .insert(dbData)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapVolunteerApplicationFromDB(data!);
   }
 
   async getAllVolunteerApplications(): Promise<VolunteerApplication[]> {
@@ -409,7 +438,7 @@ export class SupabaseStorage implements IStorage {
       .select('*');
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapVolunteerApplicationFromDB);
   }
 
   async getVolunteerApplication(id: string): Promise<VolunteerApplication | undefined> {
@@ -423,29 +452,30 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapVolunteerApplicationFromDB(data) : undefined;
   }
 
   async getVolunteerApplicationsByProgram(programId: string): Promise<VolunteerApplication[]> {
     const { data, error } = await supabase
       .from(TABLES.VOLUNTEER_APPLICATIONS)
       .select('*')
-      .eq('programId', programId);
+      .eq('program_id', programId);
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapVolunteerApplicationFromDB);
   }
 
   // Booking operations
   async createBooking(booking: InsertBooking): Promise<Booking> {
+    const dbData = mapBookingToDB(booking);
     const { data, error } = await supabase
       .from(TABLES.BOOKINGS)
-      .insert(booking)
+      .insert(dbData)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapBookingFromDB(data!);
   }
 
   async getAllBookings(): Promise<Booking[]> {
@@ -454,7 +484,7 @@ export class SupabaseStorage implements IStorage {
       .select('*');
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapBookingFromDB);
   }
 
   async getBooking(id: string): Promise<Booking | undefined> {
@@ -468,7 +498,7 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapBookingFromDB(data) : undefined;
   }
 }
 

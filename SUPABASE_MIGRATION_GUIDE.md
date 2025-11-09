@@ -145,56 +145,45 @@ npm install
 
 ---
 
-## Step 5: Seed the Database (Optional)
+## Step 5: Seed the Database (Recommended)
 
-You have two options to populate your database with initial data:
+To populate your database with initial content (10 accommodations, 16 destinations, 12 itineraries):
 
-### Option A: Programmatic Seeding (Recommended)
-Run the existing seed script, but it needs slight modification:
+### Run the Seed SQL Script
 
-1. The seed script `server/seed.ts` currently uses Drizzle
-2. You can either:
-   - Modify it to use Supabase (replace `db` imports with `supabase` from `./db`)
-   - Or manually insert data using Supabase SQL Editor (see Option B)
+1. **Open Supabase SQL Editor**
+   - Go to your Supabase project dashboard
+   - Click "SQL Editor" in the left sidebar
+   - Click "New query"
 
-### Option B: Manual SQL Inserts
-Since your seed data is quite extensive (10+ accommodations, 16+ destinations, 12+ itineraries), you can insert a few sample records manually:
+2. **Run the Seed Script**
+   - Open the file `SUPABASE_SEED.sql` in this project
+   - Copy ALL the content
+   - Paste it into the Supabase SQL Editor
+   - Click "Run" button
 
-**Sample Accommodation Insert:**
-```sql
-INSERT INTO accommodations (id, name, continental, country, destination, category, description, price, rating, features, image_url)
-VALUES (
-  gen_random_uuid()::text,
-  'Four Seasons Safari Lodge Serengeti',
-  'africa',
-  'tanzania',
-  'serengeti',
-  'Luxury Lodge',
-  'Experience unparalleled luxury in the heart of Serengeti...',
-  1200,
-  5,
-  ARRAY['Infinity Pool', 'Spa', 'Fine Dining', 'Game Drives'],
-  '/attached_assets/four-seasons-serengeti-night_1757883337619.jpg'
-);
-```
+3. **Verify Data Was Inserted**
+   You should see output showing:
+   ```
+   Accommodations: 10
+   Destinations: 16
+   Itineraries: 12
+   ```
 
-**Sample Destination Insert:**
-```sql
-INSERT INTO destinations (id, name, continental, country, region, description, highlights, best_time, image_url)
-VALUES (
-  gen_random_uuid()::text,
-  'Serengeti National Park',
-  'africa',
-  'tanzania',
-  'northern-circuit',
-  'Witness the greatest wildlife spectacle on Earth...',
-  ARRAY['Great Migration', 'Big Five', 'Endless Plains', 'Predator Action'],
-  'Year-round, with Great Migration from June to October',
-  '/attached_assets/Serengeti_1757885374577.png'
-);
-```
+4. **Check in Table Editor (Optional)**
+   - Go to "Table Editor" in Supabase
+   - Select `accommodations`, `destinations`, or `itineraries` table
+   - You should see all the records with proper data
 
-**Note:** You can repeat these patterns for other records, or skip seeding if you plan to create content through the admin interface.
+**What Gets Loaded:**
+- ✅ 10 luxury accommodations (Four Seasons, Singita, Park Hyatt, etc.)
+- ✅ 16 destinations (Serengeti, Zanzibar, Kilimanjaro, Kenya, Rwanda, Uganda, etc.)
+- ✅ 12 safari and trekking itineraries
+- ✅ All with proper images from `/attached_assets/`
+- ✅ All with correct prices, ratings, and features
+
+**Alternative: Skip Seeding**
+You can skip this step and create content later through the admin interface. However, running the seed script gives you a fully populated site immediately.
 
 ---
 

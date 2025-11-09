@@ -214,6 +214,164 @@ export function mapBookingToDB(obj: any): Record<string, any> {
   };
 }
 
+export function mapVolunteerApplicationFromDB(row: any): VolunteerApplication {
+  return {
+    id: row.id,
+    programId: row.program_id,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    dateOfBirth: row.date_of_birth,
+    gender: row.gender,
+    fullAddress: row.full_address,
+    country: row.country,
+    telephone: row.telephone,
+    mobile: row.mobile,
+    email: row.email,
+    nationality: row.nationality,
+    passportNumber: row.passport_number,
+    educationProfession: row.education_profession,
+    language: row.language,
+    workingExperience: row.working_experience,
+    howFoundUs: row.how_found_us,
+    expectedArrivalDate: row.expected_arrival_date,
+    volunteerDuration: row.volunteer_duration,
+    dietaryRestrictions: row.dietary_restrictions,
+    dietaryDetails: row.dietary_details,
+    excursions: row.excursions,
+    emergencyContactName: row.emergency_contact_name,
+    emergencyRelation: row.emergency_relation,
+    emergencyPhone: row.emergency_phone,
+    emergencyEmail: row.emergency_email,
+    createdAt: row.created_at,
+  };
+}
+
+export function mapVolunteerApplicationToDB(obj: any): Record<string, any> {
+  return {
+    id: obj.id,
+    program_id: obj.programId,
+    first_name: obj.firstName,
+    last_name: obj.lastName,
+    date_of_birth: obj.dateOfBirth,
+    gender: obj.gender,
+    full_address: obj.fullAddress,
+    country: obj.country,
+    telephone: obj.telephone,
+    mobile: obj.mobile,
+    email: obj.email,
+    nationality: obj.nationality,
+    passport_number: obj.passportNumber,
+    education_profession: obj.educationProfession,
+    language: obj.language,
+    working_experience: obj.workingExperience,
+    how_found_us: obj.howFoundUs,
+    expected_arrival_date: obj.expectedArrivalDate,
+    volunteer_duration: obj.volunteerDuration,
+    dietary_restrictions: obj.dietaryRestrictions,
+    dietary_details: obj.dietaryDetails,
+    excursions: obj.excursions,
+    emergency_contact_name: obj.emergencyContactName,
+    emergency_relation: obj.emergencyRelation,
+    emergency_phone: obj.emergencyPhone,
+    emergency_email: obj.emergencyEmail,
+    created_at: obj.createdAt,
+  };
+}
+
+export function mapDestinationDetailFromDB(row: any): DestinationDetail {
+  return {
+    id: row.id,
+    destinationId: row.destination_id,
+    detailedDescription: row.detailed_description,
+    overview: row.overview,
+    wildlife: row.wildlife,
+    activities: row.activities,
+    bestTimeToVisit: row.best_time_to_visit,
+    gettingThere: row.getting_there,
+    accommodation: row.accommodation,
+    practicalInfo: row.practical_info,
+    imageUrl: row.image_url,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+export function mapDestinationDetailToDB(obj: any): Record<string, any> {
+  return {
+    id: obj.id,
+    destination_id: obj.destinationId,
+    detailed_description: obj.detailedDescription,
+    overview: obj.overview,
+    wildlife: obj.wildlife,
+    activities: obj.activities,
+    best_time_to_visit: obj.bestTimeToVisit,
+    getting_there: obj.gettingThere,
+    accommodation: obj.accommodation,
+    practical_info: obj.practicalInfo,
+    image_url: obj.imageUrl,
+    created_at: obj.createdAt,
+    updated_at: obj.updatedAt,
+  };
+}
+
+export function mapItineraryDetailFromDB(row: any): ItineraryDetail {
+  return {
+    id: row.id,
+    itineraryId: row.itinerary_id,
+    whatsIncluded: row.whats_included,
+    whatsNotIncluded: row.whats_not_included,
+    whatToBring: row.what_to_bring,
+    itineraryOverview: row.itinerary_overview,
+    dayByDay: row.day_by_day,
+    pricingData: row.pricing_data,
+    mapImageUrl: row.map_image_url,
+    tourHighlights: row.tour_highlights,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+export function mapItineraryDetailToDB(obj: any): Record<string, any> {
+  return {
+    id: obj.id,
+    itinerary_id: obj.itineraryId,
+    whats_included: obj.whatsIncluded,
+    whats_not_included: obj.whatsNotIncluded,
+    what_to_bring: obj.whatToBring,
+    itinerary_overview: obj.itineraryOverview,
+    day_by_day: obj.dayByDay,
+    pricing_data: obj.pricingData,
+    map_image_url: obj.mapImageUrl,
+    tour_highlights: obj.tourHighlights,
+    created_at: obj.createdAt,
+    updated_at: obj.updatedAt,
+  };
+}
+
+export function mapAccommodationDetailFromDB(row: any): AccommodationDetail {
+  return {
+    id: row.id,
+    accommodationId: row.accommodation_id,
+    facilities: row.facilities,
+    rooms: row.rooms,
+    galleryImages: row.gallery_images,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+export function mapAccommodationDetailToDB(obj: any): Record<string, any> {
+  return {
+    id: obj.id,
+    accommodation_id: obj.accommodationId,
+    facilities: obj.facilities,
+    rooms: obj.rooms,
+    gallery_images: obj.galleryImages,
+    created_at: obj.createdAt,
+    updated_at: obj.updatedAt,
+  };
+}
+
 // Helper to automatically map arrays
 export function mapArrayFromDB<T>(rows: any[], mapper: (row: any) => T): T[] {
   return rows ? rows.map(mapper) : [];
