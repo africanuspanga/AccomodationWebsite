@@ -1,10 +1,11 @@
 import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
-import { Redirect, useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
+import { Redirect } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, MapPin, Hotel, Receipt, MessageSquare, Calendar, DollarSign, User } from "lucide-react";
+import { MapPin, Hotel, Receipt, MessageSquare, Calendar, DollarSign, User } from "lucide-react";
 import SEOHead from '@/components/seo/seo-head';
+import Header from '@/components/layout/header';
+import Footer from '@/components/layout/footer';
 import {
   Table,
   TableBody,
@@ -116,8 +117,7 @@ const mockMessages = [
 ];
 
 export default function UserDashboard() {
-  const { user, signOut, isLoading } = useSupabaseAuth();
-  const [, setLocation] = useLocation();
+  const { user, isLoading } = useSupabaseAuth();
 
   if (isLoading) {
     return (
@@ -131,11 +131,6 @@ export default function UserDashboard() {
     return <Redirect to="/auth" />;
   }
 
-  const handleLogout = async () => {
-    await signOut();
-    setLocation('/');
-  };
-
   return (
     <>
       <SEOHead 
@@ -145,24 +140,20 @@ export default function UserDashboard() {
         noIndex={true}
       />
       
-      <div className="min-h-screen bg-muted/30">
-        {/* Header */}
+      <Header />
+      
+      <div className="min-h-screen bg-muted/30 pt-20">
+        {/* Dashboard Header */}
         <div className="border-b bg-background">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-4">
-                <div className="bg-primary/10 p-2 rounded-full">
-                  <User className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-serif font-bold">My Dashboard</h1>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
-                </div>
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex items-center gap-4">
+              <div className="bg-primary/10 p-3 rounded-full">
+                <User className="h-8 w-8 text-primary" />
               </div>
-              <Button variant="outline" onClick={handleLogout} data-testid="button-logout">
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
-              </Button>
+              <div>
+                <h1 className="text-3xl font-serif font-bold">My Dashboard</h1>
+                <p className="text-sm text-muted-foreground">{user.email}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -352,6 +343,8 @@ export default function UserDashboard() {
           </Tabs>
         </div>
       </div>
+      
+      <Footer />
     </>
   );
 }

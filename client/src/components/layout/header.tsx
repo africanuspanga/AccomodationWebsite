@@ -67,6 +67,12 @@ export default function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="flex items-center space-x-2 cursor-pointer" data-testid="profile-link">
+                      <User className="h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem 
                     onClick={() => signOut()}
                     className="flex items-center space-x-2 cursor-pointer"
@@ -119,6 +125,17 @@ export default function Header() {
                         <User className="h-4 w-4" />
                         <span>Signed in as {user.email}</span>
                       </div>
+                      <Link href="/dashboard">
+                        <Button 
+                          onClick={() => setIsOpen(false)}
+                          variant="outline"
+                          className="w-full flex items-center space-x-2"
+                          data-testid="mobile-profile-button"
+                        >
+                          <User className="h-4 w-4" />
+                          <span>My Profile</span>
+                        </Button>
+                      </Link>
                       <Button 
                         onClick={() => {
                           signOut();
