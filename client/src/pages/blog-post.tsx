@@ -9,6 +9,39 @@ export default function BlogPost() {
   
   // Find the blog post by ID
   const post = blogPosts.find(p => p.id === id);
+  
+  // Get circular recommendations - next 2 posts after current one, excluding current post
+  const getCircularRecommendations = () => {
+    const currentIndex = blogPosts.findIndex(p => p.id === id);
+    if (currentIndex === -1) return [];
+    
+    const recommendations = [];
+    const totalPosts = blogPosts.length;
+    
+    // Need at least 2 other posts to show recommendations
+    if (totalPosts < 2) return [];
+    
+    // Get next 2 distinct posts in circular fashion, excluding current post
+    let positionsChecked = 0;
+    let nextOffset = 1;
+    
+    while (recommendations.length < 2 && positionsChecked < totalPosts) {
+      const nextIndex = (currentIndex + nextOffset) % totalPosts;
+      const nextPost = blogPosts[nextIndex];
+      
+      // Only add if it's not the current post
+      if (nextPost.id !== id) {
+        recommendations.push(nextPost);
+      }
+      
+      nextOffset++;
+      positionsChecked++;
+    }
+    
+    return recommendations;
+  };
+  
+  const recommendedPosts = getCircularRecommendations();
 
   // If post not found, show 404
   if (!post) {
@@ -167,10 +200,7 @@ export default function BlogPost() {
               More Travel Stories
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
-              {blogPosts
-                .filter(p => p.id !== post.id)
-                .slice(0, 2)
-                .map((relatedPost) => (
+              {recommendedPosts.map((relatedPost) => (
                   <Link 
                     key={relatedPost.id} 
                     href={`/blog/${relatedPost.id}`}

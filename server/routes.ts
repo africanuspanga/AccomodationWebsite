@@ -377,10 +377,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         lomax: '45'      // Eastern boundary (Indian Ocean coast)
       });
 
-      const response = await fetch(`https://opensky-network.org/api/states/all?${params}`);
+      // Add timeout handling for production environments
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+      const response = await fetch(`https://opensky-network.org/api/states/all?${params}`, {
+        headers: {
+          'User-Agent': 'AccommodationCollection/1.0 (https://accommodations.guide)',
+          'Accept': 'application/json',
+        },
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
-        throw new Error(`OpenSky API error: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`OpenSky API error: ${response.status} - ${errorText}`);
+        throw new Error(`OpenSky API returned ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -409,12 +423,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })) || []
       };
 
+      console.log(`Successfully fetched ${transformedResponse.states.length} flights`);
       res.json(transformedResponse);
     } catch (error) {
       console.error("Error fetching flight data:", error);
+      
+      // Provide detailed error information for debugging
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const isTimeout = errorMessage.includes('aborted') || errorMessage.includes('timeout');
+      
       res.status(500).json({ 
         error: "Failed to fetch flight data",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: errorMessage,
+        details: isTimeout 
+          ? "The OpenSky Network API request timed out. This may be due to high traffic or network issues. Please try again in a moment."
+          : "Unable to connect to the OpenSky Network API. The service may be temporarily unavailable.",
+        timestamp: new Date().toISOString()
       });
     }
   });
