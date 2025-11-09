@@ -334,6 +334,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Visual Separator - Gradient transition from CTA to page background */}
+      <div className="h-24 bg-gradient-to-b from-primary via-background/50 to-background"></div>
       </div>
     </>
   );
