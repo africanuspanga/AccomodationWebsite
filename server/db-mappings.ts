@@ -376,3 +376,190 @@ export function mapAccommodationDetailToDB(obj: any): Record<string, any> {
 export function mapArrayFromDB<T>(rows: any[], mapper: (row: any) => T): T[] {
   return rows ? rows.map(mapper) : [];
 }
+
+// ============================================================================
+// ADMIN TABLE MAPPINGS
+// ============================================================================
+
+export function mapAdminBlogFromDB(row: any): AdminBlog {
+  return {
+    id: row.id,
+    title: row.title,
+    excerpt: row.excerpt || null,
+    content: row.content,
+    author: row.author,
+    category: row.category,
+    imageUrl: row.image_url || null,
+    createdAt: row.created_at,
+  };
+}
+
+export function mapAdminBlogToDB(obj: any): Record<string, any> {
+  const mapped: Record<string, any> = {
+    title: obj.title,
+    content: obj.content,
+    author: obj.author,
+    category: obj.category,
+  };
+  
+  if (obj.id !== undefined) mapped.id = obj.id;
+  if (obj.excerpt !== undefined) mapped.excerpt = obj.excerpt;
+  if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
+  if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
+  
+  return mapped;
+}
+
+export function mapAdminDestinationFromDB(row: any): AdminDestination {
+  return {
+    id: row.id,
+    name: row.name,
+    continental: row.continental,
+    country: row.country,
+    region: row.region || null,
+    destinationType: row.destination_type,
+    description: row.description,
+    highlights: row.highlights || [],
+    bestTime: row.best_time || null,
+    imageUrl: row.image_url || null,
+    galleryImages: row.gallery_images || [],
+    subDestinations: row.sub_destinations || [],
+    createdAt: row.created_at,
+  };
+}
+
+export function mapAdminDestinationToDB(obj: any): Record<string, any> {
+  const mapped: Record<string, any> = {
+    name: obj.name,
+    continental: obj.continental,
+    country: obj.country,
+    destination_type: obj.destinationType,
+    description: obj.description,
+  };
+  
+  if (obj.id !== undefined) mapped.id = obj.id;
+  if (obj.region !== undefined) mapped.region = obj.region;
+  if (obj.highlights !== undefined) mapped.highlights = obj.highlights;
+  if (obj.bestTime !== undefined) mapped.best_time = obj.bestTime;
+  if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
+  if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
+  if (obj.subDestinations !== undefined) mapped.sub_destinations = obj.subDestinations;
+  if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
+  
+  return mapped;
+}
+
+export function mapAdminAccommodationFromDB(row: any): AdminAccommodation {
+  return {
+    id: row.id,
+    name: row.name,
+    continental: row.continental,
+    country: row.country,
+    destination: row.destination,
+    category: row.category,
+    description: row.description || null,
+    price: row.price,
+    rating: row.rating,
+    features: row.features || [],
+    imageUrl: row.image_url || null,
+    galleryImages: row.gallery_images || [],
+    createdAt: row.created_at,
+  };
+}
+
+export function mapAdminAccommodationToDB(obj: any): Record<string, any> {
+  const mapped: Record<string, any> = {
+    name: obj.name,
+    continental: obj.continental,
+    country: obj.country,
+    destination: obj.destination,
+    category: obj.category,
+    price: obj.price,
+    rating: obj.rating,
+  };
+  
+  if (obj.id !== undefined) mapped.id = obj.id;
+  if (obj.description !== undefined) mapped.description = obj.description;
+  if (obj.features !== undefined) mapped.features = obj.features;
+  if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
+  if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
+  if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
+  
+  return mapped;
+}
+
+export function mapAdminItineraryFromDB(row: any): AdminItinerary {
+  return {
+    id: row.id,
+    name: row.name,
+    duration: row.duration,
+    price: row.price,
+    category: row.category,
+    description: row.description || null,
+    highlights: row.highlights || [],
+    includes: row.includes || [],
+    difficulty: row.difficulty || null,
+    groupSize: row.group_size || null,
+    imageUrl: row.image_url || null,
+    galleryImages: row.gallery_images || [],
+    createdAt: row.created_at,
+  };
+}
+
+export function mapAdminItineraryToDB(obj: any): Record<string, any> {
+  const mapped: Record<string, any> = {
+    name: obj.name,
+    duration: obj.duration,
+    price: obj.price,
+    category: obj.category,
+  };
+  
+  if (obj.id !== undefined) mapped.id = obj.id;
+  if (obj.description !== undefined) mapped.description = obj.description;
+  if (obj.highlights !== undefined) mapped.highlights = obj.highlights;
+  if (obj.includes !== undefined) mapped.includes = obj.includes;
+  if (obj.difficulty !== undefined) mapped.difficulty = obj.difficulty;
+  if (obj.groupSize !== undefined) mapped.group_size = obj.groupSize;
+  if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
+  if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
+  if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
+  
+  return mapped;
+}
+
+export function mapAdminVolunteerProgramFromDB(row: any): AdminVolunteerProgram {
+  return {
+    id: row.id,
+    name: row.name,
+    location: row.location,
+    duration: row.duration,
+    price: row.price,
+    category: row.category,
+    description: row.description || null,
+    focusAreas: row.focus_areas || [],
+    highlights: row.highlights || [],
+    activities: row.activities ? JSON.parse(row.activities) : { safari: false, hiking: false, mountainClimbing: false, culturalTours: false },
+    imageUrl: row.image_url || null,
+    createdAt: row.created_at,
+  };
+}
+
+export function mapAdminVolunteerProgramToDB(obj: any): Record<string, any> {
+  const mapped: Record<string, any> = {
+    name: obj.name,
+    location: obj.location,
+    duration: obj.duration,
+    price: obj.price,
+    category: obj.category,
+  };
+  
+  if (obj.id !== undefined) mapped.id = obj.id;
+  if (obj.description !== undefined) mapped.description = obj.description;
+  if (obj.focusAreas !== undefined) mapped.focus_areas = obj.focusAreas;
+  if (obj.highlights !== undefined) mapped.highlights = obj.highlights;
+  if (obj.activities !== undefined) mapped.activities = JSON.stringify(obj.activities);
+  if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
+  if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
+  
+  return mapped;
+}

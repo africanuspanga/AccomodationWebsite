@@ -36,6 +36,16 @@ import {
   mapAccommodationDetailFromDB,
   mapAccommodationDetailToDB,
   mapArrayFromDB,
+  mapAdminBlogFromDB,
+  mapAdminBlogToDB,
+  mapAdminDestinationFromDB,
+  mapAdminDestinationToDB,
+  mapAdminAccommodationFromDB,
+  mapAdminAccommodationToDB,
+  mapAdminItineraryFromDB,
+  mapAdminItineraryToDB,
+  mapAdminVolunteerProgramFromDB,
+  mapAdminVolunteerProgramToDB,
 } from './db-mappings';
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -549,7 +559,7 @@ export class SupabaseStorage implements IStorage {
       .order('created_at', { ascending: false });
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapAdminBlogFromDB);
   }
 
   async getAdminBlog(id: string): Promise<AdminBlog | undefined> {
@@ -563,24 +573,26 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminBlogFromDB(data) : undefined;
   }
 
   async createAdminBlog(blog: InsertAdminBlog): Promise<AdminBlog> {
+    const dbBlog = mapAdminBlogToDB(blog);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_BLOGS)
-      .insert(blog)
+      .insert(dbBlog)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapAdminBlogFromDB(data!);
   }
 
   async updateAdminBlog(id: string, blog: Partial<InsertAdminBlog>): Promise<AdminBlog | undefined> {
+    const dbBlog = mapAdminBlogToDB(blog);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_BLOGS)
-      .update(blog)
+      .update(dbBlog)
       .eq('id', id)
       .select()
       .single();
@@ -589,7 +601,7 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminBlogFromDB(data) : undefined;
   }
 
   async deleteAdminBlog(id: string): Promise<boolean> {
@@ -613,7 +625,7 @@ export class SupabaseStorage implements IStorage {
       .order('created_at', { ascending: false });
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapAdminVolunteerProgramFromDB);
   }
 
   async getAdminVolunteerProgram(id: string): Promise<AdminVolunteerProgram | undefined> {
@@ -627,24 +639,26 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminVolunteerProgramFromDB(data) : undefined;
   }
 
   async createAdminVolunteerProgram(program: InsertAdminVolunteerProgram): Promise<AdminVolunteerProgram> {
+    const dbProgram = mapAdminVolunteerProgramToDB(program);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
-      .insert(program)
+      .insert(dbProgram)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapAdminVolunteerProgramFromDB(data!);
   }
 
   async updateAdminVolunteerProgram(id: string, program: Partial<InsertAdminVolunteerProgram>): Promise<AdminVolunteerProgram | undefined> {
+    const dbProgram = mapAdminVolunteerProgramToDB(program);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
-      .update(program)
+      .update(dbProgram)
       .eq('id', id)
       .select()
       .single();
@@ -653,7 +667,7 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminVolunteerProgramFromDB(data) : undefined;
   }
 
   async deleteAdminVolunteerProgram(id: string): Promise<boolean> {
@@ -677,7 +691,7 @@ export class SupabaseStorage implements IStorage {
       .order('created_at', { ascending: false });
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapAdminAccommodationFromDB);
   }
 
   async getAdminAccommodation(id: string): Promise<AdminAccommodation | undefined> {
@@ -691,24 +705,26 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminAccommodationFromDB(data) : undefined;
   }
 
   async createAdminAccommodation(accommodation: InsertAdminAccommodation): Promise<AdminAccommodation> {
+    const dbAccommodation = mapAdminAccommodationToDB(accommodation);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_ACCOMMODATIONS)
-      .insert(accommodation)
+      .insert(dbAccommodation)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapAdminAccommodationFromDB(data!);
   }
 
   async updateAdminAccommodation(id: string, accommodation: Partial<InsertAdminAccommodation>): Promise<AdminAccommodation | undefined> {
+    const dbAccommodation = mapAdminAccommodationToDB(accommodation);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_ACCOMMODATIONS)
-      .update(accommodation)
+      .update(dbAccommodation)
       .eq('id', id)
       .select()
       .single();
@@ -717,7 +733,7 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminAccommodationFromDB(data) : undefined;
   }
 
   async deleteAdminAccommodation(id: string): Promise<boolean> {
@@ -741,7 +757,7 @@ export class SupabaseStorage implements IStorage {
       .order('created_at', { ascending: false });
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapAdminItineraryFromDB);
   }
 
   async getAdminItinerary(id: string): Promise<AdminItinerary | undefined> {
@@ -755,24 +771,26 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminItineraryFromDB(data) : undefined;
   }
 
   async createAdminItinerary(itinerary: InsertAdminItinerary): Promise<AdminItinerary> {
+    const dbItinerary = mapAdminItineraryToDB(itinerary);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_ITINERARIES)
-      .insert(itinerary)
+      .insert(dbItinerary)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapAdminItineraryFromDB(data!);
   }
 
   async updateAdminItinerary(id: string, itinerary: Partial<InsertAdminItinerary>): Promise<AdminItinerary | undefined> {
+    const dbItinerary = mapAdminItineraryToDB(itinerary);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_ITINERARIES)
-      .update(itinerary)
+      .update(dbItinerary)
       .eq('id', id)
       .select()
       .single();
@@ -781,7 +799,7 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminItineraryFromDB(data) : undefined;
   }
 
   async deleteAdminItinerary(id: string): Promise<boolean> {
@@ -805,7 +823,7 @@ export class SupabaseStorage implements IStorage {
       .order('created_at', { ascending: false });
     
     if (error) handleSupabaseError(error);
-    return data || [];
+    return mapArrayFromDB(data || [], mapAdminDestinationFromDB);
   }
 
   async getAdminDestination(id: string): Promise<AdminDestination | undefined> {
@@ -819,24 +837,26 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminDestinationFromDB(data) : undefined;
   }
 
   async createAdminDestination(destination: InsertAdminDestination): Promise<AdminDestination> {
+    const dbDestination = mapAdminDestinationToDB(destination);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_DESTINATIONS)
-      .insert(destination)
+      .insert(dbDestination)
       .select()
       .single();
     
     if (error) handleSupabaseError(error);
-    return data!;
+    return mapAdminDestinationFromDB(data!);
   }
 
   async updateAdminDestination(id: string, destination: Partial<InsertAdminDestination>): Promise<AdminDestination | undefined> {
+    const dbDestination = mapAdminDestinationToDB(destination);
     const { data, error } = await supabase
       .from(TABLES.ADMIN_DESTINATIONS)
-      .update(destination)
+      .update(dbDestination)
       .eq('id', id)
       .select()
       .single();
@@ -845,7 +865,7 @@ export class SupabaseStorage implements IStorage {
       if (error.code === 'PGRST116') return undefined;
       handleSupabaseError(error);
     }
-    return data || undefined;
+    return data ? mapAdminDestinationFromDB(data) : undefined;
   }
 
   async deleteAdminDestination(id: string): Promise<boolean> {
