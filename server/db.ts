@@ -4,26 +4,20 @@ import { createClient } from '@supabase/supabase-js';
 // 1. SUPABASE_URL - Your Supabase project URL
 // 2. SUPABASE_SERVICE_KEY - Your Supabase service role key (for server-side operations)
 
-// In production (Render), Supabase credentials are REQUIRED
-// In development (Replit), they're optional for local testing
-const isProduction = process.env.NODE_ENV === 'production';
-
+// Validate environment variables
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-  if (isProduction) {
-    throw new Error(
-      "SUPABASE_URL and SUPABASE_SERVICE_KEY must be set in production. Add them to Render environment variables."
-    );
-  } else {
-    console.warn("⚠️  Supabase not configured - database features disabled. Set SUPABASE_URL and SUPABASE_SERVICE_KEY to enable.");
-    console.warn("📖 See RENDER_DEPLOYMENT_GUIDE.md for setup instructions");
-  }
+  throw new Error(
+    "SUPABASE_URL and SUPABASE_SERVICE_KEY must be set. " +
+    "Add them to Replit Secrets or Render environment variables. " +
+    "See RENDER_DEPLOYMENT_GUIDE.md for setup instructions."
+  );
 }
 
 // Create Supabase client with service role key for server-side operations
 // This bypasses Row Level Security (RLS) and should only be used on the server
 export const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
-  process.env.SUPABASE_SERVICE_KEY || 'placeholder-key',
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY,
   {
     auth: {
       autoRefreshToken: false,

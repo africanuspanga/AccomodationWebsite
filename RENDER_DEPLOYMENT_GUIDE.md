@@ -3,6 +3,8 @@
 
 This guide covers deploying your Supabase-powered travel website to Render with Cloudinary image uploads.
 
+⚠️ **IMPORTANT**: This application requires Supabase database to run. You must complete Part 1 (Supabase Setup) before starting the application locally or deploying to Render.
+
 ---
 
 ## 🚀 Quick Deployment Checklist
