@@ -1,169 +1,59 @@
 # Accommodation Collection - Travel Web Application
 
 ## Overview
-
-Accommodation Collection is a premium Tanzania travel web application specializing in curating tours, accommodations, and travel services. The application is built as a full-stack web platform using modern technologies to provide users with an immersive experience for discovering and booking Tanzania travel experiences. The frontend is built with React and TypeScript, utilizing a component-based architecture with shadcn/ui design system, while the backend uses Express.js with PostgreSQL database integration.
-
-## Recent Changes (October 2025)
-
-### Admin Content Management System with Cloudinary (October 2025)
-- **Dual-Source Content Architecture**: Implemented seamless merging of admin-created content (Supabase) with hardcoded JSON content
-- **Cloudinary Integration**: Full cloud-based image management with single and multiple image upload capabilities
-- **Admin Accommodation Forms**: Comprehensive CRUD forms with fields for name, location (continental/country/destination), category, pricing, rating, features array, main image, and gallery images
-- **Admin Itinerary Forms**: Complete CRUD forms with duration, pricing, category, highlights array, includes array, difficulty, group size, main image, and gallery images
-- **Admin Destination Forms**: Complete CRUD forms with name, location (continental/country/region), destination type (safari-circuit/beach/mountain/city/country), description, highlights array, best time to visit, sub-destinations array, main image, and gallery images
-- **Admin Blog Forms**: Complete CRUD forms with Cloudinary featured image upload, title, category selection, author, excerpt, and full content fields
-- **Admin Volunteer Program Forms**: Comprehensive CRUD forms with all fields including dynamic focus areas array, highlights array, activities checkboxes (safari, hiking, mountain climbing, cultural tours), main image upload, and full program details
-- **Image Upload Component**: Reusable ImageUpload component with drag-and-drop, preview, delete, and Cloudinary integration
-- **Content Merging Hook**: Updated use-content.ts to automatically fetch admin content from Supabase and merge with hardcoded content for unified display
-- **Blog Page Integration**: Fetches admin blogs from /api/public/blogs, transforms to match BlogPost interface, merges with hardcoded blogs for seamless display
-- **Volunteer Programs Integration**: Fetches admin volunteer programs from /api/public/volunteer-programs, parses activities JSON, merges with hardcoded programs for unified display
-- **Unified Public Endpoints**: All content types (accommodations, itineraries, destinations, blogs, volunteer programs) use /api/public/* endpoints for consistent content merging
-- **Form Validation**: Zod schemas with z.coerce.number() for proper numeric field handling (price, rating), array validation for focus areas and highlights
-- **Admin Routes**: Added /admin/accommodations/:id, /admin/itineraries/:id, /admin/destinations/:id, /admin/blogs/:id, and /admin/volunteer-programs/:id routes for content management
-- **Admin Dashboard**: 5-tab dashboard (Accommodations, Destinations, Blogs, Volunteer Programs, Itineraries) with full CRUD operations
-- **Environment Variables**: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_UPLOAD_PRESET configured
-- **Seamless User Experience**: No visual distinction between admin-created and hardcoded content on public pages
-
-## Recent Changes (September 2025)
-
-### User Authentication System (Supabase Auth)
-- **Supabase Integration**: Replaced legacy username/password auth with Supabase Auth using email/password for regular users
-- **Auth Page**: Created dual-tab authentication page with Login and Signup forms, form validation, and error handling
-- **User Dashboard**: Implemented protected dashboard route displaying user's trips, accommodations, receipts, and messages (currently using mock data)
-- **Session Management**: Automatic session tracking with onAuthStateChange, proper redirects, and logout functionality
-- **Header Integration**: Updated navigation header to show user email when logged in with sign-out option
-- **Environment Configuration**: Frontend uses VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for secure Supabase client setup
-- **Dual Auth Systems**: Admin uses hardcoded credentials (admin@accommodations.guide), users use Supabase Auth
-
-### Booking System Implementation
-- **Detail Pages**: Created comprehensive detail pages for accommodations and itineraries showing full information with imagery, features/highlights, pricing, and booking options
-- **Airbnb-Style Booking Form**: Implemented professional booking form with fields for full name, email, phone (with country code), check-in/check-out dates with calendar pickers, guest counts (adults/children), and optional special requests
-- **Booking Flow**: Complete user journey from browsing cards → viewing details → submitting bookings with form validation and success notifications
-- **Database Schema**: Added bookings table to store all booking information including booking type, item details, guest information, dates, and special requests
-- **API Integration**: Created REST endpoints for booking creation and retrieval with proper validation using Zod schemas
-
-### SEO and Production Readiness
-- **Favicon**: Integrated company logo as website favicon for browser tabs and mobile devices
-- **SEO Meta Tags**: Complete meta titles, descriptions, and Open Graph tags for all pages using production domain (accommodations.guide)
-- **Sitemap**: Created sitemap.xml with all 13 main pages for search engine indexing
-- **Robots.txt**: Configured for proper search engine crawling with sitemap reference
-- **LLMs.txt**: Comprehensive AI-friendly documentation about website features and content
-- **WhatsApp Button**: Enhanced floating WhatsApp button with improved icon sizing
-
-### Testimonials Carousel
-- **Auto-Scrolling Carousel**: Implemented testimonials carousel on homepage with 4-second auto-scroll
-- **Expanded Testimonials**: Added 6 testimonials featuring travelers from European nations (France, Italy, Sweden) who visited Kenya safaris, Rwanda gorilla tracking, and Victoria Falls
-- **Interactive Navigation**: Previous/Next buttons for manual carousel control
-- **Responsive Design**: Shows 1 testimonial on mobile, 2 on tablet, 3 on desktop
-- **Infinite Loop**: Continuous carousel rotation for better user engagement
-
-### UI/UX Enhancements (October 2025)
-- **WhatsApp Integration**: Updated floating WhatsApp button to link to wa.me/255768512626 for direct customer communication
-- **Brand Identity**: Replaced Mountain icon logo with custom company logo image in navbar for professional branding
-- **Cascading Search Filters**: Implemented hierarchical continent → country → destination filters with intelligent state management
-  - Default selection: Africa → Tanzania for streamlined user experience
-  - Auto-updates dependent dropdowns when parent selection changes
-  - Prevents invalid location combinations across continents
-  - Expanded data coverage for multiple African countries (Tanzania, Kenya, Uganda, Rwanda, South Africa, Botswana)
-- **Destination Categories**: Updated from "Mountains & Coast" to more descriptive categories:
-  - "Beaches & Islands" (featuring Zanzibar, Pemba Island, etc.)
-  - "Mountains & Hills" (featuring Kilimanjaro, Mount Meru, etc.)
-  - Added corresponding imagery for new destinations
-- **About Page Scope**: Expanded regional focus from "Tanzania" to "East Africa" and from "East Africa" to "Africa" for broader market appeal
-- **Footer Enhancements**:
-  - Added dual contact numbers: +255717523882 and +255789631010
-  - Fixed email overflow issue with proper word-break styling
-  - Newsletter subscription section with email input and subscribe button
-  - Expanded social media presence to 8 platforms: Facebook, Twitter, Instagram, YouTube, TikTok, LinkedIn, WhatsApp Business, Pinterest
-- **Navigation Improvements**: Implemented global scroll-to-top functionality for all page navigations, ensuring users always start at the top when navigating to new pages (Privacy Policy, Terms of Service, Cookie Policy, etc.)
-- **Favicon Update**: Replaced original favicon with updated company logo for consistent branding across browser tabs and mobile devices
-- **Agent Partnerships Page**: Created comprehensive /agent-partnerships page showcasing partnership opportunities, benefits, impact commitments, and agent support technology with direct contact integration
-- **Flight Tracking Enhancement**: Improved error handling and user messaging for live flight data with detailed troubleshooting information for OpenSky Network API issues
+Accommodation Collection is a premium Tanzania travel web application designed to curate tours, accommodations, and travel services. It aims to provide users with an immersive experience for discovering and booking travel experiences in Tanzania, with a future vision to expand to broader African destinations. The platform supports dual-source content (admin-managed and hardcoded), comprehensive booking functionalities, and an integrated content management system.
 
 ## User Preferences
-
 Preferred communication style: Simple, everyday language.
 
 ## System Architecture
-
 ### Frontend Architecture
-- **Framework**: React 18 with TypeScript and Vite as the build tool
-- **Styling**: Tailwind CSS with custom design tokens following a warm, earthy color palette suitable for a premium travel brand
-- **UI Components**: shadcn/ui component library providing consistent, accessible components
-- **Routing**: Wouter for lightweight client-side routing
-- **State Management**: React Query (TanStack Query) for server state management with local state handled via React hooks
-- **Form Handling**: React Hook Form with Zod validation for type-safe form management
+- **Framework**: React 18 with TypeScript and Vite.
+- **Styling**: Tailwind CSS with custom design tokens, emphasizing a warm, earthy color palette.
+- **UI Components**: shadcn/ui for consistent, accessible components.
+- **Routing**: Wouter for lightweight client-side routing.
+- **State Management**: React Query for server state; React hooks for local state.
+- **Form Handling**: React Hook Form with Zod validation.
+- **UI/UX Decisions**:
+    - Mobile-first responsive design.
+    - Inter (body) and Playfair Display (headings) typography.
+    - Global scroll-to-top on page navigation.
+    - Floating WhatsApp button for direct communication.
+    - Cascading search filters (Continent → Country → Destination), defaulting to Africa → Tanzania.
+    - Testimonials carousel with auto-scroll and responsive display.
+    - Professional branding with custom company logo.
 
 ### Backend Architecture
-- **Server Framework**: Express.js with TypeScript
-- **Database ORM**: Drizzle ORM configured for PostgreSQL with type-safe database operations
-- **Database Schema**: Defined schema for users, accommodations, destinations, itineraries, bookings, volunteer applications, and inquiries with proper relationships
-- **Development Setup**: Hot reload and development middleware with Vite integration
-- **Memory Storage**: Temporary in-memory storage implementation for development with interface for easy database migration
+- **Server Framework**: Express.js with TypeScript.
+- **Database ORM**: Drizzle ORM for PostgreSQL.
+- **Database Schema**: Defined for users, accommodations, destinations, itineraries, bookings, volunteer applications, and inquiries.
+- **Content Management**: Dual-source architecture merging admin-created Supabase content with hardcoded JSON data, unified via `/api/public/*` endpoints.
+- **Image Management**: Cloudinary integration for single and multiple image uploads within the admin CMS.
+- **Data Mapping**: `server/db-mappings.ts` handles `snake_case` (DB) to `camelCase` (TypeScript) conversion for admin CRUD operations.
 
 ### Data Storage Solutions
-- **Primary Database**: PostgreSQL (configured via Drizzle ORM)
-- **Connection**: Neon Database serverless PostgreSQL
-- **Schema Management**: Drizzle Kit for migrations and schema management
-- **Development Data**: JSON-based mock data structure for accommodations, destinations, and itineraries
+- **Primary Database**: PostgreSQL via Supabase.
+- **Schema Management**: Direct SQL migrations (`SUPABASE_MIGRATION.sql`, `SUPABASE_SEED.sql`).
 
 ### Authentication and Authorization
-- **User Authentication**: Supabase Auth with email/password authentication for regular users
-- **Admin Authentication**: Separate hardcoded credentials system (admin@accommodations.guide / Guide@1961)
-- **Auth Provider**: SupabaseAuthProvider context managing user session, sign-in, sign-up, and sign-out
-- **Protected Routes**: Dashboard route (/dashboard) requires authenticated user, redirects to /auth if not logged in
-- **Environment Variables**: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for frontend Supabase client
-- **Security**: Toast-based error handling, automatic session tracking, and proper redirect flows
+- **User Authentication**: Supabase Auth with email/password.
+- **Admin Authentication**: Separate hardcoded credentials (`admin@accommodations.guide`).
+- **Session Management**: SupabaseAuthProvider context for user sessions and protected routes.
 
-### Content Management
-- **Static Data**: JSON-based content system for accommodations, destinations, and itineraries
-- **Image Handling**: Placeholder image system ready for production image integration
-- **Search and Filtering**: Multi-level filtering system for accommodations by continent, country, destination, and category
-- **Content Organization**: Hierarchical destination structure (Continental → Country → Region → Destination)
+### Content Management System (CMS)
+- **Admin Dashboard**: Features 5 tabs for managing Accommodations, Destinations, Blogs, Volunteer Programs, and Itineraries.
+- **CRUD Operations**: Comprehensive forms for all content types, including rich text editing and image uploads via Cloudinary.
+- **Form Validation**: Zod schemas used for robust input validation.
 
-### Component Architecture
-- **Layout Components**: Reusable header and footer with consistent branding
-- **Page Components**: Dedicated components for Home, Accommodations, Destinations, Itineraries, About, and Contact pages
-- **UI Components**: Extensive shadcn/ui component library with custom travel-specific components (AccommodationCard, DestinationCard, ItineraryCard)
-- **Form Components**: Specialized components for search widgets and contact forms with validation
-
-### Design System
-- **Typography**: Inter for body text and Playfair Display for headings, providing elegant serif/sans-serif contrast
-- **Color Palette**: Warm, earthy tones with primary brown (#3D2914), accent golden yellow (#D4AF37), and neutral beiges
-- **Responsive Design**: Mobile-first approach with Tailwind CSS breakpoints
-- **Accessibility**: ARIA labels, semantic HTML, and keyboard navigation support
+### System Design Choices
+- **SEO & Production Readiness**: Implemented SEO meta tags, `sitemap.xml`, `robots.txt`, and `LLMs.txt`.
+- **Booking System**: Airbnb-style booking forms with calendar pickers, guest counts, and special requests, integrated with a `bookings` table.
 
 ## External Dependencies
-
-### Core Framework Dependencies
-- **@vitejs/plugin-react**: React plugin for Vite build system
-- **wouter**: Lightweight routing library for React applications
-- **@tanstack/react-query**: Server state management and caching
-
-### UI and Styling Dependencies
-- **tailwindcss**: Utility-first CSS framework
-- **@radix-ui/***: Comprehensive collection of accessible UI primitives
-- **class-variance-authority**: Type-safe variant API for component styling
-- **clsx**: Utility for constructing className strings conditionally
-
-### Database and Backend Dependencies
-- **drizzle-orm**: Type-safe SQL ORM for TypeScript
-- **@neondatabase/serverless**: Serverless PostgreSQL driver for Neon Database
-- **connect-pg-simple**: PostgreSQL session store for Express sessions
-- **drizzle-zod**: Zod schema generation from Drizzle schemas
-
-### Form and Validation Dependencies
-- **react-hook-form**: Performant forms with easy validation
-- **@hookform/resolvers**: Resolvers for external validation libraries
-- **zod**: TypeScript-first schema declaration and validation library
-
-### Development and Build Dependencies
-- **tsx**: TypeScript execution environment for Node.js
-- **esbuild**: Fast JavaScript bundler for production builds
-- **@replit/vite-plugin-***: Replit-specific development plugins for enhanced development experience
-
-### Date and Utility Dependencies
-- **date-fns**: Modern JavaScript date utility library
-- **embla-carousel-react**: Carousel component for image galleries
-- **cmdk**: Command menu component for enhanced user interactions
+- **Core Framework**: `@vitejs/plugin-react`, `wouter`, `@tanstack/react-query`.
+- **UI & Styling**: `tailwindcss`, `@radix-ui/*`, `class-variance-authority`, `clsx`.
+- **Database**: `drizzle-orm`, `@neondatabase/serverless`, `connect-pg-simple`, `drizzle-zod`.
+- **Form & Validation**: `react-hook-form`, `@hookform/resolvers`, `zod`.
+- **Development**: `tsx`, `esbuild`, `@replit/vite-plugin-*`.
+- **Utilities**: `date-fns`, `embla-carousel-react`, `cmdk`.
+- **Cloud Services**: Cloudinary (image storage), Supabase (database, authentication).
