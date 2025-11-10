@@ -1,390 +1,545 @@
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, boolean } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Users table (existing)
-export const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+// =============================================
+// PURE TYPESCRIPT INTERFACES
+// (No Drizzle dependencies)
+// =============================================
+
+// Users
+export interface User {
+  id: string;
+  username: string;
+  password: string;
+}
+
+export interface PublicUser {
+  id: string;
+  username: string;
+}
+
+// Accommodations
+export interface Accommodation {
+  id: string;
+  name: string;
+  continental: string;
+  country: string;
+  destination: string;
+  category: string;
+  description: string;
+  price: number | null;
+  rating: number | null;
+  imageUrl: string | null;
+  features: string[] | null;
+}
+
+// Destinations
+export interface Destination {
+  id: string;
+  name: string;
+  continental: string;
+  country: string;
+  region: string;
+  description: string;
+  highlights: string[] | null;
+  bestTime: string | null;
+  imageUrl: string | null;
+}
+
+// Itineraries
+export interface Itinerary {
+  id: string;
+  name: string;
+  duration: string;
+  price: number;
+  category: string;
+  description: string;
+  highlights: string[] | null;
+  includes: string[] | null;
+  difficulty: string | null;
+  groupSize: string | null;
+  rating: number | null;
+  imageUrl: string | null;
+}
+
+// Inquiries
+export interface Inquiry {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  arrivalDate: string | null;
+  departureDate: string | null;
+  adults: number | null;
+  children: number | null;
+  message: string;
+  createdAt: string | null;
+}
+
+// Volunteer Applications
+export interface VolunteerApplication {
+  id: string;
+  programId: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  fullAddress: string;
+  country: string;
+  telephone: string;
+  mobile: string;
+  email: string;
+  nationality: string;
+  passportNumber: string;
+  educationProfession: string;
+  language: string;
+  workingExperience: string;
+  howFoundUs: string;
+  expectedArrivalDate: string;
+  volunteerDuration: string;
+  dietaryRestrictions: boolean | null;
+  dietaryDetails: string | null;
+  excursions: string[] | null;
+  emergencyContactName: string;
+  emergencyRelation: string;
+  emergencyPhone: string;
+  emergencyEmail: string;
+  createdAt: string | null;
+}
+
+// Bookings
+export interface Booking {
+  id: string;
+  bookingType: string;
+  itemId: string;
+  itemName: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  checkInDate: string;
+  checkOutDate: string;
+  numberOfDays: number;
+  adults: number;
+  children: number;
+  specialRequests: string | null;
+  createdAt: string | null;
+}
+
+// Admin Blogs
+export interface AdminBlog {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  category: string;
+  imageUrl: string | null;
+  createdAt: string | null;
+}
+
+// Admin Volunteer Programs
+export interface AdminVolunteerProgram {
+  id: string;
+  title: string;
+  location: string;
+  country: string;
+  flag: string;
+  minAge: string;
+  duration: string;
+  cost: string;
+  focusAreas: string[];
+  image: string;
+  description: string;
+  fullExplanation: string;
+  activities: string; // JSON stringified
+  highlights: string[];
+  createdAt: string | null;
+}
+
+// Admin Accommodations
+export interface AdminAccommodation {
+  id: string;
+  name: string;
+  continental: string;
+  country: string;
+  destination: string;
+  category: string;
+  description: string;
+  price: number;
+  rating: number | null;
+  features: string[];
+  imageUrl: string | null;
+  galleryImages: string[] | null;
+  createdAt: string | null;
+}
+
+// Admin Itineraries
+export interface AdminItinerary {
+  id: string;
+  name: string;
+  duration: string;
+  price: number;
+  category: string;
+  description: string;
+  highlights: string[];
+  includes: string[];
+  difficulty: string | null;
+  groupSize: string | null;
+  rating: number | null;
+  imageUrl: string | null;
+  galleryImages: string[] | null;
+  createdAt: string | null;
+}
+
+// Admin Destinations
+export interface AdminDestination {
+  id: string;
+  name: string;
+  continental: string;
+  country: string;
+  region: string | null;
+  destinationType: string;
+  description: string;
+  highlights: string[] | null;
+  bestTime: string | null;
+  imageUrl: string | null;
+  galleryImages: string[] | null;
+  subDestinations: string[] | null;
+  createdAt: string | null;
+}
+
+// Destination Details
+export interface DestinationDetail {
+  id: string;
+  destinationId: string;
+  detailedDescription: string;
+  overview: string | null;
+  wildlife: string | null;
+  activities: string | null;
+  bestTimeToVisit: string | null;
+  gettingThere: string | null;
+  accommodation: string | null;
+  practicalInfo: string | null;
+  imageUrl: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+// Itinerary Details
+export interface ItineraryDetail {
+  id: string;
+  itineraryId: string;
+  whatsIncluded: string[] | null;
+  whatsNotIncluded: string[] | null;
+  whatToBring: string[] | null;
+  itineraryOverview: string | null;
+  dayByDay: string | null; // JSON stringified
+  pricingData: string | null; // JSON stringified
+  mapImageUrl: string | null;
+  tourHighlights: string[] | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+// Accommodation Details
+export interface AccommodationDetail {
+  id: string;
+  accommodationId: string;
+  facilities: string[] | null;
+  rooms: string | null; // JSON stringified
+  galleryImages: string[] | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+// =============================================
+// ZOD SCHEMAS FOR VALIDATION
+// =============================================
+
+// User schemas
+export const insertUserSchema = z.object({
+  username: z.string().min(1),
+  password: z.string().min(6),
 });
 
-// Accommodations table
-export const accommodations = pgTable("accommodations", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: text("name").notNull(),
-  continental: text("continental").notNull(),
-  country: text("country").notNull(),
-  destination: text("destination").notNull(),
-  category: text("category").notNull(),
-  description: text("description").notNull(),
-  price: integer("price"),
-  rating: integer("rating").default(5),
-  imageUrl: text("image_url"),
-  features: text("features").array(),
+export const userSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  password: z.string(),
 });
 
-// Destinations table
-export const destinations = pgTable("destinations", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: text("name").notNull(),
-  continental: text("continental").notNull(),
-  country: text("country").notNull(),
-  region: text("region").notNull(),
-  description: text("description").notNull(),
-  highlights: text("highlights").array(),
-  bestTime: text("best_time"),
-  imageUrl: text("image_url"),
+// Accommodation schemas
+export const insertAccommodationSchema = z.object({
+  name: z.string().min(1),
+  continental: z.string().min(1),
+  country: z.string().min(1),
+  destination: z.string().min(1),
+  category: z.string().min(1),
+  description: z.string().min(1),
+  price: z.number().nullable().optional(),
+  rating: z.number().min(1).max(5).nullable().optional(),
+  imageUrl: z.string().nullable().optional(),
+  features: z.array(z.string()).nullable().optional(),
 });
 
-// Itineraries table
-export const itineraries = pgTable("itineraries", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: text("name").notNull(),
-  duration: text("duration").notNull(),
-  price: integer("price").notNull(),
-  category: text("category").notNull(),
-  description: text("description").notNull(),
-  highlights: text("highlights").array(),
-  includes: text("includes").array(),
-  difficulty: text("difficulty"),
-  groupSize: text("group_size"),
-  rating: integer("rating").default(5),
-  imageUrl: text("image_url"),
+export const accommodationSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  continental: z.string(),
+  country: z.string(),
+  destination: z.string(),
+  category: z.string(),
+  description: z.string(),
+  price: z.number().nullable(),
+  rating: z.number().nullable(),
+  imageUrl: z.string().nullable(),
+  features: z.array(z.string()).nullable(),
 });
 
-// Contact inquiries table
-export const inquiries = pgTable("inquiries", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
-  email: text("email").notNull(),
-  phone: text("phone"),
-  arrivalDate: text("arrival_date"),
-  departureDate: text("departure_date"),
-  adults: integer("adults"),
-  children: integer("children"),
-  message: text("message").notNull(),
-  createdAt: text("created_at").default(sql`now()`),
+// Destination schemas
+export const insertDestinationSchema = z.object({
+  name: z.string().min(1),
+  continental: z.string().min(1),
+  country: z.string().min(1),
+  region: z.string().min(1),
+  description: z.string().min(1),
+  highlights: z.array(z.string()).nullable().optional(),
+  bestTime: z.string().nullable().optional(),
+  imageUrl: z.string().nullable().optional(),
 });
 
-// Volunteer applications table
-export const volunteerApplications = pgTable("volunteer_applications", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  programId: text("program_id").notNull(),
-  firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
-  dateOfBirth: text("date_of_birth").notNull(),
-  gender: text("gender").notNull(),
-  fullAddress: text("full_address").notNull(),
-  country: text("country").notNull(),
-  telephone: text("telephone").notNull(),
-  mobile: text("mobile").notNull(),
-  email: text("email").notNull(),
-  nationality: text("nationality").notNull(),
-  passportNumber: text("passport_number").notNull(),
-  educationProfession: text("education_profession").notNull(),
-  language: text("language").notNull(),
-  workingExperience: text("working_experience").notNull(),
-  howFoundUs: text("how_found_us").notNull(),
-  expectedArrivalDate: text("expected_arrival_date").notNull(),
-  volunteerDuration: text("volunteer_duration").notNull(),
-  dietaryRestrictions: boolean("dietary_restrictions").default(false),
-  dietaryDetails: text("dietary_details"),
-  excursions: text("excursions").array(),
-  emergencyContactName: text("emergency_contact_name").notNull(),
-  emergencyRelation: text("emergency_relation").notNull(),
-  emergencyPhone: text("emergency_phone").notNull(),
-  emergencyEmail: text("emergency_email").notNull(),
-  createdAt: text("created_at").default(sql`now()`),
+export const destinationSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  continental: z.string(),
+  country: z.string(),
+  region: z.string(),
+  description: z.string(),
+  highlights: z.array(z.string()).nullable(),
+  bestTime: z.string().nullable(),
+  imageUrl: z.string().nullable(),
 });
 
-// Bookings table
-export const bookings = pgTable("bookings", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  bookingType: text("booking_type").notNull(), // 'accommodation' or 'itinerary'
-  itemId: text("item_id").notNull(), // ID of the accommodation or itinerary
-  itemName: text("item_name").notNull(), // Name for reference
-  fullName: text("full_name").notNull(),
-  email: text("email").notNull(),
-  phone: text("phone").notNull(), // includes country code
-  checkInDate: text("check_in_date").notNull(),
-  checkOutDate: text("check_out_date").notNull(),
-  numberOfDays: integer("number_of_days").notNull(),
-  adults: integer("adults").notNull(),
-  children: integer("children").notNull().default(0),
-  specialRequests: text("special_requests"),
-  createdAt: text("created_at").default(sql`now()`),
+// Itinerary schemas
+export const insertItinerarySchema = z.object({
+  name: z.string().min(1),
+  duration: z.string().min(1),
+  price: z.number().min(0),
+  category: z.string().min(1),
+  description: z.string().min(1),
+  highlights: z.array(z.string()).nullable().optional(),
+  includes: z.array(z.string()).nullable().optional(),
+  difficulty: z.string().nullable().optional(),
+  groupSize: z.string().nullable().optional(),
+  rating: z.number().min(1).max(5).nullable().optional(),
+  imageUrl: z.string().nullable().optional(),
 });
 
-// Admin Blog Posts table (for new admin-created content)
-export const adminBlogs = pgTable("admin_blogs", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: text("title").notNull(),
-  excerpt: text("excerpt").notNull(),
-  content: text("content").notNull(),
-  author: text("author").notNull(),
-  category: text("category").notNull(),
-  imageUrl: text("image_url"),
-  createdAt: text("created_at").default(sql`now()`),
+export const itinerarySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  duration: z.string(),
+  price: z.number(),
+  category: z.string(),
+  description: z.string(),
+  highlights: z.array(z.string()).nullable(),
+  includes: z.array(z.string()).nullable(),
+  difficulty: z.string().nullable(),
+  groupSize: z.string().nullable(),
+  rating: z.number().nullable(),
+  imageUrl: z.string().nullable(),
 });
 
-// Admin Volunteer Programs table (for new admin-created content)
-export const adminVolunteerPrograms = pgTable("admin_volunteer_programs", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: text("title").notNull(),
-  location: text("location").notNull(),
-  country: text("country").notNull(),
-  flag: text("flag").notNull(),
-  minAge: text("min_age").notNull(),
-  duration: text("duration").notNull(),
-  cost: text("cost").notNull(),
-  focusAreas: text("focus_areas").array().notNull(),
-  image: text("image").notNull(),
-  description: text("description").notNull(),
-  fullExplanation: text("full_explanation").notNull(),
-  activities: text("activities").notNull(), // JSON stringified object
-  highlights: text("highlights").array().notNull(),
-  createdAt: text("created_at").default(sql`now()`),
+// Inquiry schemas
+export const insertInquirySchema = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().email(),
+  phone: z.string().nullable().optional(),
+  arrivalDate: z.string().nullable().optional(),
+  departureDate: z.string().nullable().optional(),
+  adults: z.number().min(0).nullable().optional(),
+  children: z.number().min(0).nullable().optional(),
+  message: z.string().min(1),
 });
 
-// Admin Accommodations table (for new admin-created content) 
-export const adminAccommodations = pgTable("admin_accommodations", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: text("name").notNull(),
-  continental: text("continental").notNull(),
-  country: text("country").notNull(),
-  destination: text("destination").notNull(),
-  category: text("category").notNull(),
-  description: text("description").notNull(),
-  price: integer("price").notNull(),
-  rating: integer("rating").default(5),
-  features: text("features").array().notNull(),
-  imageUrl: text("image_url"),
-  galleryImages: text("gallery_images").array(), // Array of gallery image URLs
-  createdAt: text("created_at").default(sql`now()`),
+// Volunteer Application schemas
+export const insertVolunteerApplicationSchema = z.object({
+  programId: z.string().min(1),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  dateOfBirth: z.string().min(1),
+  gender: z.string().min(1),
+  fullAddress: z.string().min(1),
+  country: z.string().min(1),
+  telephone: z.string().min(1),
+  mobile: z.string().min(1),
+  email: z.string().email(),
+  nationality: z.string().min(1),
+  passportNumber: z.string().min(1),
+  educationProfession: z.string().min(1),
+  language: z.string().min(1),
+  workingExperience: z.string().min(1),
+  howFoundUs: z.string().min(1),
+  expectedArrivalDate: z.string().min(1),
+  volunteerDuration: z.string().min(1),
+  dietaryRestrictions: z.boolean().nullable().optional(),
+  dietaryDetails: z.string().nullable().optional(),
+  excursions: z.array(z.string()).nullable().optional(),
+  emergencyContactName: z.string().min(1),
+  emergencyRelation: z.string().min(1),
+  emergencyPhone: z.string().min(1),
+  emergencyEmail: z.string().email(),
 });
 
-// Admin Itineraries table (for new admin-created content)
-export const adminItineraries = pgTable("admin_itineraries", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: text("name").notNull(),
-  duration: text("duration").notNull(),
-  price: integer("price").notNull(),
-  category: text("category").notNull(),
-  description: text("description").notNull(),
-  highlights: text("highlights").array().notNull(),
-  includes: text("includes").array().notNull(),
-  difficulty: text("difficulty"),
-  groupSize: text("group_size"),
-  rating: integer("rating").default(5),
-  imageUrl: text("image_url"),
-  galleryImages: text("gallery_images").array(), // Array of gallery image URLs
-  createdAt: text("created_at").default(sql`now()`),
+// Booking schemas
+export const insertBookingSchema = z.object({
+  bookingType: z.string().min(1),
+  itemId: z.string().min(1),
+  itemName: z.string().min(1),
+  fullName: z.string().min(1),
+  email: z.string().email(),
+  phone: z.string().min(1),
+  checkInDate: z.string().min(1),
+  checkOutDate: z.string().min(1),
+  numberOfDays: z.number().min(1),
+  adults: z.number().min(1),
+  children: z.number().min(0),
+  specialRequests: z.string().nullable().optional(),
 });
 
-// Admin Destinations table (for new admin-created content)
-export const adminDestinations = pgTable("admin_destinations", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: text("name").notNull(),
-  continental: text("continental").notNull(),
-  country: text("country").notNull(),
-  region: text("region"), // 'northern-circuit', 'southern-circuit', 'coast', null for cities/mountains/countries
-  destinationType: text("destination_type").notNull(), // 'safari-circuit', 'beach', 'mountain', 'city', 'country'
-  description: text("description").notNull(),
-  highlights: text("highlights").array(),
-  bestTime: text("best_time"),
-  imageUrl: text("image_url"),
-  galleryImages: text("gallery_images").array(),
-  subDestinations: text("sub_destinations").array(), // For countries with multiple destinations
-  createdAt: text("created_at").default(sql`now()`),
+// Admin Blog schemas
+export const insertAdminBlogSchema = z.object({
+  title: z.string().min(1),
+  excerpt: z.string().min(1),
+  content: z.string().min(1),
+  author: z.string().min(1),
+  category: z.string().min(1),
+  imageUrl: z.string().nullable().optional(),
 });
 
-// Destination Details table (for admin-editable detailed destination information)
-export const destinationDetails = pgTable("destination_details", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  destinationId: text("destination_id").notNull().unique(), // References destination.id
-  detailedDescription: text("detailed_description").notNull(), // 600+ characters
-  overview: text("overview"),
-  wildlife: text("wildlife"),
-  activities: text("activities"),
-  bestTimeToVisit: text("best_time_to_visit"),
-  gettingThere: text("getting_there"),
-  accommodation: text("accommodation"),
-  practicalInfo: text("practical_info"),
-  imageUrl: text("image_url"),
-  createdAt: text("created_at").default(sql`now()`),
-  updatedAt: text("updated_at").default(sql`now()`),
+// Admin Volunteer Program schemas
+export const insertAdminVolunteerProgramSchema = z.object({
+  title: z.string().min(1),
+  location: z.string().min(1),
+  country: z.string().min(1),
+  flag: z.string().min(1),
+  minAge: z.string().min(1),
+  duration: z.string().min(1),
+  cost: z.string().min(1),
+  focusAreas: z.array(z.string()).min(1),
+  image: z.string().min(1),
+  description: z.string().min(1),
+  fullExplanation: z.string().min(1),
+  activities: z.string().min(1),
+  highlights: z.array(z.string()).min(1),
 });
 
-// Itinerary Details table (for comprehensive tour details, itinerary, and pricing)
-export const itineraryDetails = pgTable("itinerary_details", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  itineraryId: text("itinerary_id").notNull().unique(), // References itinerary.id
-  
-  // Tour Details Tab
-  whatsIncluded: text("whats_included").array(), // Array of included items
-  whatsNotIncluded: text("whats_not_included").array(), // Array of excluded items
-  whatToBring: text("what_to_bring").array(), // Array of items to bring
-  
-  // Itinerary Tab
-  itineraryOverview: text("itinerary_overview"), // Overview paragraph
-  dayByDay: text("day_by_day"), // JSON stringified array of {day: number, title: string, description: string}
-  
-  // Prices & Terms Tab
-  pricingData: text("pricing_data"), // JSON stringified pricing structure with seasons, packages, and group sizes
-  
-  // Map and other details
-  mapImageUrl: text("map_image_url"),
-  tourHighlights: text("tour_highlights").array(), // For sidebar
-  
-  createdAt: text("created_at").default(sql`now()`),
-  updatedAt: text("updated_at").default(sql`now()`),
+// Admin Accommodation schemas
+export const insertAdminAccommodationSchema = z.object({
+  name: z.string().min(1),
+  continental: z.string().min(1),
+  country: z.string().min(1),
+  destination: z.string().min(1),
+  category: z.string().min(1),
+  description: z.string().min(1),
+  price: z.coerce.number().min(0),
+  rating: z.coerce.number().min(1).max(5).nullable().optional(),
+  features: z.array(z.string()).min(1),
+  imageUrl: z.string().nullable().optional(),
+  galleryImages: z.array(z.string()).nullable().optional(),
 });
 
-// Accommodation Details table (for facilities, rooms, and gallery)
-export const accommodationDetails = pgTable("accommodation_details", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  accommodationId: text("accommodation_id").notNull().unique(), // References accommodation.id
-  
-  // Facilities Tab
-  facilities: text("facilities").array(), // Array of facility names
-  
-  // Rooms Tab
-  rooms: text("rooms"), // JSON stringified array of room objects with {name, description, images, units, guests, amenities}
-  
-  // Gallery Tab
-  galleryImages: text("gallery_images").array(), // Array of image URLs for gallery
-  
-  createdAt: text("created_at").default(sql`now()`),
-  updatedAt: text("updated_at").default(sql`now()`),
+// Admin Itinerary schemas
+export const insertAdminItinerarySchema = z.object({
+  name: z.string().min(1),
+  duration: z.string().min(1),
+  price: z.coerce.number().min(0),
+  category: z.string().min(1),
+  description: z.string().min(1),
+  highlights: z.array(z.string()).min(1),
+  includes: z.array(z.string()).min(1),
+  difficulty: z.string().nullable().optional(),
+  groupSize: z.string().nullable().optional(),
+  rating: z.coerce.number().min(1).max(5).nullable().optional(),
+  imageUrl: z.string().nullable().optional(),
+  galleryImages: z.array(z.string()).nullable().optional(),
 });
 
-// Schema definitions
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+// Admin Destination schemas
+export const insertAdminDestinationSchema = z.object({
+  name: z.string().min(1),
+  continental: z.string().min(1),
+  country: z.string().min(1),
+  region: z.string().nullable().optional(),
+  destinationType: z.string().min(1),
+  description: z.string().min(1),
+  highlights: z.array(z.string()).nullable().optional(),
+  bestTime: z.string().nullable().optional(),
+  imageUrl: z.string().nullable().optional(),
+  galleryImages: z.array(z.string()).nullable().optional(),
+  subDestinations: z.array(z.string()).nullable().optional(),
 });
 
-export const insertAccommodationSchema = createInsertSchema(accommodations).omit({
-  id: true,
+// Destination Detail schemas
+export const insertDestinationDetailSchema = z.object({
+  destinationId: z.string().min(1),
+  detailedDescription: z.string().min(1),
+  overview: z.string().nullable().optional(),
+  wildlife: z.string().nullable().optional(),
+  activities: z.string().nullable().optional(),
+  bestTimeToVisit: z.string().nullable().optional(),
+  gettingThere: z.string().nullable().optional(),
+  accommodation: z.string().nullable().optional(),
+  practicalInfo: z.string().nullable().optional(),
+  imageUrl: z.string().nullable().optional(),
 });
 
-export const insertDestinationSchema = createInsertSchema(destinations).omit({
-  id: true,
+// Itinerary Detail schemas
+export const insertItineraryDetailSchema = z.object({
+  itineraryId: z.string().min(1),
+  whatsIncluded: z.array(z.string()).nullable().optional(),
+  whatsNotIncluded: z.array(z.string()).nullable().optional(),
+  whatToBring: z.array(z.string()).nullable().optional(),
+  itineraryOverview: z.string().nullable().optional(),
+  dayByDay: z.string().nullable().optional(),
+  pricingData: z.string().nullable().optional(),
+  mapImageUrl: z.string().nullable().optional(),
+  tourHighlights: z.array(z.string()).nullable().optional(),
 });
 
-export const insertItinerarySchema = createInsertSchema(itineraries).omit({
-  id: true,
+// Accommodation Detail schemas
+export const insertAccommodationDetailSchema = z.object({
+  accommodationId: z.string().min(1),
+  facilities: z.array(z.string()).nullable().optional(),
+  rooms: z.string().nullable().optional(),
+  galleryImages: z.array(z.string()).nullable().optional(),
 });
 
-export const insertInquirySchema = createInsertSchema(inquiries).omit({
-  id: true,
-  createdAt: true,
-});
+// =============================================
+// TYPE EXPORTS (using Zod inference)
+// =============================================
 
-export const insertVolunteerApplicationSchema = createInsertSchema(volunteerApplications).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertBookingSchema = createInsertSchema(bookings).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertAdminBlogSchema = createInsertSchema(adminBlogs).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertAdminVolunteerProgramSchema = createInsertSchema(adminVolunteerPrograms).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertAdminAccommodationSchema = createInsertSchema(adminAccommodations).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertAdminItinerarySchema = createInsertSchema(adminItineraries).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertAdminDestinationSchema = createInsertSchema(adminDestinations).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertDestinationDetailSchema = createInsertSchema(destinationDetails).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertItineraryDetailSchema = createInsertSchema(itineraryDetails).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertAccommodationDetailSchema = createInsertSchema(accommodationDetails).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-// Type definitions
 export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
-export type PublicUser = Omit<User, 'password'>;
-
 export type InsertAccommodation = z.infer<typeof insertAccommodationSchema>;
-export type Accommodation = typeof accommodations.$inferSelect;
-
 export type InsertDestination = z.infer<typeof insertDestinationSchema>;
-export type Destination = typeof destinations.$inferSelect;
-
 export type InsertItinerary = z.infer<typeof insertItinerarySchema>;
-export type Itinerary = typeof itineraries.$inferSelect;
-
 export type InsertInquiry = z.infer<typeof insertInquirySchema>;
-export type Inquiry = typeof inquiries.$inferSelect;
-
 export type InsertVolunteerApplication = z.infer<typeof insertVolunteerApplicationSchema>;
-export type VolunteerApplication = typeof volunteerApplications.$inferSelect;
-
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
-export type Booking = typeof bookings.$inferSelect;
-
 export type InsertAdminBlog = z.infer<typeof insertAdminBlogSchema>;
-export type AdminBlog = typeof adminBlogs.$inferSelect;
-
 export type InsertAdminVolunteerProgram = z.infer<typeof insertAdminVolunteerProgramSchema>;
-export type AdminVolunteerProgram = typeof adminVolunteerPrograms.$inferSelect;
-
 export type InsertAdminAccommodation = z.infer<typeof insertAdminAccommodationSchema>;
-export type AdminAccommodation = typeof adminAccommodations.$inferSelect;
-
 export type InsertAdminItinerary = z.infer<typeof insertAdminItinerarySchema>;
-export type AdminItinerary = typeof adminItineraries.$inferSelect;
-
 export type InsertAdminDestination = z.infer<typeof insertAdminDestinationSchema>;
-export type AdminDestination = typeof adminDestinations.$inferSelect;
-
 export type InsertDestinationDetail = z.infer<typeof insertDestinationDetailSchema>;
-export type DestinationDetail = typeof destinationDetails.$inferSelect;
-
 export type InsertItineraryDetail = z.infer<typeof insertItineraryDetailSchema>;
-export type ItineraryDetail = typeof itineraryDetails.$inferSelect;
-
 export type InsertAccommodationDetail = z.infer<typeof insertAccommodationDetailSchema>;
-export type AccommodationDetail = typeof accommodationDetails.$inferSelect;
 
-// Flight data types for OpenSky Network API
+// =============================================
+// FLIGHT DATA TYPES (from OpenSky Network API)
+// =============================================
+
 export const flightDataSchema = z.object({
   icao24: z.string(),
   callsign: z.string().nullable(),

@@ -1,3 +1,4 @@
+import { supabase, TABLES, handleSupabaseError } from './db';
 import { 
   type User, type InsertUser,
   type Accommodation, type InsertAccommodation,
@@ -9,18 +10,37 @@ import {
   type DestinationDetail, type InsertDestinationDetail,
   type ItineraryDetail, type InsertItineraryDetail,
   type AccommodationDetail, type InsertAccommodationDetail,
-  users, accommodations, destinations, itineraries, inquiries, volunteerApplications, bookings, destinationDetails, itineraryDetails, accommodationDetails
+  type AdminBlog, type InsertAdminBlog,
+  type AdminVolunteerProgram, type InsertAdminVolunteerProgram,
+  type AdminAccommodation, type InsertAdminAccommodation,
+  type AdminItinerary, type InsertAdminItinerary,
+  type AdminDestination, type InsertAdminDestination,
 } from "@shared/schema";
-import { randomUUID } from "crypto";
-import { db } from "./db";
-import { eq } from "drizzle-orm";
+import {
+  mapAccommodationFromDB,
+  mapAccommodationToDB,
+  mapDestinationFromDB,
+  mapDestinationToDB,
+  mapItineraryFromDB,
+  mapItineraryToDB,
+  mapInquiryFromDB,
+  mapInquiryToDB,
+  mapBookingFromDB,
+  mapBookingToDB,
+  mapVolunteerApplicationFromDB,
+  mapVolunteerApplicationToDB,
+  mapDestinationDetailFromDB,
+  mapDestinationDetailToDB,
+  mapItineraryDetailFromDB,
+  mapItineraryDetailToDB,
+  mapAccommodationDetailFromDB,
+  mapAccommodationDetailToDB,
+  mapArrayFromDB,
+} from './db-mappings';
 import session from "express-session";
-import connectPg from "connect-pg-simple";
 import createMemoryStore from "memorystore";
 
-// modify the interface with any CRUD methods
-// you might need
-
+// Storage interface - same as original storage.ts
 export interface IStorage {
   // Session store for authentication
   sessionStore: session.Store;
@@ -75,14 +95,48 @@ export interface IStorage {
   createBooking(booking: InsertBooking): Promise<Booking>;
   getAllBookings(): Promise<Booking[]>;
   getBooking(id: string): Promise<Booking | undefined>;
+  
+  // Admin Blog operations
+  getAllAdminBlogs(): Promise<AdminBlog[]>;
+  getAdminBlog(id: string): Promise<AdminBlog | undefined>;
+  createAdminBlog(blog: InsertAdminBlog): Promise<AdminBlog>;
+  updateAdminBlog(id: string, blog: Partial<InsertAdminBlog>): Promise<AdminBlog | undefined>;
+  deleteAdminBlog(id: string): Promise<boolean>;
+  
+  // Admin Volunteer Program operations
+  getAllAdminVolunteerPrograms(): Promise<AdminVolunteerProgram[]>;
+  getAdminVolunteerProgram(id: string): Promise<AdminVolunteerProgram | undefined>;
+  createAdminVolunteerProgram(program: InsertAdminVolunteerProgram): Promise<AdminVolunteerProgram>;
+  updateAdminVolunteerProgram(id: string, program: Partial<InsertAdminVolunteerProgram>): Promise<AdminVolunteerProgram | undefined>;
+  deleteAdminVolunteerProgram(id: string): Promise<boolean>;
+  
+  // Admin Accommodation operations
+  getAllAdminAccommodations(): Promise<AdminAccommodation[]>;
+  getAdminAccommodation(id: string): Promise<AdminAccommodation | undefined>;
+  createAdminAccommodation(accommodation: InsertAdminAccommodation): Promise<AdminAccommodation>;
+  updateAdminAccommodation(id: string, accommodation: Partial<InsertAdminAccommodation>): Promise<AdminAccommodation | undefined>;
+  deleteAdminAccommodation(id: string): Promise<boolean>;
+  
+  // Admin Itinerary operations
+  getAllAdminItineraries(): Promise<AdminItinerary[]>;
+  getAdminItinerary(id: string): Promise<AdminItinerary | undefined>;
+  createAdminItinerary(itinerary: InsertAdminItinerary): Promise<AdminItinerary>;
+  updateAdminItinerary(id: string, itinerary: Partial<InsertAdminItinerary>): Promise<AdminItinerary | undefined>;
+  deleteAdminItinerary(id: string): Promise<boolean>;
+  
+  // Admin Destination operations
+  getAllAdminDestinations(): Promise<AdminDestination[]>;
+  getAdminDestination(id: string): Promise<AdminDestination | undefined>;
+  createAdminDestination(destination: InsertAdminDestination): Promise<AdminDestination>;
+  updateAdminDestination(id: string, destination: Partial<InsertAdminDestination>): Promise<AdminDestination | undefined>;
+  deleteAdminDestination(id: string): Promise<boolean>;
 }
 
-export class DatabaseStorage implements IStorage {
+export class SupabaseStorage implements IStorage {
   sessionStore: session.Store;
 
   constructor() {
-    // Use memory store for now to avoid PostgreSQL connection complexity
-    // TODO: Implement PostgreSQL session store later
+    // Use memory store for session management
     const MemoryStore = createMemoryStore(session);
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // prune expired entries every 24h
@@ -91,161 +145,721 @@ export class DatabaseStorage implements IStorage {
 
   // User operations
   async getUser(id: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.USERS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined; // No rows returned
+      handleSupabaseError(error);
+    }
+    return data || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.USERS)
+      .select('*')
+      .eq('username', username)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined; // No rows returned
+      handleSupabaseError(error);
+    }
+    return data || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
-    return user;
+    const { data, error } = await supabase
+      .from(TABLES.USERS)
+      .insert(insertUser)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return data!;
   }
 
   // Accommodation operations
   async getAllAccommodations(): Promise<Accommodation[]> {
-    return await db.select().from(accommodations);
+    const { data, error } = await supabase
+      .from(TABLES.ACCOMMODATIONS)
+      .select('*');
+    
+    if (error) handleSupabaseError(error);
+    return mapArrayFromDB(data || [], mapAccommodationFromDB);
   }
 
   async getAccommodation(id: string): Promise<Accommodation | undefined> {
-    const [accommodation] = await db.select().from(accommodations).where(eq(accommodations.id, id));
-    return accommodation || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.ACCOMMODATIONS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapAccommodationFromDB(data) : undefined;
   }
 
   async createAccommodation(accommodation: InsertAccommodation): Promise<Accommodation> {
-    const [created] = await db.insert(accommodations).values(accommodation).returning();
-    return created;
+    const dbData = mapAccommodationToDB(accommodation);
+    const { data, error } = await supabase
+      .from(TABLES.ACCOMMODATIONS)
+      .insert(dbData)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return mapAccommodationFromDB(data!);
   }
 
   async updateAccommodation(id: string, accommodation: Partial<InsertAccommodation>): Promise<Accommodation | undefined> {
-    const [updated] = await db.update(accommodations).set(accommodation).where(eq(accommodations.id, id)).returning();
-    return updated || undefined;
+    const dbData = mapAccommodationToDB(accommodation);
+    const { data, error } = await supabase
+      .from(TABLES.ACCOMMODATIONS)
+      .update(dbData)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapAccommodationFromDB(data) : undefined;
   }
 
   async deleteAccommodation(id: string): Promise<boolean> {
-    const result = await db.delete(accommodations).where(eq(accommodations.id, id));
-    return (result.rowCount ?? 0) > 0;
+    const { error } = await supabase
+      .from(TABLES.ACCOMMODATIONS)
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      if (error.code === 'PGRST116') return false;
+      handleSupabaseError(error);
+    }
+    return true;
   }
 
   // Accommodation Details operations
   async getAccommodationDetail(accommodationId: string): Promise<AccommodationDetail | undefined> {
-    const [detail] = await db.select().from(accommodationDetails).where(eq(accommodationDetails.accommodationId, accommodationId));
-    return detail || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.ACCOMMODATION_DETAILS)
+      .select('*')
+      .eq('accommodation_id', accommodationId)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapAccommodationDetailFromDB(data) : undefined;
   }
 
   // Destination operations
   async getAllDestinations(): Promise<Destination[]> {
-    return await db.select().from(destinations);
+    const { data, error } = await supabase
+      .from(TABLES.DESTINATIONS)
+      .select('*');
+    
+    if (error) handleSupabaseError(error);
+    return mapArrayFromDB(data || [], mapDestinationFromDB);
   }
 
   async getDestination(id: string): Promise<Destination | undefined> {
-    const [destination] = await db.select().from(destinations).where(eq(destinations.id, id));
-    return destination || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.DESTINATIONS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapDestinationFromDB(data) : undefined;
   }
 
   async createDestination(destination: InsertDestination): Promise<Destination> {
-    const [created] = await db.insert(destinations).values(destination).returning();
-    return created;
+    const dbData = mapDestinationToDB(destination);
+    const { data, error } = await supabase
+      .from(TABLES.DESTINATIONS)
+      .insert(dbData)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return mapDestinationFromDB(data!);
   }
 
   async updateDestination(id: string, destination: Partial<InsertDestination>): Promise<Destination | undefined> {
-    const [updated] = await db.update(destinations).set(destination).where(eq(destinations.id, id)).returning();
-    return updated || undefined;
+    const dbData = mapDestinationToDB(destination);
+    const { data, error } = await supabase
+      .from(TABLES.DESTINATIONS)
+      .update(dbData)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapDestinationFromDB(data) : undefined;
   }
 
   async deleteDestination(id: string): Promise<boolean> {
-    const result = await db.delete(destinations).where(eq(destinations.id, id));
-    return (result.rowCount ?? 0) > 0;
+    const { error } = await supabase
+      .from(TABLES.DESTINATIONS)
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      if (error.code === 'PGRST116') return false;
+      handleSupabaseError(error);
+    }
+    return true;
   }
 
   // Destination Details operations
   async getDestinationDetail(destinationId: string): Promise<DestinationDetail | undefined> {
-    const [detail] = await db.select().from(destinationDetails).where(eq(destinationDetails.destinationId, destinationId));
-    return detail || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.DESTINATION_DETAILS)
+      .select('*')
+      .eq('destination_id', destinationId)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapDestinationDetailFromDB(data) : undefined;
   }
 
   // Itinerary operations
   async getAllItineraries(): Promise<Itinerary[]> {
-    return await db.select().from(itineraries);
+    const { data, error } = await supabase
+      .from(TABLES.ITINERARIES)
+      .select('*');
+    
+    if (error) handleSupabaseError(error);
+    return mapArrayFromDB(data || [], mapItineraryFromDB);
   }
 
   async getItinerary(id: string): Promise<Itinerary | undefined> {
-    const [itinerary] = await db.select().from(itineraries).where(eq(itineraries.id, id));
-    return itinerary || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.ITINERARIES)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapItineraryFromDB(data) : undefined;
   }
 
   async createItinerary(itinerary: InsertItinerary): Promise<Itinerary> {
-    const [created] = await db.insert(itineraries).values(itinerary).returning();
-    return created;
+    const dbData = mapItineraryToDB(itinerary);
+    const { data, error } = await supabase
+      .from(TABLES.ITINERARIES)
+      .insert(dbData)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return mapItineraryFromDB(data!);
   }
 
   async updateItinerary(id: string, itinerary: Partial<InsertItinerary>): Promise<Itinerary | undefined> {
-    const [updated] = await db.update(itineraries).set(itinerary).where(eq(itineraries.id, id)).returning();
-    return updated || undefined;
+    const dbData = mapItineraryToDB(itinerary);
+    const { data, error } = await supabase
+      .from(TABLES.ITINERARIES)
+      .update(dbData)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapItineraryFromDB(data) : undefined;
   }
 
   async deleteItinerary(id: string): Promise<boolean> {
-    const result = await db.delete(itineraries).where(eq(itineraries.id, id));
-    return (result.rowCount ?? 0) > 0;
+    const { error } = await supabase
+      .from(TABLES.ITINERARIES)
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      if (error.code === 'PGRST116') return false;
+      handleSupabaseError(error);
+    }
+    return true;
   }
 
   // Itinerary Details operations
   async getItineraryDetail(itineraryId: string): Promise<ItineraryDetail | undefined> {
-    const [detail] = await db.select().from(itineraryDetails).where(eq(itineraryDetails.itineraryId, itineraryId));
-    return detail || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.ITINERARY_DETAILS)
+      .select('*')
+      .eq('itinerary_id', itineraryId)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapItineraryDetailFromDB(data) : undefined;
   }
 
   // Inquiry operations
   async createInquiry(inquiry: InsertInquiry): Promise<Inquiry> {
-    const [created] = await db.insert(inquiries).values(inquiry).returning();
-    return created;
+    const dbData = mapInquiryToDB(inquiry);
+    const { data, error } = await supabase
+      .from(TABLES.INQUIRIES)
+      .insert(dbData)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return mapInquiryFromDB(data!);
   }
 
   async getAllInquiries(): Promise<Inquiry[]> {
-    return await db.select().from(inquiries);
+    const { data, error } = await supabase
+      .from(TABLES.INQUIRIES)
+      .select('*');
+    
+    if (error) handleSupabaseError(error);
+    return mapArrayFromDB(data || [], mapInquiryFromDB);
   }
 
   async getInquiry(id: string): Promise<Inquiry | undefined> {
-    const [inquiry] = await db.select().from(inquiries).where(eq(inquiries.id, id));
-    return inquiry || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.INQUIRIES)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapInquiryFromDB(data) : undefined;
   }
 
   // Volunteer Application operations
   async createVolunteerApplication(application: InsertVolunteerApplication): Promise<VolunteerApplication> {
-    const [created] = await db.insert(volunteerApplications).values(application).returning();
-    return created;
+    const dbData = mapVolunteerApplicationToDB(application);
+    const { data, error } = await supabase
+      .from(TABLES.VOLUNTEER_APPLICATIONS)
+      .insert(dbData)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return mapVolunteerApplicationFromDB(data!);
   }
 
   async getAllVolunteerApplications(): Promise<VolunteerApplication[]> {
-    return await db.select().from(volunteerApplications);
+    const { data, error } = await supabase
+      .from(TABLES.VOLUNTEER_APPLICATIONS)
+      .select('*');
+    
+    if (error) handleSupabaseError(error);
+    return mapArrayFromDB(data || [], mapVolunteerApplicationFromDB);
   }
 
   async getVolunteerApplication(id: string): Promise<VolunteerApplication | undefined> {
-    const [application] = await db.select().from(volunteerApplications).where(eq(volunteerApplications.id, id));
-    return application || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.VOLUNTEER_APPLICATIONS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapVolunteerApplicationFromDB(data) : undefined;
   }
 
   async getVolunteerApplicationsByProgram(programId: string): Promise<VolunteerApplication[]> {
-    return await db.select().from(volunteerApplications).where(eq(volunteerApplications.programId, programId));
+    const { data, error } = await supabase
+      .from(TABLES.VOLUNTEER_APPLICATIONS)
+      .select('*')
+      .eq('program_id', programId);
+    
+    if (error) handleSupabaseError(error);
+    return mapArrayFromDB(data || [], mapVolunteerApplicationFromDB);
   }
 
   // Booking operations
   async createBooking(booking: InsertBooking): Promise<Booking> {
-    const [created] = await db.insert(bookings).values(booking).returning();
-    return created;
+    const dbData = mapBookingToDB(booking);
+    const { data, error } = await supabase
+      .from(TABLES.BOOKINGS)
+      .insert(dbData)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return mapBookingFromDB(data!);
   }
 
   async getAllBookings(): Promise<Booking[]> {
-    return await db.select().from(bookings);
+    const { data, error } = await supabase
+      .from(TABLES.BOOKINGS)
+      .select('*');
+    
+    if (error) handleSupabaseError(error);
+    return mapArrayFromDB(data || [], mapBookingFromDB);
   }
 
   async getBooking(id: string): Promise<Booking | undefined> {
-    const [booking] = await db.select().from(bookings).where(eq(bookings.id, id));
-    return booking || undefined;
+    const { data, error } = await supabase
+      .from(TABLES.BOOKINGS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data ? mapBookingFromDB(data) : undefined;
+  }
+
+  // Admin Blog operations
+  async getAllAdminBlogs(): Promise<AdminBlog[]> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_BLOGS)
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) handleSupabaseError(error);
+    return data || [];
+  }
+
+  async getAdminBlog(id: string): Promise<AdminBlog | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_BLOGS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async createAdminBlog(blog: InsertAdminBlog): Promise<AdminBlog> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_BLOGS)
+      .insert(blog)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return data!;
+  }
+
+  async updateAdminBlog(id: string, blog: Partial<InsertAdminBlog>): Promise<AdminBlog | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_BLOGS)
+      .update(blog)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async deleteAdminBlog(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLES.ADMIN_BLOGS)
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      if (error.code === 'PGRST116') return false;
+      handleSupabaseError(error);
+    }
+    return true;
+  }
+
+  // Admin Volunteer Program operations
+  async getAllAdminVolunteerPrograms(): Promise<AdminVolunteerProgram[]> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) handleSupabaseError(error);
+    return data || [];
+  }
+
+  async getAdminVolunteerProgram(id: string): Promise<AdminVolunteerProgram | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async createAdminVolunteerProgram(program: InsertAdminVolunteerProgram): Promise<AdminVolunteerProgram> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
+      .insert(program)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return data!;
+  }
+
+  async updateAdminVolunteerProgram(id: string, program: Partial<InsertAdminVolunteerProgram>): Promise<AdminVolunteerProgram | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
+      .update(program)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async deleteAdminVolunteerProgram(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      if (error.code === 'PGRST116') return false;
+      handleSupabaseError(error);
+    }
+    return true;
+  }
+
+  // Admin Accommodation operations
+  async getAllAdminAccommodations(): Promise<AdminAccommodation[]> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_ACCOMMODATIONS)
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) handleSupabaseError(error);
+    return data || [];
+  }
+
+  async getAdminAccommodation(id: string): Promise<AdminAccommodation | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_ACCOMMODATIONS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async createAdminAccommodation(accommodation: InsertAdminAccommodation): Promise<AdminAccommodation> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_ACCOMMODATIONS)
+      .insert(accommodation)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return data!;
+  }
+
+  async updateAdminAccommodation(id: string, accommodation: Partial<InsertAdminAccommodation>): Promise<AdminAccommodation | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_ACCOMMODATIONS)
+      .update(accommodation)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async deleteAdminAccommodation(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLES.ADMIN_ACCOMMODATIONS)
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      if (error.code === 'PGRST116') return false;
+      handleSupabaseError(error);
+    }
+    return true;
+  }
+
+  // Admin Itinerary operations
+  async getAllAdminItineraries(): Promise<AdminItinerary[]> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_ITINERARIES)
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) handleSupabaseError(error);
+    return data || [];
+  }
+
+  async getAdminItinerary(id: string): Promise<AdminItinerary | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_ITINERARIES)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async createAdminItinerary(itinerary: InsertAdminItinerary): Promise<AdminItinerary> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_ITINERARIES)
+      .insert(itinerary)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return data!;
+  }
+
+  async updateAdminItinerary(id: string, itinerary: Partial<InsertAdminItinerary>): Promise<AdminItinerary | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_ITINERARIES)
+      .update(itinerary)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async deleteAdminItinerary(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLES.ADMIN_ITINERARIES)
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      if (error.code === 'PGRST116') return false;
+      handleSupabaseError(error);
+    }
+    return true;
+  }
+
+  // Admin Destination operations
+  async getAllAdminDestinations(): Promise<AdminDestination[]> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_DESTINATIONS)
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) handleSupabaseError(error);
+    return data || [];
+  }
+
+  async getAdminDestination(id: string): Promise<AdminDestination | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_DESTINATIONS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async createAdminDestination(destination: InsertAdminDestination): Promise<AdminDestination> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_DESTINATIONS)
+      .insert(destination)
+      .select()
+      .single();
+    
+    if (error) handleSupabaseError(error);
+    return data!;
+  }
+
+  async updateAdminDestination(id: string, destination: Partial<InsertAdminDestination>): Promise<AdminDestination | undefined> {
+    const { data, error } = await supabase
+      .from(TABLES.ADMIN_DESTINATIONS)
+      .update(destination)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return undefined;
+      handleSupabaseError(error);
+    }
+    return data || undefined;
+  }
+
+  async deleteAdminDestination(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLES.ADMIN_DESTINATIONS)
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      if (error.code === 'PGRST116') return false;
+      handleSupabaseError(error);
+    }
+    return true;
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new SupabaseStorage();
