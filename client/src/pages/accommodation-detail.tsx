@@ -17,16 +17,17 @@ interface RoomType {
 
 export default function AccommodationDetail() {
   const params = useParams();
-  const accommodationId = params.id;
+  const slugOrId = params.id; // This can be either slug or ID
   const [, setLocation] = useLocation();
   const { accommodations } = useContent();
-  const [activeTab, setActiveTab] = useState<'facilities' | 'rooms' | 'gallery'>('facilities');
+  const [activeTab, setActiveTab] = useState<'facilities' | 'rooms' | 'gallery' | 'terms'>('facilities');
 
-  const accommodation = accommodations.find(a => a.id === accommodationId);
+  // Try to find by slug first, then fall back to ID for backward compatibility
+  const accommodation = accommodations.find(a => a.slug === slugOrId || a.id === slugOrId);
 
   const { data: accommodationDetail, isLoading } = useQuery<AccommodationDetail>({
-    queryKey: [`/api/accommodations/${accommodationId}/details`],
-    enabled: !!accommodationId,
+    queryKey: [`/api/accommodations/${accommodation?.id}/details`],
+    enabled: !!accommodation?.id,
   });
 
   if (!accommodation) {
@@ -102,7 +103,7 @@ export default function AccommodationDetail() {
       <SEOHead 
         title={`${accommodation.name} - Luxury African Accommodation`}
         description={accommodation.description}
-        canonical={`/accommodations/${accommodation.id}`}
+        canonical={`/accommodations/${accommodation.slug || accommodation.id}`}
         ogImage={accommodation.imageUrl || undefined}
       />
 
@@ -166,6 +167,30 @@ export default function AccommodationDetail() {
                     {accommodation.description}
                   </p>
                 </div>
+
+                {/* Room Types & Pricing */}
+                {accommodation.roomTypes && (() => {
+                  try {
+                    const roomTypes = JSON.parse(accommodation.roomTypes);
+                    return roomTypes && roomTypes.length > 0 ? (
+                      <div className="mb-8 bg-muted/30 rounded-2xl p-6">
+                        <h3 className="font-serif text-xl font-bold text-foreground mb-4">Room Types & Pricing</h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          {roomTypes.map((room: { roomType: string; price: number }, index: number) => (
+                            <div key={index} className="flex items-center justify-between p-4 bg-background rounded-lg border border-border">
+                              <span className="font-medium text-foreground">{room.roomType}</span>
+                              <span className="text-lg font-bold text-primary">
+                                ${room.price}<span className="text-sm font-normal text-muted-foreground">/night</span>
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null;
+                  } catch (e) {
+                    return null;
+                  }
+                })()}
               </div>
 
               {/* Tab Navigation */}
@@ -202,6 +227,17 @@ export default function AccommodationDetail() {
                   data-testid="tab-gallery"
                 >
                   GALLERY
+                </button>
+                <button
+                  onClick={() => setActiveTab('terms')}
+                  className={`px-6 py-3 font-serif text-lg font-semibold transition-all duration-200 border-b-2 ${
+                    activeTab === 'terms'
+                      ? 'border-primary text-primary bg-primary/5'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                  }`}
+                  data-testid="tab-terms"
+                >
+                  TERMS & CONDITIONS
                 </button>
               </div>
 
@@ -309,6 +345,26 @@ export default function AccommodationDetail() {
                           </div>
                         ) : (
                           <p className="text-muted-foreground">No gallery images available</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Terms & Conditions Tab */}
+                  {activeTab === 'terms' && (
+                    <div className="space-y-8">
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-6 uppercase">Terms & Conditions</h2>
+                        {accommodation.termsAndConditions ? (
+                          <div className="prose prose-lg max-w-none">
+                            <div className="bg-muted/30 rounded-2xl p-6 md:p-8">
+                              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                                {accommodation.termsAndConditions}
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-muted-foreground">No terms and conditions available. Please contact us for more information.</p>
                         )}
                       </div>
                     </div>

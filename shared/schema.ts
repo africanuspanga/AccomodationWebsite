@@ -21,6 +21,7 @@ export interface PublicUser {
 export interface Accommodation {
   id: string;
   name: string;
+  slug: string | null;
   continental: string;
   country: string;
   destination: string;
@@ -30,6 +31,8 @@ export interface Accommodation {
   rating: number | null;
   imageUrl: string | null;
   features: string[] | null;
+  roomTypes: string | null; // JSON stringified array of {roomType: string, price: number}
+  termsAndConditions: string | null;
 }
 
 // Destinations
@@ -163,6 +166,7 @@ export interface AdminVolunteerProgram {
 export interface AdminAccommodation {
   id: string;
   name: string;
+  slug: string | null;
   continental: string;
   country: string;
   destination: string;
@@ -173,6 +177,8 @@ export interface AdminAccommodation {
   features: string[];
   imageUrl: string | null;
   galleryImages: string[] | null;
+  roomTypes: string | null; // JSON stringified array of {roomType: string, price: number}
+  termsAndConditions: string | null;
   createdAt: string | null;
 }
 
@@ -278,6 +284,7 @@ export const userSchema = z.object({
 // Accommodation schemas
 export const insertAccommodationSchema = z.object({
   name: z.string().min(1),
+  slug: z.string().nullable().optional(),
   continental: z.string().min(1),
   country: z.string().min(1),
   destination: z.string().min(1),
@@ -287,11 +294,14 @@ export const insertAccommodationSchema = z.object({
   rating: z.number().min(1).max(5).nullable().optional(),
   imageUrl: z.string().nullable().optional(),
   features: z.array(z.string()).nullable().optional(),
+  roomTypes: z.string().nullable().optional(),
+  termsAndConditions: z.string().nullable().optional(),
 });
 
 export const accommodationSchema = z.object({
   id: z.string(),
   name: z.string(),
+  slug: z.string().nullable(),
   continental: z.string(),
   country: z.string(),
   destination: z.string(),
@@ -301,6 +311,8 @@ export const accommodationSchema = z.object({
   rating: z.number().nullable(),
   imageUrl: z.string().nullable(),
   features: z.array(z.string()).nullable(),
+  roomTypes: z.string().nullable(),
+  termsAndConditions: z.string().nullable(),
 });
 
 // Destination schemas
@@ -451,6 +463,7 @@ export const insertAdminVolunteerProgramSchema = z.object({
 // Admin Accommodation schemas
 export const insertAdminAccommodationSchema = z.object({
   name: z.string().min(1),
+  slug: z.string().nullable().optional(),
   continental: z.string().min(1),
   country: z.string().min(1),
   destination: z.string().min(1),
@@ -461,6 +474,8 @@ export const insertAdminAccommodationSchema = z.object({
   features: z.array(z.string()).min(1),
   imageUrl: z.string().nullable().optional(),
   galleryImages: z.array(z.string()).nullable().optional(),
+  roomTypes: z.string().nullable().optional(),
+  termsAndConditions: z.string().nullable().optional(),
 });
 
 // Admin Itinerary schemas

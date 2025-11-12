@@ -11,6 +11,7 @@ import type {
   AdminAccommodation, AdminItinerary, AdminDestination,
   DestinationDetail, ItineraryDetail, AccommodationDetail
 } from '@shared/schema';
+import { generateSlug, generateUniqueSlug } from './utils/slug';
 
 // Generic snake_case to camelCase converter
 function toCamelCase(str: string): string {
@@ -54,6 +55,7 @@ export function mapAccommodationFromDB(row: any): Accommodation {
   return {
     id: row.id,
     name: row.name,
+    slug: row.slug || null,
     continental: row.continental,
     country: row.country,
     destination: row.destination,
@@ -63,13 +65,20 @@ export function mapAccommodationFromDB(row: any): Accommodation {
     rating: row.rating,
     imageUrl: row.image_url,
     features: row.features,
+    roomTypes: row.room_types || null,
+    termsAndConditions: row.terms_and_conditions || null,
   };
 }
 
 export function mapAccommodationToDB(obj: any): Record<string, any> {
+  // Auto-generate slug from name if not provided
+  // Use unique slug generation to avoid collisions
+  const slug = obj.slug || generateUniqueSlug(obj.name);
+  
   return {
     id: obj.id,
     name: obj.name,
+    slug: slug,
     continental: obj.continental,
     country: obj.country,
     destination: obj.destination,
@@ -79,6 +88,8 @@ export function mapAccommodationToDB(obj: any): Record<string, any> {
     rating: obj.rating,
     image_url: obj.imageUrl,
     features: obj.features,
+    room_types: obj.roomTypes, // Already a JSON string from frontend
+    terms_and_conditions: obj.termsAndConditions,
   };
 }
 
@@ -461,6 +472,7 @@ export function mapAdminAccommodationFromDB(row: any): AdminAccommodation {
   return {
     id: row.id,
     name: row.name,
+    slug: row.slug || null,
     continental: row.continental,
     country: row.country,
     destination: row.destination,
@@ -471,13 +483,19 @@ export function mapAdminAccommodationFromDB(row: any): AdminAccommodation {
     features: row.features || [],
     imageUrl: row.image_url || null,
     galleryImages: row.gallery_images || [],
+    roomTypes: row.room_types || null,
+    termsAndConditions: row.terms_and_conditions || null,
     createdAt: row.created_at,
   };
 }
 
 export function mapAdminAccommodationToDB(obj: any): Record<string, any> {
+  // Auto-generate unique slug from name if not provided
+  const slug = obj.slug || generateUniqueSlug(obj.name);
+  
   const mapped: Record<string, any> = {
     name: obj.name,
+    slug: slug,
     continental: obj.continental,
     country: obj.country,
     destination: obj.destination,
@@ -491,6 +509,8 @@ export function mapAdminAccommodationToDB(obj: any): Record<string, any> {
   if (obj.features !== undefined) mapped.features = obj.features;
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
   if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
+  if (obj.roomTypes !== undefined) mapped.room_types = obj.roomTypes; // Already a JSON string from frontend
+  if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
   return mapped;

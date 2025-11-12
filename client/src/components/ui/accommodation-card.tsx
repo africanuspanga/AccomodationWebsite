@@ -36,13 +36,13 @@ export default function AccommodationCard({ accommodation, className = '' }: Acc
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'ultra-luxury':
-        return 'bg-accent text-accent-foreground';
+        return 'bg-accent text-white font-semibold';
       case 'luxury':
-        return 'bg-primary/20 text-primary';
+        return 'bg-primary text-white font-semibold';
       case 'mid-range':
-        return 'bg-secondary/20 text-secondary-foreground';
+        return 'bg-amber-500 text-white font-semibold';
       default:
-        return 'bg-muted text-muted-foreground';
+        return 'bg-slate-600 text-white font-semibold';
     }
   };
 
@@ -107,7 +107,7 @@ export default function AccommodationCard({ accommodation, className = '' }: Acc
 
         <Button 
           className="w-full btn-primary py-3 font-semibold"
-          onClick={() => setLocation(`/accommodations/${accommodation.id}`)}
+          onClick={() => setLocation(`/accommodations/${accommodation.slug || accommodation.id}`)}
           data-testid={`view-details-${accommodation.id}`}
         >
           View Details

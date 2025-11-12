@@ -29,17 +29,17 @@ export default function ItineraryCard({ itinerary, className = '' }: ItineraryCa
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'premium':
-        return 'bg-accent text-accent-foreground';
-      case 'popular':
-        return 'bg-primary text-primary-foreground';
-      case 'day-trip':
-        return 'bg-secondary text-secondary-foreground';
-      case 'kilimanjaro':
-        return 'bg-muted text-muted-foreground';
-      case 'trekking':
-        return 'bg-destructive/20 text-destructive';
+        return 'bg-accent text-white font-semibold';
+      case 'popular-safaris':
+        return 'bg-primary text-white font-semibold';
+      case 'day-trips':
+        return 'bg-emerald-600 text-white font-semibold';
+      case 'trekking-hikes':
+        return 'bg-orange-600 text-white font-semibold';
+      case 'beach-holidays':
+        return 'bg-blue-500 text-white font-semibold';
       default:
-        return 'bg-muted text-muted-foreground';
+        return 'bg-slate-600 text-white font-semibold';
     }
   };
 

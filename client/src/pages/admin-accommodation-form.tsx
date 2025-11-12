@@ -27,6 +27,7 @@ import { ImageUpload } from '@/components/ui/image-upload';
 
 const accommodationFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
+  slug: z.string().optional(),
   continental: z.string().min(1, 'Continental is required'),
   country: z.string().min(1, 'Country is required'),
   destination: z.string().min(1, 'Destination is required'),
@@ -35,6 +36,11 @@ const accommodationFormSchema = z.object({
   price: z.coerce.number().min(1, 'Price is required'),
   rating: z.coerce.number().min(1).max(5).default(5),
   features: z.array(z.string()).min(1, 'At least one feature is required'),
+  roomTypes: z.array(z.object({
+    roomType: z.string().min(1, 'Room type name is required'),
+    price: z.coerce.number().min(1, 'Price is required'),
+  })).optional(),
+  termsAndConditions: z.string().optional(),
   imageUrl: z.string().optional(),
   galleryImages: z.array(z.string()).optional(),
 });
@@ -48,12 +54,15 @@ export default function AdminAccommodationForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [adminToken, setAdminToken] = useState<string | null>(null);
   const [newFeature, setNewFeature] = useState('');
+  const [newRoomType, setNewRoomType] = useState('');
+  const [newRoomPrice, setNewRoomPrice] = useState<number>(0);
   const isEdit = id && id !== 'new';
 
   const form = useForm<AccommodationFormData>({
     resolver: zodResolver(accommodationFormSchema),
     defaultValues: {
       name: '',
+      slug: '',
       continental: 'africa',
       country: 'tanzania',
       destination: '',
@@ -62,6 +71,8 @@ export default function AdminAccommodationForm() {
       price: 0,
       rating: 5,
       features: [],
+      roomTypes: [],
+      termsAndConditions: '',
       imageUrl: '',
       galleryImages: [],
     },
@@ -89,8 +100,19 @@ export default function AdminAccommodationForm() {
       });
       if (response.ok) {
         const accommodation = await response.json();
+        // Parse roomTypes from JSON string if it exists
+        let roomTypes = [];
+        if (accommodation.roomTypes) {
+          try {
+            roomTypes = JSON.parse(accommodation.roomTypes);
+          } catch (e) {
+            console.error('Failed to parse roomTypes:', e);
+          }
+        }
+        
         form.reset({
           name: accommodation.name,
+          slug: accommodation.slug || '',
           continental: accommodation.continental,
           country: accommodation.country,
           destination: accommodation.destination,
@@ -99,6 +121,8 @@ export default function AdminAccommodationForm() {
           price: accommodation.price,
           rating: accommodation.rating || 5,
           features: accommodation.features || [],
+          roomTypes: roomTypes,
+          termsAndConditions: accommodation.termsAndConditions || '',
           imageUrl: accommodation.imageUrl || '',
           galleryImages: accommodation.galleryImages || [],
         });
@@ -121,11 +145,33 @@ export default function AdminAccommodationForm() {
     form.setValue('features', currentFeatures.filter((_, i) => i !== index));
   };
 
+  const addRoomType = () => {
+    if (newRoomType.trim() && newRoomPrice > 0) {
+      const currentRoomTypes = form.getValues('roomTypes') || [];
+      form.setValue('roomTypes', [...currentRoomTypes, { roomType: newRoomType.trim(), price: newRoomPrice }]);
+      setNewRoomType('');
+      setNewRoomPrice(0);
+    }
+  };
+
+  const removeRoomType = (index: number) => {
+    const currentRoomTypes = form.getValues('roomTypes') || [];
+    form.setValue('roomTypes', currentRoomTypes.filter((_, i) => i !== index));
+  };
+
   const onSubmit = async (data: AccommodationFormData) => {
     setIsLoading(true);
     try {
       const url = isEdit ? `/api/admin/accommodations/${id}` : '/api/admin/accommodations';
       const method = isEdit ? 'PUT' : 'POST';
+
+      // Convert roomTypes array to JSON string for storage
+      const payload = {
+        ...data,
+        roomTypes: data.roomTypes && data.roomTypes.length > 0 
+          ? JSON.stringify(data.roomTypes) 
+          : null,
+      };
 
       const response = await fetch(url, {
         method,
@@ -133,7 +179,7 @@ export default function AdminAccommodationForm() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${adminToken}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -190,6 +236,23 @@ export default function AdminAccommodationForm() {
                   <FormControl>
                     <Input placeholder="Four Seasons Safari Lodge" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL Slug (Optional - auto-generated if empty)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="four-seasons-safari-lodge" {...field} />
+                  </FormControl>
+                  <p className="text-sm text-muted-foreground">
+                    Leave blank to auto-generate from name
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}
@@ -385,6 +448,80 @@ export default function AdminAccommodationForm() {
                       </div>
                     )}
                   </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="roomTypes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Room Types & Pricing</FormLabel>
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input
+                        placeholder="Room type (e.g., Double Room)"
+                        value={newRoomType}
+                        onChange={(e) => setNewRoomType(e.target.value)}
+                      />
+                      <div className="flex gap-2">
+                        <Input
+                          type="number"
+                          placeholder="Price"
+                          value={newRoomPrice || ''}
+                          onChange={(e) => setNewRoomPrice(Number(e.target.value))}
+                        />
+                        <Button type="button" onClick={addRoomType}>
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    {field.value && field.value.length > 0 && (
+                      <div className="space-y-2">
+                        {field.value.map((room, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-3 bg-muted rounded"
+                          >
+                            <div>
+                              <span className="font-medium">{room.roomType}</span>
+                              <span className="text-sm text-muted-foreground ml-3">
+                                ${room.price} per night
+                              </span>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeRoomType(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="termsAndConditions"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Terms & Conditions</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter terms and conditions for this accommodation..."
+                      className="min-h-[200px]"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
