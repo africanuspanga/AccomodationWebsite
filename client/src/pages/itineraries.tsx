@@ -11,17 +11,15 @@ export default function Itineraries() {
 
   const categories = [
     { value: 'all', label: 'All Packages', count: itineraries.length },
-    { value: 'day-trip', label: 'Day Trips', count: itineraries.filter(i => i.category === 'day-trip').length },
-    { value: 'classic-safari', label: 'Classic Safaris', count: itineraries.filter(i => i.category === 'classic-safari').length },
+    { value: 'day-trips', label: 'Day Trips', count: itineraries.filter(i => i.category === 'day-trips').length },
+    { value: 'popular-safaris', label: 'Popular Safaris', count: itineraries.filter(i => i.category === 'popular-safaris').length },
     { value: 'premium', label: 'Premium', count: itineraries.filter(i => i.category === 'premium').length },
-    { value: 'kilimanjaro', label: 'Kilimanjaro', count: itineraries.filter(i => i.category === 'kilimanjaro').length },
-    { value: 'trekking', label: 'Trekking & Hiking', count: itineraries.filter(i => ['trekking', 'hiking'].includes(i.category)).length },
+    { value: 'trekking-hikes', label: 'Trekking & Hikes', count: itineraries.filter(i => i.category === 'trekking-hikes').length },
+    { value: 'beach-holidays', label: 'Beach Holidays', count: itineraries.filter(i => i.category === 'beach-holidays').length },
   ];
 
   const filteredItineraries = selectedCategory === 'all' 
     ? itineraries 
-    : selectedCategory === 'trekking'
-    ? itineraries.filter(itinerary => ['trekking', 'hiking'].includes(itinerary.category))
     : itineraries.filter(itinerary => itinerary.category === selectedCategory);
 
   const handleCategoryChange = (category: string) => {

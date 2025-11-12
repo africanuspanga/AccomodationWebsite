@@ -351,6 +351,18 @@ export default function ItineraryDetail() {
                           <p className="text-muted-foreground">No pricing information available. Starting from {formatPrice(itinerary.price)} per person.</p>
                         )}
                       </div>
+
+                      {/* Terms & Conditions */}
+                      {(itineraryDetail?.termsAndConditions || itinerary.termsAndConditions) && (
+                        <div className="mt-12 pt-8 border-t border-border">
+                          <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">Terms & Conditions</h2>
+                          <div className="prose prose-slate max-w-none">
+                            <p className="text-foreground whitespace-pre-wrap">
+                              {itineraryDetail?.termsAndConditions || itinerary.termsAndConditions}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </>

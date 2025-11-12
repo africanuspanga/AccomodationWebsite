@@ -55,10 +55,13 @@ export interface Itinerary {
   description: string;
   highlights: string[] | null;
   includes: string[] | null;
+  whatsNotIncluded: string[] | null;
+  whatToBring: string[] | null;
   difficulty: string | null;
   groupSize: string | null;
   rating: number | null;
   imageUrl: string | null;
+  termsAndConditions: string | null;
 }
 
 // Inquiries
@@ -183,11 +186,14 @@ export interface AdminItinerary {
   description: string;
   highlights: string[];
   includes: string[];
+  whatsNotIncluded: string[] | null;
+  whatToBring: string[] | null;
   difficulty: string | null;
   groupSize: string | null;
   rating: number | null;
   imageUrl: string | null;
   galleryImages: string[] | null;
+  termsAndConditions: string | null;
   createdAt: string | null;
 }
 
@@ -237,6 +243,7 @@ export interface ItineraryDetail {
   pricingData: string | null; // JSON stringified
   mapImageUrl: string | null;
   tourHighlights: string[] | null;
+  termsAndConditions: string | null;
   createdAt: string | null;
   updatedAt: string | null;
 }
@@ -329,10 +336,13 @@ export const insertItinerarySchema = z.object({
   description: z.string().min(1),
   highlights: z.array(z.string()).nullable().optional(),
   includes: z.array(z.string()).nullable().optional(),
+  whatsNotIncluded: z.array(z.string()).nullable().optional(),
+  whatToBring: z.array(z.string()).nullable().optional(),
   difficulty: z.string().nullable().optional(),
   groupSize: z.string().nullable().optional(),
   rating: z.number().min(1).max(5).nullable().optional(),
   imageUrl: z.string().nullable().optional(),
+  termsAndConditions: z.string().nullable().optional(),
 });
 
 export const itinerarySchema = z.object({
@@ -344,10 +354,13 @@ export const itinerarySchema = z.object({
   description: z.string(),
   highlights: z.array(z.string()).nullable(),
   includes: z.array(z.string()).nullable(),
+  whatsNotIncluded: z.array(z.string()).nullable(),
+  whatToBring: z.array(z.string()).nullable(),
   difficulty: z.string().nullable(),
   groupSize: z.string().nullable(),
   rating: z.number().nullable(),
   imageUrl: z.string().nullable(),
+  termsAndConditions: z.string().nullable(),
 });
 
 // Inquiry schemas
@@ -459,11 +472,14 @@ export const insertAdminItinerarySchema = z.object({
   description: z.string().min(1),
   highlights: z.array(z.string()).min(1),
   includes: z.array(z.string()).min(1),
+  whatsNotIncluded: z.array(z.string()).nullable().optional(),
+  whatToBring: z.array(z.string()).nullable().optional(),
   difficulty: z.string().nullable().optional(),
   groupSize: z.string().nullable().optional(),
   rating: z.coerce.number().min(1).max(5).nullable().optional(),
   imageUrl: z.string().nullable().optional(),
   galleryImages: z.array(z.string()).nullable().optional(),
+  termsAndConditions: z.string().nullable().optional(),
 });
 
 // Admin Destination schemas

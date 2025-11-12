@@ -33,11 +33,14 @@ const itineraryFormSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   highlights: z.array(z.string()).min(1, 'At least one highlight is required'),
   includes: z.array(z.string()).min(1, 'At least one inclusion is required'),
+  whatsNotIncluded: z.array(z.string()).optional(),
+  whatToBring: z.array(z.string()).optional(),
   difficulty: z.string().optional(),
   groupSize: z.string().optional(),
   rating: z.coerce.number().min(1).max(5).default(5),
   imageUrl: z.string().optional(),
   galleryImages: z.array(z.string()).optional(),
+  termsAndConditions: z.string().optional(),
 });
 
 type ItineraryFormData = z.infer<typeof itineraryFormSchema>;
@@ -50,6 +53,8 @@ export default function AdminItineraryForm() {
   const [adminToken, setAdminToken] = useState<string | null>(null);
   const [newHighlight, setNewHighlight] = useState('');
   const [newInclusion, setNewInclusion] = useState('');
+  const [newNotIncluded, setNewNotIncluded] = useState('');
+  const [newToBring, setNewToBring] = useState('');
   const isEdit = id && id !== 'new';
 
   const form = useForm<ItineraryFormData>({
@@ -58,15 +63,18 @@ export default function AdminItineraryForm() {
       name: '',
       duration: '',
       price: 0,
-      category: 'classic-safari',
+      category: 'popular-safaris',
       description: '',
       highlights: [],
       includes: [],
+      whatsNotIncluded: [],
+      whatToBring: [],
       difficulty: '',
       groupSize: '',
       rating: 5,
       imageUrl: '',
       galleryImages: [],
+      termsAndConditions: '',
     },
   });
 
@@ -100,11 +108,14 @@ export default function AdminItineraryForm() {
           description: itinerary.description,
           highlights: itinerary.highlights || [],
           includes: itinerary.includes || [],
+          whatsNotIncluded: itinerary.whatsNotIncluded || [],
+          whatToBring: itinerary.whatToBring || [],
           difficulty: itinerary.difficulty || '',
           groupSize: itinerary.groupSize || '',
           rating: itinerary.rating || 5,
           imageUrl: itinerary.imageUrl || '',
           galleryImages: itinerary.galleryImages || [],
+          termsAndConditions: itinerary.termsAndConditions || '',
         });
       }
     } catch (error) {
@@ -136,6 +147,32 @@ export default function AdminItineraryForm() {
   const removeInclusion = (index: number) => {
     const currentInclusions = form.getValues('includes');
     form.setValue('includes', currentInclusions.filter((_, i) => i !== index));
+  };
+
+  const addNotIncluded = () => {
+    if (newNotIncluded.trim()) {
+      const current = form.getValues('whatsNotIncluded') || [];
+      form.setValue('whatsNotIncluded', [...current, newNotIncluded.trim()]);
+      setNewNotIncluded('');
+    }
+  };
+
+  const removeNotIncluded = (index: number) => {
+    const current = form.getValues('whatsNotIncluded') || [];
+    form.setValue('whatsNotIncluded', current.filter((_, i) => i !== index));
+  };
+
+  const addToBring = () => {
+    if (newToBring.trim()) {
+      const current = form.getValues('whatToBring') || [];
+      form.setValue('whatToBring', [...current, newToBring.trim()]);
+      setNewToBring('');
+    }
+  };
+
+  const removeToBring = (index: number) => {
+    const current = form.getValues('whatToBring') || [];
+    form.setValue('whatToBring', current.filter((_, i) => i !== index));
   };
 
   const onSubmit = async (data: ItineraryFormData) => {
@@ -240,12 +277,12 @@ export default function AdminItineraryForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="day-trip">Day Trip</SelectItem>
-                        <SelectItem value="classic-safari">Classic Safari</SelectItem>
+                        <SelectItem value="all-packages">All Packages</SelectItem>
+                        <SelectItem value="day-trips">Day Trips</SelectItem>
+                        <SelectItem value="popular-safaris">Popular Safaris</SelectItem>
                         <SelectItem value="premium">Premium</SelectItem>
-                        <SelectItem value="kilimanjaro">Kilimanjaro</SelectItem>
-                        <SelectItem value="trekking">Trekking</SelectItem>
-                        <SelectItem value="hiking">Hiking</SelectItem>
+                        <SelectItem value="trekking-hikes">Trekking & Hikes</SelectItem>
+                        <SelectItem value="beach-holidays">Beach Holidays</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -432,6 +469,122 @@ export default function AdminItineraryForm() {
                       </div>
                     )}
                   </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="whatsNotIncluded"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>What's Not Included (Optional)</FormLabel>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Add an exclusion"
+                        value={newNotIncluded}
+                        onChange={(e) => setNewNotIncluded(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            addNotIncluded();
+                          }
+                        }}
+                      />
+                      <Button type="button" onClick={addNotIncluded}>
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {field.value && field.value.length > 0 && (
+                      <div className="space-y-2">
+                        {field.value.map((item, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-muted rounded"
+                          >
+                            <span>{item}</span>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeNotIncluded(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="whatToBring"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>What to Bring (Optional)</FormLabel>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Add an item to bring"
+                        value={newToBring}
+                        onChange={(e) => setNewToBring(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            addToBring();
+                          }
+                        }}
+                      />
+                      <Button type="button" onClick={addToBring}>
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {field.value && field.value.length > 0 && (
+                      <div className="space-y-2">
+                        {field.value.map((item, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-muted rounded"
+                          >
+                            <span>{item}</span>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeToBring(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="termsAndConditions"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Terms & Conditions (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter terms and conditions for this itinerary..."
+                      className="min-h-[120px]"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

@@ -10,7 +10,7 @@ import type {
   VolunteerApplication, Booking, AdminBlog, AdminVolunteerProgram,
   AdminAccommodation, AdminItinerary, AdminDestination,
   DestinationDetail, ItineraryDetail, AccommodationDetail
-} from '@shared/schema-supabase';
+} from '@shared/schema';
 
 // Generic snake_case to camelCase converter
 function toCamelCase(str: string): string {
@@ -120,10 +120,13 @@ export function mapItineraryFromDB(row: any): Itinerary {
     description: row.description,
     highlights: row.highlights,
     includes: row.includes,
+    whatsNotIncluded: row.whats_not_included,
+    whatToBring: row.what_to_bring,
     difficulty: row.difficulty,
     groupSize: row.group_size,
     rating: row.rating,
     imageUrl: row.image_url,
+    termsAndConditions: row.terms_and_conditions,
   };
 }
 
@@ -137,10 +140,13 @@ export function mapItineraryToDB(obj: any): Record<string, any> {
     description: obj.description,
     highlights: obj.highlights,
     includes: obj.includes,
+    whats_not_included: obj.whatsNotIncluded,
+    what_to_bring: obj.whatToBring,
     difficulty: obj.difficulty,
     group_size: obj.groupSize,
     rating: obj.rating,
     image_url: obj.imageUrl,
+    terms_and_conditions: obj.termsAndConditions,
   };
 }
 
@@ -326,6 +332,7 @@ export function mapItineraryDetailFromDB(row: any): ItineraryDetail {
     pricingData: row.pricing_data,
     mapImageUrl: row.map_image_url,
     tourHighlights: row.tour_highlights,
+    termsAndConditions: row.terms_and_conditions,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -343,6 +350,7 @@ export function mapItineraryDetailToDB(obj: any): Record<string, any> {
     pricing_data: obj.pricingData,
     map_image_url: obj.mapImageUrl,
     tour_highlights: obj.tourHighlights,
+    terms_and_conditions: obj.termsAndConditions,
     created_at: obj.createdAt,
     updated_at: obj.updatedAt,
   };
@@ -498,10 +506,13 @@ export function mapAdminItineraryFromDB(row: any): AdminItinerary {
     description: row.description || null,
     highlights: row.highlights || [],
     includes: row.includes || [],
+    whatsNotIncluded: row.whats_not_included || null,
+    whatToBring: row.what_to_bring || null,
     difficulty: row.difficulty || null,
     groupSize: row.group_size || null,
     imageUrl: row.image_url || null,
     galleryImages: row.gallery_images || [],
+    termsAndConditions: row.terms_and_conditions || null,
     createdAt: row.created_at,
   };
 }
@@ -518,10 +529,13 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
   if (obj.description !== undefined) mapped.description = obj.description;
   if (obj.highlights !== undefined) mapped.highlights = obj.highlights;
   if (obj.includes !== undefined) mapped.includes = obj.includes;
+  if (obj.whatsNotIncluded !== undefined) mapped.whats_not_included = obj.whatsNotIncluded;
+  if (obj.whatToBring !== undefined) mapped.what_to_bring = obj.whatToBring;
   if (obj.difficulty !== undefined) mapped.difficulty = obj.difficulty;
   if (obj.groupSize !== undefined) mapped.group_size = obj.groupSize;
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
   if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
+  if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
   return mapped;
