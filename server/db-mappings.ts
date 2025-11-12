@@ -510,6 +510,7 @@ export function mapAdminItineraryFromDB(row: any): AdminItinerary {
     whatToBring: row.what_to_bring || null,
     difficulty: row.difficulty || null,
     groupSize: row.group_size || null,
+    rating: row.rating || null,
     imageUrl: row.image_url || null,
     galleryImages: row.gallery_images || [],
     termsAndConditions: row.terms_and_conditions || null,
@@ -533,6 +534,7 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
   if (obj.whatToBring !== undefined) mapped.what_to_bring = obj.whatToBring;
   if (obj.difficulty !== undefined) mapped.difficulty = obj.difficulty;
   if (obj.groupSize !== undefined) mapped.group_size = obj.groupSize;
+  if (obj.rating !== undefined) mapped.rating = obj.rating;
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
   if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
@@ -544,35 +546,41 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
 export function mapAdminVolunteerProgramFromDB(row: any): AdminVolunteerProgram {
   return {
     id: row.id,
-    name: row.name,
+    title: row.title,
     location: row.location,
+    country: row.country,
+    flag: row.flag,
+    minAge: row.min_age,
     duration: row.duration,
-    price: row.price,
-    category: row.category,
-    description: row.description || null,
+    cost: row.cost,
     focusAreas: row.focus_areas || [],
+    image: row.image || null,
+    description: row.description || '',
+    fullExplanation: row.full_explanation || '',
+    activities: row.activities || '',
     highlights: row.highlights || [],
-    activities: row.activities ? JSON.parse(row.activities) : { safari: false, hiking: false, mountainClimbing: false, culturalTours: false },
-    imageUrl: row.image_url || null,
     createdAt: row.created_at,
   };
 }
 
 export function mapAdminVolunteerProgramToDB(obj: any): Record<string, any> {
   const mapped: Record<string, any> = {
-    name: obj.name,
+    title: obj.title,
     location: obj.location,
+    country: obj.country,
+    flag: obj.flag,
+    min_age: obj.minAge,
     duration: obj.duration,
-    price: obj.price,
-    category: obj.category,
+    cost: obj.cost,
+    focus_areas: obj.focusAreas,
+    image: obj.image,
+    description: obj.description,
+    full_explanation: obj.fullExplanation,
+    activities: obj.activities,
+    highlights: obj.highlights,
   };
   
   if (obj.id !== undefined) mapped.id = obj.id;
-  if (obj.description !== undefined) mapped.description = obj.description;
-  if (obj.focusAreas !== undefined) mapped.focus_areas = obj.focusAreas;
-  if (obj.highlights !== undefined) mapped.highlights = obj.highlights;
-  if (obj.activities !== undefined) mapped.activities = JSON.stringify(obj.activities);
-  if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
   return mapped;

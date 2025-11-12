@@ -29,7 +29,7 @@ const destinationFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   continental: z.string().min(1, 'Continental is required'),
   country: z.string().min(1, 'Country is required'),
-  region: z.string().optional(),
+  region: z.string().min(1, 'Region is required'),
   destinationType: z.string().min(1, 'Destination type is required'),
   description: z.string().min(1, 'Description is required'),
   highlights: z.array(z.string()).optional(),
@@ -57,7 +57,7 @@ export default function AdminDestinationForm() {
       name: '',
       continental: 'africa',
       country: 'tanzania',
-      region: '',
+      region: 'northern-circuit',
       destinationType: 'safari-circuit',
       description: '',
       highlights: [],
@@ -296,14 +296,19 @@ export default function AdminDestinationForm() {
                 name="region"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Region (Optional)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="northern-circuit, coast, etc." 
-                        {...field} 
-                        data-testid="input-region"
-                      />
-                    </FormControl>
+                    <FormLabel>Region</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger data-testid="select-region">
+                          <SelectValue placeholder="Select region" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="northern-circuit">Northern Circuit</SelectItem>
+                        <SelectItem value="southern-circuit">Southern Circuit</SelectItem>
+                        <SelectItem value="coast">Coast</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
