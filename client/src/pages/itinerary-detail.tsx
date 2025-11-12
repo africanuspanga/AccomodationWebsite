@@ -40,7 +40,7 @@ export default function ItineraryDetail() {
   const itineraryId = params.id;
   const [, setLocation] = useLocation();
   const { itineraries } = useContent();
-  const [activeTab, setActiveTab] = useState<'tour-details' | 'itinerary' | 'prices'>('tour-details');
+  const [activeTab, setActiveTab] = useState<'tour-details' | 'itinerary' | 'prices' | 'terms'>('tour-details');
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
 
   const itinerary = itineraries.find(i => i.id === itineraryId);
@@ -164,7 +164,18 @@ export default function ItineraryDetail() {
                   }`}
                   data-testid="tab-prices"
                 >
-                  PRICES & TERMS
+                  PRICES & COST
+                </button>
+                <button
+                  onClick={() => setActiveTab('terms')}
+                  className={`px-6 py-3 font-serif text-lg font-semibold transition-all duration-200 border-b-2 ${
+                    activeTab === 'terms'
+                      ? 'border-primary text-primary bg-primary/5'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                  }`}
+                  data-testid="tab-terms"
+                >
+                  TERMS AND CONDITIONS
                 </button>
               </div>
 
@@ -274,11 +285,11 @@ export default function ItineraryDetail() {
                     </div>
                   )}
 
-                  {/* Prices & Terms Tab */}
+                  {/* Prices & Cost Tab */}
                   {activeTab === 'prices' && (
                     <div className="space-y-8">
                       <div>
-                        <h2 className="font-serif text-2xl font-bold text-foreground mb-2 uppercase">Prices</h2>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-2 uppercase">Prices & Cost</h2>
                         <p className="text-muted-foreground mb-6">
                           The total Seasonal cost of this itinerary is <span className="font-semibold">Per person</span>
                         </p>
@@ -351,18 +362,24 @@ export default function ItineraryDetail() {
                           <p className="text-muted-foreground">No pricing information available. Starting from {formatPrice(itinerary.price)} per person.</p>
                         )}
                       </div>
+                    </div>
+                  )}
 
-                      {/* Terms & Conditions */}
-                      {(itineraryDetail?.termsAndConditions || itinerary.termsAndConditions) && (
-                        <div className="mt-12 pt-8 border-t border-border">
-                          <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">Terms & Conditions</h2>
+                  {/* Terms and Conditions Tab */}
+                  {activeTab === 'terms' && (
+                    <div className="space-y-6">
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">Terms and Conditions</h2>
+                        {(itineraryDetail?.termsAndConditions || itinerary.termsAndConditions) ? (
                           <div className="prose prose-slate max-w-none">
-                            <p className="text-foreground whitespace-pre-wrap">
+                            <p className="text-foreground whitespace-pre-wrap leading-relaxed">
                               {itineraryDetail?.termsAndConditions || itinerary.termsAndConditions}
                             </p>
                           </div>
-                        </div>
-                      )}
+                        ) : (
+                          <p className="text-muted-foreground">No terms and conditions available for this itinerary.</p>
+                        )}
+                      </div>
                     </div>
                   )}
                 </>
