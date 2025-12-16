@@ -490,12 +490,8 @@ export function mapAdminAccommodationFromDB(row: any): AdminAccommodation {
 }
 
 export function mapAdminAccommodationToDB(obj: any): Record<string, any> {
-  // Auto-generate unique slug from name if not provided
-  const slug = obj.slug || generateUniqueSlug(obj.name);
-  
   const mapped: Record<string, any> = {
     name: obj.name,
-    slug: slug,
     continental: obj.continental,
     country: obj.country,
     destination: obj.destination,
@@ -509,9 +505,17 @@ export function mapAdminAccommodationToDB(obj: any): Record<string, any> {
   if (obj.features !== undefined) mapped.features = obj.features;
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
   if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
-  if (obj.roomTypes !== undefined) mapped.room_types = obj.roomTypes; // Already a JSON string from frontend
-  if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
+  
+  // NOTE: These columns require running SUPABASE_ACCOMMODATION_UPDATE.sql migration first
+  // Uncomment after running the migration:
+  // if (obj.slug !== undefined && obj.slug !== null && obj.slug !== '') {
+  //   mapped.slug = obj.slug;
+  // } else if (obj.name) {
+  //   mapped.slug = generateUniqueSlug(obj.name);
+  // }
+  // if (obj.roomTypes !== undefined && obj.roomTypes !== null) mapped.room_types = obj.roomTypes;
+  // if (obj.termsAndConditions !== undefined && obj.termsAndConditions !== null && obj.termsAndConditions !== '') mapped.terms_and_conditions = obj.termsAndConditions;
   
   return mapped;
 }
@@ -550,15 +554,18 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
   if (obj.description !== undefined) mapped.description = obj.description;
   if (obj.highlights !== undefined) mapped.highlights = obj.highlights;
   if (obj.includes !== undefined) mapped.includes = obj.includes;
-  if (obj.whatsNotIncluded !== undefined) mapped.whats_not_included = obj.whatsNotIncluded;
-  if (obj.whatToBring !== undefined) mapped.what_to_bring = obj.whatToBring;
   if (obj.difficulty !== undefined) mapped.difficulty = obj.difficulty;
   if (obj.groupSize !== undefined) mapped.group_size = obj.groupSize;
   if (obj.rating !== undefined) mapped.rating = obj.rating;
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
   if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
-  if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
+  
+  // NOTE: These columns require running SUPABASE_ITINERARY_UPDATE.sql migration first
+  // Uncomment after running the migration:
+  // if (obj.whatsNotIncluded !== undefined) mapped.whats_not_included = obj.whatsNotIncluded;
+  // if (obj.whatToBring !== undefined) mapped.what_to_bring = obj.whatToBring;
+  // if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
   
   return mapped;
 }

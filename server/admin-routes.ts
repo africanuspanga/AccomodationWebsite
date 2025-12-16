@@ -190,10 +190,13 @@ export function registerAdminRoutes(app: Express) {
   // Create admin accommodation
   app.post("/api/admin/accommodations", isAdmin, async (req, res) => {
     try {
+      console.log('Creating accommodation with data:', JSON.stringify(req.body, null, 2));
       const validatedData = insertAdminAccommodationSchema.parse(req.body);
+      console.log('Validated data:', JSON.stringify(validatedData, null, 2));
       const accommodation = await storage.createAdminAccommodation(validatedData);
       res.json(accommodation);
     } catch (error: any) {
+      console.error('Error creating accommodation:', error);
       res.status(400).json({ error: error.message });
     }
   });
@@ -253,10 +256,13 @@ export function registerAdminRoutes(app: Express) {
   // Create admin itinerary
   app.post("/api/admin/itineraries", isAdmin, async (req, res) => {
     try {
+      console.log('Creating itinerary with data:', JSON.stringify(req.body, null, 2));
       const validatedData = insertAdminItinerarySchema.parse(req.body);
+      console.log('Validated data:', JSON.stringify(validatedData, null, 2));
       const itinerary = await storage.createAdminItinerary(validatedData);
       res.json(itinerary);
     } catch (error: any) {
+      console.error('Error creating itinerary:', error);
       res.status(400).json({ error: error.message });
     }
   });
