@@ -504,11 +504,11 @@ export function mapAdminAccommodationToDB(obj: any): Record<string, any> {
   if (obj.description !== undefined) mapped.description = obj.description;
   if (obj.features !== undefined) mapped.features = obj.features;
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
-  if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
-  // NOTE: These columns require running SUPABASE_ACCOMMODATION_UPDATE.sql migration first
+  // NOTE: These columns require running migrations first - gallery_images may not exist
   // Uncomment after running the migration:
+  // if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   // if (obj.slug !== undefined && obj.slug !== null && obj.slug !== '') {
   //   mapped.slug = obj.slug;
   // } else if (obj.name) {
@@ -558,11 +558,11 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
   if (obj.groupSize !== undefined) mapped.group_size = obj.groupSize;
   if (obj.rating !== undefined) mapped.rating = obj.rating;
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
-  if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
-  // NOTE: These columns require running SUPABASE_ITINERARY_UPDATE.sql migration first
+  // NOTE: These columns require running migrations first - gallery_images may not exist
   // Uncomment after running the migration:
+  // if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   // if (obj.whatsNotIncluded !== undefined) mapped.whats_not_included = obj.whatsNotIncluded;
   // if (obj.whatToBring !== undefined) mapped.what_to_bring = obj.whatToBring;
   // if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
