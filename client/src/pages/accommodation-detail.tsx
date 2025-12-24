@@ -83,8 +83,21 @@ export default function AccommodationDetail() {
     ? JSON.parse(accommodationDetail.rooms) 
     : [];
 
-  // Get gallery images from main accommodation object or accommodationDetail
-  const galleryImages: string[] = accommodation?.galleryImages || accommodationDetail?.galleryImages || [];
+  // Get gallery images - safely parse if it's a JSON string
+  const galleryImages: string[] = (() => {
+    const raw = accommodation?.galleryImages || accommodationDetail?.galleryImages;
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === 'string') {
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  })();
   
   // Parse room types from main accommodation object
   const parsedRoomTypes = (() => {

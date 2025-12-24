@@ -89,8 +89,21 @@ export default function ItineraryDetail() {
   const whatToBring = itinerary?.whatToBring || itineraryDetail?.whatToBring || [];
   const termsAndConditions = itinerary?.termsAndConditions || itineraryDetail?.termsAndConditions || null;
   
-  // Get gallery images from itinerary
-  const galleryImages: string[] = itinerary?.galleryImages || [];
+  // Get gallery images from itinerary - safely parse if it's a JSON string
+  const galleryImages: string[] = (() => {
+    const raw = itinerary?.galleryImages;
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === 'string') {
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  })();
 
   const toggleDay = (day: number) => {
     setExpandedDay(expandedDay === day ? null : day);

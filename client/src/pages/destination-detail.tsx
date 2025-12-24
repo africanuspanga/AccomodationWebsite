@@ -47,8 +47,21 @@ export default function DestinationDetail() {
       .join(' ');
   };
 
-  // Get gallery images from destination
-  const galleryImages: string[] = destination.galleryImages || [];
+  // Get gallery images from destination - safely parse if it's a JSON string
+  const galleryImages: string[] = (() => {
+    const raw = destination.galleryImages;
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === 'string') {
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  })();
 
   return (
     <>
@@ -119,7 +132,7 @@ export default function DestinationDetail() {
       </div>
 
       {/* Tab Navigation - Floating Style */}
-      <div className="sticky top-20 z-30 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
+      <div className="sticky top-[88px] z-30 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="container-custom">
           <div className="flex gap-1 overflow-x-auto py-3">
             <button
@@ -337,7 +350,7 @@ export default function DestinationDetail() {
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-gradient-to-br from-card to-muted/30 rounded-3xl p-8 shadow-xl border border-border sticky top-36 space-y-8">
+              <div className="bg-gradient-to-br from-card to-muted/30 rounded-3xl p-8 shadow-xl border border-border sticky top-[160px] space-y-8">
                 {/* Destination Rating */}
                 <div className="flex items-center gap-2 pb-6 border-b border-border">
                   <div className="flex gap-1">
