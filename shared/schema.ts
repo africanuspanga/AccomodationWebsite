@@ -186,6 +186,7 @@ export interface AdminAccommodation {
 export interface AdminItinerary {
   id: string;
   name: string;
+  slug: string | null;
   duration: string;
   price: number;
   category: string;
@@ -200,6 +201,8 @@ export interface AdminItinerary {
   imageUrl: string | null;
   galleryImages: string[] | null;
   termsAndConditions: string | null;
+  dayByDay: string | null;
+  pricingData: string | null;
   createdAt: string | null;
 }
 
@@ -207,11 +210,14 @@ export interface AdminItinerary {
 export interface AdminDestination {
   id: string;
   name: string;
+  slug: string | null;
   continental: string;
   country: string;
   region: string | null;
   destinationType: string;
   description: string;
+  cardDescription: string | null;
+  fullDescription: string | null;
   highlights: string[] | null;
   bestTime: string | null;
   imageUrl: string | null;
@@ -481,6 +487,7 @@ export const insertAdminAccommodationSchema = z.object({
 // Admin Itinerary schemas
 export const insertAdminItinerarySchema = z.object({
   name: z.string().min(1),
+  slug: z.string().nullable().optional(),
   duration: z.string().min(1),
   price: z.coerce.number().min(0),
   category: z.string().min(1),
@@ -495,16 +502,21 @@ export const insertAdminItinerarySchema = z.object({
   imageUrl: z.string().nullable().optional(),
   galleryImages: z.array(z.string()).nullable().optional(),
   termsAndConditions: z.string().nullable().optional(),
+  dayByDay: z.string().nullable().optional(),
+  pricingData: z.string().nullable().optional(),
 });
 
 // Admin Destination schemas
 export const insertAdminDestinationSchema = z.object({
   name: z.string().min(1),
+  slug: z.string().nullable().optional(),
   continental: z.string().min(1),
   country: z.string().min(1),
   region: z.string().nullable().optional(),
   destinationType: z.string().min(1),
   description: z.string().min(1),
+  cardDescription: z.string().nullable().optional(),
+  fullDescription: z.string().nullable().optional(),
   highlights: z.array(z.string()).nullable().optional(),
   bestTime: z.string().nullable().optional(),
   imageUrl: z.string().nullable().optional(),

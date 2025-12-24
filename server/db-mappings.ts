@@ -433,11 +433,14 @@ export function mapAdminDestinationFromDB(row: any): AdminDestination {
   return {
     id: row.id,
     name: row.name,
+    slug: row.slug || null,
     continental: row.continental,
     country: row.country,
     region: row.region || null,
     destinationType: row.destination_type,
     description: row.description,
+    cardDescription: row.card_description || null,
+    fullDescription: row.full_description || null,
     highlights: row.highlights || [],
     bestTime: row.best_time || null,
     imageUrl: row.image_url || null,
@@ -461,9 +464,18 @@ export function mapAdminDestinationToDB(obj: any): Record<string, any> {
   if (obj.highlights !== undefined) mapped.highlights = obj.highlights;
   if (obj.bestTime !== undefined) mapped.best_time = obj.bestTime;
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
-  if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   if (obj.subDestinations !== undefined) mapped.sub_destinations = obj.subDestinations;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
+  
+  // New fields - require SUPABASE_COMPLETE_UPDATE.sql migration
+  if (obj.slug !== undefined && obj.slug !== null && obj.slug !== '') {
+    mapped.slug = obj.slug;
+  } else if (obj.name) {
+    mapped.slug = obj.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  }
+  if (obj.cardDescription !== undefined) mapped.card_description = obj.cardDescription;
+  if (obj.fullDescription !== undefined) mapped.full_description = obj.fullDescription;
+  if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   
   return mapped;
 }
@@ -506,16 +518,15 @@ export function mapAdminAccommodationToDB(obj: any): Record<string, any> {
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
-  // NOTE: These columns require running migrations first - gallery_images may not exist
-  // Uncomment after running the migration:
-  // if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
-  // if (obj.slug !== undefined && obj.slug !== null && obj.slug !== '') {
-  //   mapped.slug = obj.slug;
-  // } else if (obj.name) {
-  //   mapped.slug = generateUniqueSlug(obj.name);
-  // }
-  // if (obj.roomTypes !== undefined && obj.roomTypes !== null) mapped.room_types = obj.roomTypes;
-  // if (obj.termsAndConditions !== undefined && obj.termsAndConditions !== null && obj.termsAndConditions !== '') mapped.terms_and_conditions = obj.termsAndConditions;
+  // All fields - require SUPABASE_COMPLETE_UPDATE.sql migration
+  if (obj.slug !== undefined && obj.slug !== null && obj.slug !== '') {
+    mapped.slug = obj.slug;
+  } else if (obj.name) {
+    mapped.slug = obj.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  }
+  if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
+  if (obj.roomTypes !== undefined && obj.roomTypes !== null) mapped.room_types = obj.roomTypes;
+  if (obj.termsAndConditions !== undefined && obj.termsAndConditions !== null) mapped.terms_and_conditions = obj.termsAndConditions;
   
   return mapped;
 }
@@ -524,6 +535,7 @@ export function mapAdminItineraryFromDB(row: any): AdminItinerary {
   return {
     id: row.id,
     name: row.name,
+    slug: row.slug || null,
     duration: row.duration,
     price: row.price,
     category: row.category,
@@ -538,6 +550,8 @@ export function mapAdminItineraryFromDB(row: any): AdminItinerary {
     imageUrl: row.image_url || null,
     galleryImages: row.gallery_images || [],
     termsAndConditions: row.terms_and_conditions || null,
+    dayByDay: row.day_by_day || null,
+    pricingData: row.pricing_data || null,
     createdAt: row.created_at,
   };
 }
@@ -560,12 +574,18 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
   if (obj.imageUrl !== undefined) mapped.image_url = obj.imageUrl;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
-  // NOTE: These columns require running migrations first - gallery_images may not exist
-  // Uncomment after running the migration:
-  // if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
-  // if (obj.whatsNotIncluded !== undefined) mapped.whats_not_included = obj.whatsNotIncluded;
-  // if (obj.whatToBring !== undefined) mapped.what_to_bring = obj.whatToBring;
-  // if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
+  // All fields - require SUPABASE_COMPLETE_UPDATE.sql migration
+  if (obj.slug !== undefined && obj.slug !== null && obj.slug !== '') {
+    mapped.slug = obj.slug;
+  } else if (obj.name) {
+    mapped.slug = obj.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  }
+  if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
+  if (obj.whatsNotIncluded !== undefined) mapped.whats_not_included = obj.whatsNotIncluded;
+  if (obj.whatToBring !== undefined) mapped.what_to_bring = obj.whatToBring;
+  if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
+  if (obj.dayByDay !== undefined) mapped.day_by_day = obj.dayByDay;
+  if (obj.pricingData !== undefined) mapped.pricing_data = obj.pricingData;
   
   return mapped;
 }
