@@ -97,13 +97,17 @@ export function mapDestinationFromDB(row: any): Destination {
   return {
     id: row.id,
     name: row.name,
+    slug: row.slug || null,
     continental: row.continental,
     country: row.country,
     region: row.region,
     description: row.description,
+    cardDescription: row.card_description || null,
+    fullDescription: row.full_description || null,
     highlights: row.highlights,
     bestTime: row.best_time,
     imageUrl: row.image_url,
+    galleryImages: row.gallery_images || null,
   };
 }
 
@@ -125,19 +129,23 @@ export function mapItineraryFromDB(row: any): Itinerary {
   return {
     id: row.id,
     name: row.name,
+    slug: row.slug || null,
     duration: row.duration,
     price: row.price,
     category: row.category,
     description: row.description,
     highlights: row.highlights,
     includes: row.includes,
-    whatsNotIncluded: row.whats_not_included,
-    whatToBring: row.what_to_bring,
+    whatsNotIncluded: row.whats_not_included || null,
+    whatToBring: row.what_to_bring || null,
     difficulty: row.difficulty,
     groupSize: row.group_size,
     rating: row.rating,
     imageUrl: row.image_url,
-    termsAndConditions: row.terms_and_conditions,
+    galleryImages: row.gallery_images || null,
+    dayByDay: row.day_by_day || null,
+    pricingData: row.pricing_data || null,
+    termsAndConditions: row.terms_and_conditions || null,
   };
 }
 

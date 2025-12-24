@@ -37,17 +37,18 @@ interface PricingData {
 
 export default function ItineraryDetail() {
   const params = useParams();
-  const itineraryId = params.id;
+  const slugOrId = params.id; // Can be slug or ID
   const [, setLocation] = useLocation();
   const { itineraries } = useContent();
   const [activeTab, setActiveTab] = useState<'tour-details' | 'itinerary' | 'prices' | 'terms'>('tour-details');
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
 
-  const itinerary = itineraries.find(i => i.id === itineraryId);
+  // Find by slug first, then fall back to ID for backward compatibility
+  const itinerary = itineraries.find(i => i.slug === slugOrId || i.id === slugOrId);
 
   const { data: itineraryDetail, isLoading } = useQuery<ItineraryDetail>({
-    queryKey: [`/api/itineraries/${itineraryId}/details`],
-    enabled: !!itineraryId,
+    queryKey: [`/api/itineraries/${itinerary?.id}/details`],
+    enabled: !!itinerary?.id,
   });
 
   if (!itinerary) {
@@ -71,14 +72,22 @@ export default function ItineraryDetail() {
     }).format(price);
   };
 
-  // Parse JSON data from itineraryDetail
-  const dayByDay: DayByDayItem[] = itineraryDetail?.dayByDay 
-    ? JSON.parse(itineraryDetail.dayByDay) 
+  // Parse JSON data from itinerary or itineraryDetail (prefer itinerary as it comes from main list)
+  const dayByDaySource = itinerary?.dayByDay || itineraryDetail?.dayByDay;
+  const dayByDay: DayByDayItem[] = dayByDaySource 
+    ? (typeof dayByDaySource === 'string' ? JSON.parse(dayByDaySource) : dayByDaySource)
     : [];
   
-  const pricingData: PricingData | null = itineraryDetail?.pricingData 
-    ? JSON.parse(itineraryDetail.pricingData) 
+  const pricingDataSource = itinerary?.pricingData || itineraryDetail?.pricingData;
+  const pricingData: PricingData | null = pricingDataSource 
+    ? (typeof pricingDataSource === 'string' ? JSON.parse(pricingDataSource) : pricingDataSource)
     : null;
+  
+  // Get includes data from itinerary or itineraryDetail
+  const whatsIncluded = itinerary?.includes || itineraryDetail?.whatsIncluded || [];
+  const whatsNotIncluded = itinerary?.whatsNotIncluded || itineraryDetail?.whatsNotIncluded || [];
+  const whatToBring = itinerary?.whatToBring || itineraryDetail?.whatToBring || [];
+  const termsAndConditions = itinerary?.termsAndConditions || itineraryDetail?.termsAndConditions || null;
 
   const toggleDay = (day: number) => {
     setExpandedDay(expandedDay === day ? null : day);
@@ -89,7 +98,7 @@ export default function ItineraryDetail() {
       <SEOHead 
         title={`${itinerary.name} - Tanzania Safari Package`}
         description={itinerary.description}
-        canonical={`/itineraries/${itinerary.id}`}
+        canonical={`/itineraries/${itinerary.slug || itinerary.id}`}
         ogImage={itinerary.imageUrl || undefined}
       />
 
@@ -193,12 +202,14 @@ export default function ItineraryDetail() {
                       <div>
                         <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">What's Included</h2>
                         <div className="grid md:grid-cols-2 gap-3">
-                          {itineraryDetail?.whatsIncluded?.map((item, index) => (
-                            <div key={index} className="flex items-start space-x-3">
-                              <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                              <span className="text-foreground">{item}</span>
-                            </div>
-                          )) || (
+                          {whatsIncluded && whatsIncluded.length > 0 ? (
+                            whatsIncluded.map((item, index) => (
+                              <div key={index} className="flex items-start space-x-3">
+                                <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                <span className="text-foreground">{item}</span>
+                              </div>
+                            ))
+                          ) : (
                             <p className="text-muted-foreground col-span-2">No information available</p>
                           )}
                         </div>
@@ -208,12 +219,14 @@ export default function ItineraryDetail() {
                       <div>
                         <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">What's Not Included</h2>
                         <div className="grid md:grid-cols-2 gap-3">
-                          {itineraryDetail?.whatsNotIncluded?.map((item, index) => (
-                            <div key={index} className="flex items-start space-x-3">
-                              <X className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                              <span className="text-foreground">{item}</span>
-                            </div>
-                          )) || (
+                          {whatsNotIncluded && whatsNotIncluded.length > 0 ? (
+                            whatsNotIncluded.map((item, index) => (
+                              <div key={index} className="flex items-start space-x-3">
+                                <X className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                                <span className="text-foreground">{item}</span>
+                              </div>
+                            ))
+                          ) : (
                             <p className="text-muted-foreground col-span-2">No information available</p>
                           )}
                         </div>
@@ -223,12 +236,14 @@ export default function ItineraryDetail() {
                       <div>
                         <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">What to Bring</h2>
                         <div className="grid md:grid-cols-2 gap-3">
-                          {itineraryDetail?.whatToBring?.map((item, index) => (
-                            <div key={index} className="flex items-start space-x-3">
-                              <Star className="h-5 w-5 text-accent fill-current flex-shrink-0 mt-0.5" />
-                              <span className="text-foreground">{item}</span>
-                            </div>
-                          )) || (
+                          {whatToBring && whatToBring.length > 0 ? (
+                            whatToBring.map((item, index) => (
+                              <div key={index} className="flex items-start space-x-3">
+                                <Star className="h-5 w-5 text-accent fill-current flex-shrink-0 mt-0.5" />
+                                <span className="text-foreground">{item}</span>
+                              </div>
+                            ))
+                          ) : (
                             <p className="text-muted-foreground col-span-2">No information available</p>
                           )}
                         </div>
@@ -370,10 +385,10 @@ export default function ItineraryDetail() {
                     <div className="space-y-6">
                       <div>
                         <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">Terms and Conditions</h2>
-                        {(itineraryDetail?.termsAndConditions || itinerary.termsAndConditions) ? (
+                        {termsAndConditions ? (
                           <div className="prose prose-slate max-w-none">
                             <p className="text-foreground whitespace-pre-wrap leading-relaxed">
-                              {itineraryDetail?.termsAndConditions || itinerary.termsAndConditions}
+                              {termsAndConditions}
                             </p>
                           </div>
                         ) : (

@@ -9,14 +9,15 @@ import type { DestinationDetail } from '@shared/schema';
 
 export default function DestinationDetail() {
   const params = useParams();
-  const destinationId = params.id;
+  const slugOrId = params.id; // Can be slug or ID
   const { destinations } = useContent();
 
-  const destination = destinations.find(d => d.id === destinationId);
+  // Find by slug first, then fall back to ID for backward compatibility
+  const destination = destinations.find(d => d.slug === slugOrId || d.id === slugOrId);
 
   const { data: destinationDetail, isLoading } = useQuery<DestinationDetail>({
-    queryKey: [`/api/destinations/${destinationId}/details`],
-    enabled: !!destinationId,
+    queryKey: [`/api/destinations/${destination?.id}/details`],
+    enabled: !!destination?.id,
   });
 
   if (!destination) {
@@ -47,8 +48,8 @@ export default function DestinationDetail() {
     <>
       <SEOHead 
         title={`${destination.name} - Tanzania Travel Guide | Accommodation Collection`}
-        description={destinationDetail?.detailedDescription || destination.description}
-        canonical={`/destinations/${destinationId}`}
+        description={destination.fullDescription || destinationDetail?.detailedDescription || destination.description}
+        canonical={`/destinations/${destination.slug || destination.id}`}
         ogImage={destinationDetail?.imageUrl || destination.imageUrl || ''}
       />
       
@@ -99,8 +100,8 @@ export default function DestinationDetail() {
               {/* Overview Section */}
               <section>
                 <h2 className="font-serif text-3xl font-bold text-foreground mb-6">Overview</h2>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  {isLoading ? 'Loading...' : destinationDetail?.overview || destinationDetail?.detailedDescription || destination.description}
+                <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
+                  {isLoading ? 'Loading...' : destination.fullDescription || destinationDetail?.overview || destinationDetail?.detailedDescription || destination.description}
                 </p>
               </section>
 

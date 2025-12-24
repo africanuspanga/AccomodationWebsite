@@ -189,9 +189,19 @@ export function useContent() {
   const hardcodedDestinations: Destination[] = [
     ...contentData.destinations.map(dest => ({
       ...dest,
-      imageUrl: destinationImages[dest.id] || null
+      imageUrl: destinationImages[dest.id] || null,
+      slug: null,
+      cardDescription: null,
+      fullDescription: null,
+      galleryImages: null,
     })),
-    ...additionalDestinations
+    ...additionalDestinations.map(dest => ({
+      ...dest,
+      slug: null,
+      cardDescription: null,
+      fullDescription: null,
+      galleryImages: null,
+    }))
   ];
 
   // Merge hardcoded and admin-created destinations
@@ -202,8 +212,12 @@ export function useContent() {
     ...itin,
     difficulty: itin.difficulty || null,
     imageUrl: itineraryImages[itin.id] || null,
+    slug: null,
     whatsNotIncluded: null,
     whatToBring: null,
+    galleryImages: null,
+    dayByDay: null,
+    pricingData: null,
     termsAndConditions: null,
   }));
 

@@ -75,7 +75,7 @@ export default function DestinationCard({ destination, className = '' }: Destina
           </div>
         )}
         
-        <Link href={`/destinations/${destination.id}`}>
+        <Link href={`/destinations/${destination.slug || destination.id}`}>
           <Button 
             variant="outline" 
             className="w-full mt-4 group/btn"

@@ -125,7 +125,7 @@ export default function ItineraryCard({ itinerary, className = '' }: ItineraryCa
 
         <Button 
           className="w-full btn-primary py-3 font-semibold"
-          onClick={() => setLocation(`/itineraries/${itinerary.id}`)}
+          onClick={() => setLocation(`/itineraries/${itinerary.slug || itinerary.id}`)}
           data-testid={`view-details-${itinerary.id}`}
         >
           View Details & Book
