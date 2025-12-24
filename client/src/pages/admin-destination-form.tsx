@@ -32,6 +32,8 @@ const destinationFormSchema = z.object({
   region: z.string().min(1, 'Region is required'),
   destinationType: z.string().min(1, 'Destination type is required'),
   description: z.string().min(1, 'Description is required'),
+  cardDescription: z.string().max(180, 'Card description must be 180 characters or less').optional(),
+  fullDescription: z.string().optional(),
   highlights: z.array(z.string()).optional(),
   bestTime: z.string().optional(),
   imageUrl: z.string().optional(),
@@ -60,6 +62,8 @@ export default function AdminDestinationForm() {
       region: 'northern-circuit',
       destinationType: 'safari-circuit',
       description: '',
+      cardDescription: '',
+      fullDescription: '',
       highlights: [],
       bestTime: '',
       imageUrl: '',
@@ -97,6 +101,8 @@ export default function AdminDestinationForm() {
           region: destination.region || '',
           destinationType: destination.destinationType,
           description: destination.description,
+          cardDescription: destination.cardDescription || '',
+          fullDescription: destination.fullDescription || '',
           highlights: destination.highlights || [],
           bestTime: destination.bestTime || '',
           imageUrl: destination.imageUrl || '',
@@ -317,10 +323,52 @@ export default function AdminDestinationForm() {
 
             <FormField
               control={form.control}
+              name="cardDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Card Description (max 180 characters)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Brief description shown on destination cards..."
+                      className="min-h-[80px]"
+                      maxLength={180}
+                      {...field}
+                      data-testid="textarea-card-description"
+                    />
+                  </FormControl>
+                  <div className="text-sm text-muted-foreground text-right">
+                    {(field.value?.length || 0)}/180 characters
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="fullDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Description (shown on detail page)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Detailed description of the destination, can be as long as needed..."
+                      className="min-h-[200px]"
+                      {...field}
+                      data-testid="textarea-full-description"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Legacy Description (for backward compatibility)</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Describe this destination..."

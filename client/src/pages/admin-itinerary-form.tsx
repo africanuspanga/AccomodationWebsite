@@ -25,6 +25,12 @@ import {
 } from '@/components/ui/select';
 import { ImageUpload } from '@/components/ui/image-upload';
 
+const dayByDaySchema = z.object({
+  day: z.coerce.number().min(1),
+  title: z.string().min(1),
+  description: z.string().min(1),
+});
+
 const itineraryFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   duration: z.string().min(1, 'Duration is required'),
@@ -41,6 +47,8 @@ const itineraryFormSchema = z.object({
   imageUrl: z.string().optional(),
   galleryImages: z.array(z.string()).optional(),
   termsAndConditions: z.string().optional(),
+  dayByDay: z.array(dayByDaySchema).optional(),
+  pricingData: z.string().optional(),
 });
 
 type ItineraryFormData = z.infer<typeof itineraryFormSchema>;
@@ -55,6 +63,8 @@ export default function AdminItineraryForm() {
   const [newInclusion, setNewInclusion] = useState('');
   const [newNotIncluded, setNewNotIncluded] = useState('');
   const [newToBring, setNewToBring] = useState('');
+  const [newDayTitle, setNewDayTitle] = useState('');
+  const [newDayDescription, setNewDayDescription] = useState('');
   const isEdit = id && id !== 'new';
 
   const form = useForm<ItineraryFormData>({
@@ -75,6 +85,8 @@ export default function AdminItineraryForm() {
       imageUrl: '',
       galleryImages: [],
       termsAndConditions: '',
+      dayByDay: [],
+      pricingData: '',
     },
   });
 
@@ -100,6 +112,16 @@ export default function AdminItineraryForm() {
       });
       if (response.ok) {
         const itinerary = await response.json();
+        let parsedDayByDay = [];
+        if (itinerary.dayByDay) {
+          try {
+            parsedDayByDay = typeof itinerary.dayByDay === 'string' 
+              ? JSON.parse(itinerary.dayByDay) 
+              : itinerary.dayByDay;
+          } catch (e) {
+            parsedDayByDay = [];
+          }
+        }
         form.reset({
           name: itinerary.name,
           duration: itinerary.duration,
@@ -116,6 +138,8 @@ export default function AdminItineraryForm() {
           imageUrl: itinerary.imageUrl || '',
           galleryImages: itinerary.galleryImages || [],
           termsAndConditions: itinerary.termsAndConditions || '',
+          dayByDay: parsedDayByDay,
+          pricingData: itinerary.pricingData || '',
         });
       }
     } catch (error) {
@@ -175,11 +199,34 @@ export default function AdminItineraryForm() {
     form.setValue('whatToBring', current.filter((_, i) => i !== index));
   };
 
+  const addDayByDay = () => {
+    if (newDayTitle.trim() && newDayDescription.trim()) {
+      const current = form.getValues('dayByDay') || [];
+      const nextDay = current.length + 1;
+      form.setValue('dayByDay', [...current, { day: nextDay, title: newDayTitle.trim(), description: newDayDescription.trim() }]);
+      setNewDayTitle('');
+      setNewDayDescription('');
+    }
+  };
+
+  const removeDayByDay = (index: number) => {
+    const current = form.getValues('dayByDay') || [];
+    const updated = current.filter((_, i) => i !== index).map((item, i) => ({ ...item, day: i + 1 }));
+    form.setValue('dayByDay', updated);
+  };
+
   const onSubmit = async (data: ItineraryFormData) => {
     setIsLoading(true);
     try {
       const url = isEdit ? `/api/admin/itineraries/${id}` : '/api/admin/itineraries';
       const method = isEdit ? 'PUT' : 'POST';
+
+      const payload = {
+        ...data,
+        dayByDay: data.dayByDay && data.dayByDay.length > 0 
+          ? JSON.stringify(data.dayByDay) 
+          : null,
+      };
 
       const response = await fetch(url, {
         method,
@@ -187,7 +234,7 @@ export default function AdminItineraryForm() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${adminToken}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -574,6 +621,83 @@ export default function AdminItineraryForm() {
 
             <FormField
               control={form.control}
+              name="dayByDay"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Day by Day Itinerary</FormLabel>
+                  <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
+                    <div className="grid gap-3">
+                      <Input
+                        placeholder="Day title (e.g., Arrival in Arusha)"
+                        value={newDayTitle}
+                        onChange={(e) => setNewDayTitle(e.target.value)}
+                        data-testid="input-day-title"
+                      />
+                      <Textarea
+                        placeholder="Day description..."
+                        value={newDayDescription}
+                        onChange={(e) => setNewDayDescription(e.target.value)}
+                        className="min-h-[80px]"
+                        data-testid="textarea-day-description"
+                      />
+                      <Button type="button" onClick={addDayByDay} className="w-fit" data-testid="button-add-day">
+                        <Plus className="h-4 w-4 mr-2" /> Add Day
+                      </Button>
+                    </div>
+                    {field.value && field.value.length > 0 && (
+                      <div className="space-y-3 mt-4">
+                        {field.value.map((day, index) => (
+                          <div
+                            key={index}
+                            className="p-4 bg-background rounded-lg border"
+                            data-testid={`day-item-${index}`}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <div className="font-semibold text-primary">Day {day.day}: {day.title}</div>
+                                <p className="text-sm text-muted-foreground mt-1">{day.description}</p>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeDayByDay(index)}
+                                data-testid={`button-remove-day-${index}`}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="pricingData"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Pricing Information (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter pricing details, group rates, seasonal pricing, etc..."
+                      className="min-h-[150px]"
+                      {...field}
+                      data-testid="textarea-pricing-data"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="termsAndConditions"
               render={({ field }) => (
                 <FormItem>
@@ -583,6 +707,7 @@ export default function AdminItineraryForm() {
                       placeholder="Enter terms and conditions for this itinerary..."
                       className="min-h-[120px]"
                       {...field}
+                      data-testid="textarea-terms-conditions"
                     />
                   </FormControl>
                   <FormMessage />
