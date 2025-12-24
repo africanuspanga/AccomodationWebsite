@@ -2,6 +2,16 @@ import { useQuery } from '@tanstack/react-query';
 import { type Accommodation, type Destination, type Itinerary } from '@shared/schema';
 import contentData from '@/data/content.json';
 
+// Helper function to generate slugs from names for hardcoded data
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-')         // Replace spaces with hyphens
+    .replace(/-+/g, '-')          // Replace multiple hyphens with single
+    .trim();
+}
+
 export function useContent() {
   // Fetch admin-created accommodations from Supabase
   const { data: adminAccommodations = [] } = useQuery<Accommodation[]>({
@@ -190,14 +200,14 @@ export function useContent() {
     ...contentData.destinations.map(dest => ({
       ...dest,
       imageUrl: destinationImages[dest.id] || null,
-      slug: null,
+      slug: generateSlug(dest.name),
       cardDescription: null,
       fullDescription: null,
       galleryImages: null,
     })),
     ...additionalDestinations.map(dest => ({
       ...dest,
-      slug: null,
+      slug: generateSlug(dest.name),
       cardDescription: null,
       fullDescription: null,
       galleryImages: null,
@@ -212,7 +222,7 @@ export function useContent() {
     ...itin,
     difficulty: itin.difficulty || null,
     imageUrl: itineraryImages[itin.id] || null,
-    slug: null,
+    slug: generateSlug(itin.name),
     whatsNotIncluded: null,
     whatToBring: null,
     galleryImages: null,
