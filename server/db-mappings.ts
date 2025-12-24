@@ -65,6 +65,7 @@ export function mapAccommodationFromDB(row: any): Accommodation {
     rating: row.rating,
     imageUrl: row.image_url,
     features: row.features,
+    galleryImages: row.gallery_images || null,
     roomTypes: row.room_types || null,
     termsAndConditions: row.terms_and_conditions || null,
   };

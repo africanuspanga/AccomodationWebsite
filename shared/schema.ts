@@ -31,6 +31,7 @@ export interface Accommodation {
   rating: number | null;
   imageUrl: string | null;
   features: string[] | null;
+  galleryImages: string[] | null;
   roomTypes: string | null; // JSON stringified array of {roomType: string, price: number}
   termsAndConditions: string | null;
 }

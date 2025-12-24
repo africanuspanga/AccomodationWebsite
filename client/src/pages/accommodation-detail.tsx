@@ -83,7 +83,18 @@ export default function AccommodationDetail() {
     ? JSON.parse(accommodationDetail.rooms) 
     : [];
 
-  const galleryImages: string[] = accommodationDetail?.galleryImages || [];
+  // Get gallery images from main accommodation object or accommodationDetail
+  const galleryImages: string[] = accommodation?.galleryImages || accommodationDetail?.galleryImages || [];
+  
+  // Parse room types from main accommodation object
+  const parsedRoomTypes = (() => {
+    if (!accommodation.roomTypes) return [];
+    try {
+      return JSON.parse(accommodation.roomTypes) as Array<{ roomType: string; price: number }>;
+    } catch {
+      return [];
+    }
+  })();
 
   // Icon mapping for facilities
   const getFacilityIcon = (facility: string) => {
@@ -167,30 +178,6 @@ export default function AccommodationDetail() {
                     {accommodation.description}
                   </p>
                 </div>
-
-                {/* Room Types & Pricing */}
-                {accommodation.roomTypes && (() => {
-                  try {
-                    const roomTypes = JSON.parse(accommodation.roomTypes);
-                    return roomTypes && roomTypes.length > 0 ? (
-                      <div className="mb-8 bg-muted/30 rounded-2xl p-6">
-                        <h3 className="font-serif text-xl font-bold text-foreground mb-4">Room Types & Pricing</h3>
-                        <div className="grid md:grid-cols-2 gap-4">
-                          {roomTypes.map((room: { roomType: string; price: number }, index: number) => (
-                            <div key={index} className="flex items-center justify-between p-4 bg-background rounded-lg border border-border">
-                              <span className="font-medium text-foreground">{room.roomType}</span>
-                              <span className="text-lg font-bold text-primary">
-                                ${room.price}<span className="text-sm font-normal text-muted-foreground">/night</span>
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null;
-                  } catch (e) {
-                    return null;
-                  }
-                })()}
               </div>
 
               {/* Tab Navigation */}
@@ -275,9 +262,27 @@ export default function AccommodationDetail() {
                   {/* Rooms Tab */}
                   {activeTab === 'rooms' && (
                     <div className="space-y-8">
-                      <div>
-                        <h2 className="font-serif text-2xl font-bold text-foreground mb-6 uppercase">Room Types</h2>
-                        {rooms.length > 0 ? (
+                      {/* Room Types & Pricing */}
+                      {parsedRoomTypes.length > 0 && (
+                        <div>
+                          <h2 className="font-serif text-2xl font-bold text-foreground mb-6 uppercase">Room Types & Pricing</h2>
+                          <div className="grid md:grid-cols-2 gap-4">
+                            {parsedRoomTypes.map((room, index) => (
+                              <div key={index} className="flex items-center justify-between p-4 bg-primary/5 rounded-xl border border-primary/10">
+                                <span className="font-medium text-foreground">{room.roomType}</span>
+                                <span className="text-lg font-bold text-primary">
+                                  ${room.price}<span className="text-sm font-normal text-muted-foreground">/night</span>
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Detailed Room Information */}
+                      {rooms.length > 0 && (
+                        <div>
+                          <h2 className="font-serif text-2xl font-bold text-foreground mb-6 uppercase">Room Details</h2>
                           <div className="space-y-8">
                             {rooms.map((room, index) => (
                               <div key={index} className="border border-border rounded-2xl overflow-hidden">
@@ -319,10 +324,12 @@ export default function AccommodationDetail() {
                               </div>
                             ))}
                           </div>
-                        ) : (
-                          <p className="text-muted-foreground">No room information available</p>
-                        )}
-                      </div>
+                        </div>
+                      )}
+                      
+                      {parsedRoomTypes.length === 0 && rooms.length === 0 && (
+                        <p className="text-muted-foreground">No room information available</p>
+                      )}
                     </div>
                   )}
 

@@ -187,7 +187,8 @@ export function useContent() {
   const hardcodedAccommodations: Accommodation[] = contentData.accommodations.map(acc => ({
     ...acc,
     imageUrl: accommodationImages[acc.id] || null,
-    slug: null,
+    slug: generateSlug(acc.name),
+    galleryImages: null,
     roomTypes: null,
     termsAndConditions: null,
   }));

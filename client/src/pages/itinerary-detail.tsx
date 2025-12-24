@@ -40,7 +40,7 @@ export default function ItineraryDetail() {
   const slugOrId = params.id; // Can be slug or ID
   const [, setLocation] = useLocation();
   const { itineraries } = useContent();
-  const [activeTab, setActiveTab] = useState<'tour-details' | 'itinerary' | 'prices' | 'terms'>('tour-details');
+  const [activeTab, setActiveTab] = useState<'tour-details' | 'itinerary' | 'gallery' | 'prices' | 'terms'>('tour-details');
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
 
   // Find by slug first, then fall back to ID for backward compatibility
@@ -88,6 +88,9 @@ export default function ItineraryDetail() {
   const whatsNotIncluded = itinerary?.whatsNotIncluded || itineraryDetail?.whatsNotIncluded || [];
   const whatToBring = itinerary?.whatToBring || itineraryDetail?.whatToBring || [];
   const termsAndConditions = itinerary?.termsAndConditions || itineraryDetail?.termsAndConditions || null;
+  
+  // Get gallery images from itinerary
+  const galleryImages: string[] = itinerary?.galleryImages || [];
 
   const toggleDay = (day: number) => {
     setExpandedDay(expandedDay === day ? null : day);
@@ -163,6 +166,17 @@ export default function ItineraryDetail() {
                   data-testid="tab-itinerary"
                 >
                   ITINERARY
+                </button>
+                <button
+                  onClick={() => setActiveTab('gallery')}
+                  className={`px-6 py-3 font-serif text-lg font-semibold transition-all duration-200 border-b-2 ${
+                    activeTab === 'gallery'
+                      ? 'border-primary text-primary bg-primary/5'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                  }`}
+                  data-testid="tab-gallery"
+                >
+                  GALLERY
                 </button>
                 <button
                   onClick={() => setActiveTab('prices')}
@@ -295,6 +309,30 @@ export default function ItineraryDetail() {
                           ))
                         ) : (
                           <p className="text-muted-foreground">No day-by-day itinerary available</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Gallery Tab */}
+                  {activeTab === 'gallery' && (
+                    <div className="space-y-8">
+                      <div>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-6 uppercase">Photo Gallery</h2>
+                        {galleryImages.length > 0 ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {galleryImages.map((image, index) => (
+                              <div key={index} className="aspect-video rounded-2xl overflow-hidden">
+                                <img 
+                                  src={image} 
+                                  alt={`${itinerary.name} - Gallery ${index + 1}`}
+                                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-muted-foreground">No gallery images available</p>
                         )}
                       </div>
                     </div>
