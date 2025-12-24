@@ -39,19 +39,24 @@ export interface Accommodation {
 export interface Destination {
   id: string;
   name: string;
+  slug: string | null;
   continental: string;
   country: string;
   region: string;
   description: string;
+  cardDescription: string | null;
+  fullDescription: string | null;
   highlights: string[] | null;
   bestTime: string | null;
   imageUrl: string | null;
+  galleryImages: string[] | null;
 }
 
 // Itineraries
 export interface Itinerary {
   id: string;
   name: string;
+  slug: string | null;
   duration: string;
   price: number;
   category: string;
@@ -64,6 +69,9 @@ export interface Itinerary {
   groupSize: string | null;
   rating: number | null;
   imageUrl: string | null;
+  galleryImages: string[] | null;
+  dayByDay: string | null;
+  pricingData: string | null;
   termsAndConditions: string | null;
 }
 
