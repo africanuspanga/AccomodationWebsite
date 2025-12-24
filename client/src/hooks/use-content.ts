@@ -176,7 +176,10 @@ export function useContent() {
   // Add images to hardcoded accommodations
   const hardcodedAccommodations: Accommodation[] = contentData.accommodations.map(acc => ({
     ...acc,
-    imageUrl: accommodationImages[acc.id] || null
+    imageUrl: accommodationImages[acc.id] || null,
+    slug: null,
+    roomTypes: null,
+    termsAndConditions: null,
   }));
 
   // Merge hardcoded and admin-created accommodations
@@ -198,7 +201,10 @@ export function useContent() {
   const hardcodedItineraries: Itinerary[] = contentData.itineraries.map(itin => ({
     ...itin,
     difficulty: itin.difficulty || null,
-    imageUrl: itineraryImages[itin.id] || null
+    imageUrl: itineraryImages[itin.id] || null,
+    whatsNotIncluded: null,
+    whatToBring: null,
+    termsAndConditions: null,
   }));
 
   // Merge hardcoded and admin-created itineraries
