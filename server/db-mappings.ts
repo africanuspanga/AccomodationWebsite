@@ -519,10 +519,14 @@ export function mapAdminAccommodationToDB(obj: any): Record<string, any> {
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
   // All fields - require SUPABASE_COMPLETE_UPDATE.sql migration
-  if (obj.slug !== undefined && obj.slug !== null && obj.slug !== '') {
-    mapped.slug = obj.slug;
-  } else if (obj.name) {
-    mapped.slug = obj.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  // Always generate proper slug from provided value or name
+  const slugSource = (obj.slug && obj.slug.trim() !== '') ? obj.slug : obj.name;
+  if (slugSource) {
+    mapped.slug = slugSource.toLowerCase().trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/(^-|-$)/g, '');
   }
   if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   if (obj.roomTypes !== undefined && obj.roomTypes !== null) mapped.room_types = obj.roomTypes;
@@ -575,10 +579,14 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
   // All fields - require SUPABASE_COMPLETE_UPDATE.sql migration
-  if (obj.slug !== undefined && obj.slug !== null && obj.slug !== '') {
-    mapped.slug = obj.slug;
-  } else if (obj.name) {
-    mapped.slug = obj.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  // Always generate proper slug from provided value or name
+  const itinSlugSource = (obj.slug && obj.slug.trim() !== '') ? obj.slug : obj.name;
+  if (itinSlugSource) {
+    mapped.slug = itinSlugSource.toLowerCase().trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/(^-|-$)/g, '');
   }
   if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   if (obj.whatsNotIncluded !== undefined) mapped.whats_not_included = obj.whatsNotIncluded;
