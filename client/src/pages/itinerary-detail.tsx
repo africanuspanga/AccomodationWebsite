@@ -39,7 +39,7 @@ export default function ItineraryDetail() {
   const params = useParams();
   const slugOrId = params.id; // Can be slug or ID
   const [, setLocation] = useLocation();
-  const { itineraries } = useContent();
+  const { itineraries, isLoading: isContentLoading } = useContent();
   const [activeTab, setActiveTab] = useState<'tour-details' | 'itinerary' | 'gallery' | 'prices' | 'terms'>('tour-details');
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
 
@@ -50,6 +50,21 @@ export default function ItineraryDetail() {
     queryKey: [`/api/itineraries/${itinerary?.id}/details`],
     enabled: !!itinerary?.id,
   });
+
+  // Show loading state while content is being fetched
+  if (isContentLoading) {
+    return (
+      <div className="pt-32 pb-20">
+        <div className="container-custom text-center">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-muted rounded w-1/3 mx-auto"></div>
+            <div className="h-64 bg-muted rounded"></div>
+            <div className="h-4 bg-muted rounded w-2/3 mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!itinerary) {
     return (
@@ -73,15 +88,36 @@ export default function ItineraryDetail() {
   };
 
   // Parse JSON data from itinerary or itineraryDetail (prefer itinerary as it comes from main list)
+  // Use safe parsing with try-catch to handle malformed JSON
   const dayByDaySource = itinerary?.dayByDay || itineraryDetail?.dayByDay;
-  const dayByDay: DayByDayItem[] = dayByDaySource 
-    ? (typeof dayByDaySource === 'string' ? JSON.parse(dayByDaySource) : dayByDaySource)
-    : [];
+  const dayByDay: DayByDayItem[] = (() => {
+    if (!dayByDaySource) return [];
+    if (Array.isArray(dayByDaySource)) return dayByDaySource;
+    if (typeof dayByDaySource === 'string') {
+      try {
+        const parsed = JSON.parse(dayByDaySource);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  })();
   
   const pricingDataSource = itinerary?.pricingData || itineraryDetail?.pricingData;
-  const pricingData: PricingData | null = pricingDataSource 
-    ? (typeof pricingDataSource === 'string' ? JSON.parse(pricingDataSource) : pricingDataSource)
-    : null;
+  const pricingData: PricingData | null = (() => {
+    if (!pricingDataSource) return null;
+    if (typeof pricingDataSource === 'object' && pricingDataSource !== null) return pricingDataSource as PricingData;
+    if (typeof pricingDataSource === 'string') {
+      try {
+        const parsed = JSON.parse(pricingDataSource);
+        return parsed && typeof parsed === 'object' ? parsed : null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  })();
   
   // Get includes data from itinerary or itineraryDetail
   const whatsIncluded = itinerary?.includes || itineraryDetail?.whatsIncluded || [];

@@ -14,19 +14,19 @@ function generateSlug(name: string): string {
 
 export function useContent() {
   // Fetch admin-created accommodations from Supabase
-  const { data: adminAccommodations = [] } = useQuery<Accommodation[]>({
+  const { data: adminAccommodations = [], isLoading: isLoadingAccommodations } = useQuery<Accommodation[]>({
     queryKey: ['/api/public/accommodations'],
     enabled: true,
   });
 
   // Fetch admin-created itineraries from Supabase
-  const { data: adminItineraries = [] } = useQuery<Itinerary[]>({
+  const { data: adminItineraries = [], isLoading: isLoadingItineraries } = useQuery<Itinerary[]>({
     queryKey: ['/api/public/itineraries'],
     enabled: true,
   });
 
   // Fetch admin-created destinations from Supabase
-  const { data: adminDestinations = [] } = useQuery<Destination[]>({
+  const { data: adminDestinations = [], isLoading: isLoadingDestinations } = useQuery<Destination[]>({
     queryKey: ['/api/public/destinations'],
     enabled: true,
   });
@@ -253,7 +253,8 @@ export function useContent() {
   // Merge hardcoded and admin-created itineraries
   const itineraries: Itinerary[] = [...hardcodedItineraries, ...processedAdminItineraries];
 
-  const isLoading = false; // No loading since it's static data
+  // Loading is true while any of the admin data queries are still fetching
+  const isLoading = isLoadingAccommodations || isLoadingItineraries || isLoadingDestinations;
 
   const getAccommodationsByDestination = (destination: string) => {
     if (destination === 'all') return accommodations;

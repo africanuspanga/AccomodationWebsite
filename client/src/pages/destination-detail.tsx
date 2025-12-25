@@ -12,7 +12,7 @@ export default function DestinationDetail() {
   const params = useParams();
   const slugOrId = params.id; // Can be slug or ID
   const [, setLocation] = useLocation();
-  const { destinations } = useContent();
+  const { destinations, isLoading: isContentLoading } = useContent();
   const [activeTab, setActiveTab] = useState<'overview' | 'wildlife' | 'activities' | 'gallery'>('overview');
 
   // Find by slug first, then fall back to ID for backward compatibility
@@ -22,6 +22,21 @@ export default function DestinationDetail() {
     queryKey: [`/api/destinations/${destination?.id}/details`],
     enabled: !!destination?.id,
   });
+
+  // Show loading state while content is being fetched
+  if (isContentLoading) {
+    return (
+      <div className="min-h-screen pt-32 pb-20">
+        <div className="container-custom text-center">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-muted rounded w-1/3 mx-auto"></div>
+            <div className="h-64 bg-muted rounded"></div>
+            <div className="h-4 bg-muted rounded w-2/3 mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!destination) {
     return (

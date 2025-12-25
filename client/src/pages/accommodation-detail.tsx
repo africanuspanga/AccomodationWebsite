@@ -19,7 +19,7 @@ export default function AccommodationDetail() {
   const params = useParams();
   const slugOrId = params.id; // This can be either slug or ID
   const [, setLocation] = useLocation();
-  const { accommodations } = useContent();
+  const { accommodations, isLoading: isContentLoading } = useContent();
   const [activeTab, setActiveTab] = useState<'facilities' | 'rooms' | 'gallery' | 'terms'>('facilities');
 
   // Try to find by slug first, then fall back to ID for backward compatibility
@@ -29,6 +29,21 @@ export default function AccommodationDetail() {
     queryKey: [`/api/accommodations/${accommodation?.id}/details`],
     enabled: !!accommodation?.id,
   });
+
+  // Show loading state while content is being fetched
+  if (isContentLoading) {
+    return (
+      <div className="pt-32 pb-20">
+        <div className="container-custom text-center">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-muted rounded w-1/3 mx-auto"></div>
+            <div className="h-64 bg-muted rounded"></div>
+            <div className="h-4 bg-muted rounded w-2/3 mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!accommodation) {
     return (
