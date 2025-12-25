@@ -193,8 +193,14 @@ export function useContent() {
     termsAndConditions: null,
   }));
 
+  // Ensure admin accommodations have slugs (generate from name if not present in DB)
+  const processedAdminAccommodations: Accommodation[] = adminAccommodations.map(acc => ({
+    ...acc,
+    slug: acc.slug || generateSlug(acc.name),
+  }));
+
   // Merge hardcoded and admin-created accommodations
-  const accommodations: Accommodation[] = [...hardcodedAccommodations, ...adminAccommodations];
+  const accommodations: Accommodation[] = [...hardcodedAccommodations, ...processedAdminAccommodations];
 
   // Add images to hardcoded destinations  
   const hardcodedDestinations: Destination[] = [
@@ -215,8 +221,14 @@ export function useContent() {
     }))
   ];
 
+  // Ensure admin destinations have slugs (generate from name if not present in DB)
+  const processedAdminDestinations: Destination[] = adminDestinations.map(dest => ({
+    ...dest,
+    slug: dest.slug || generateSlug(dest.name),
+  }));
+
   // Merge hardcoded and admin-created destinations
-  const destinations: Destination[] = [...hardcodedDestinations, ...adminDestinations];
+  const destinations: Destination[] = [...hardcodedDestinations, ...processedAdminDestinations];
 
   // Add images to hardcoded itineraries
   const hardcodedItineraries: Itinerary[] = contentData.itineraries.map(itin => ({
@@ -232,8 +244,14 @@ export function useContent() {
     termsAndConditions: null,
   }));
 
+  // Ensure admin itineraries have slugs (generate from name if not present in DB)
+  const processedAdminItineraries: Itinerary[] = adminItineraries.map(itin => ({
+    ...itin,
+    slug: itin.slug || generateSlug(itin.name),
+  }));
+
   // Merge hardcoded and admin-created itineraries
-  const itineraries: Itinerary[] = [...hardcodedItineraries, ...adminItineraries];
+  const itineraries: Itinerary[] = [...hardcodedItineraries, ...processedAdminItineraries];
 
   const isLoading = false; // No loading since it's static data
 

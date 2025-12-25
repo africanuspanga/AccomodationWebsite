@@ -55,7 +55,7 @@ export function mapAccommodationFromDB(row: any): Accommodation {
   return {
     id: row.id,
     name: row.name,
-    slug: row.slug || null,
+    slug: row.slug || generateSlug(row.name), // Generate slug from name if not in DB
     continental: row.continental,
     country: row.country,
     destination: row.destination,
@@ -98,7 +98,7 @@ export function mapDestinationFromDB(row: any): Destination {
   return {
     id: row.id,
     name: row.name,
-    slug: row.slug || null,
+    slug: row.slug || generateSlug(row.name), // Generate slug from name if not in DB
     continental: row.continental,
     country: row.country,
     region: row.region,
@@ -130,7 +130,7 @@ export function mapItineraryFromDB(row: any): Itinerary {
   return {
     id: row.id,
     name: row.name,
-    slug: row.slug || null,
+    slug: row.slug || generateSlug(row.name), // Generate slug from name if not in DB
     duration: row.duration,
     price: row.price,
     category: row.category,
