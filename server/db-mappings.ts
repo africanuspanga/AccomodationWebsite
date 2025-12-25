@@ -113,17 +113,28 @@ export function mapDestinationFromDB(row: any): Destination {
 }
 
 export function mapDestinationToDB(obj: any): Record<string, any> {
-  return {
+  // Only include slug if explicitly provided - let DB keep existing slug on updates
+  const result: Record<string, any> = {
     id: obj.id,
     name: obj.name,
     continental: obj.continental,
     country: obj.country,
     region: obj.region,
     description: obj.description,
+    card_description: obj.cardDescription || null,
+    full_description: obj.fullDescription || null,
     highlights: obj.highlights,
     best_time: obj.bestTime,
     image_url: obj.imageUrl,
+    gallery_images: obj.galleryImages || null,
   };
+  
+  // Only set slug if explicitly provided or if this is a new item (no existing slug)
+  if (obj.slug) {
+    result.slug = obj.slug;
+  }
+  
+  return result;
 }
 
 export function mapItineraryFromDB(row: any): Itinerary {
@@ -151,7 +162,8 @@ export function mapItineraryFromDB(row: any): Itinerary {
 }
 
 export function mapItineraryToDB(obj: any): Record<string, any> {
-  return {
+  // Only include slug if explicitly provided - let DB keep existing slug on updates
+  const result: Record<string, any> = {
     id: obj.id,
     name: obj.name,
     duration: obj.duration,
@@ -166,8 +178,18 @@ export function mapItineraryToDB(obj: any): Record<string, any> {
     group_size: obj.groupSize,
     rating: obj.rating,
     image_url: obj.imageUrl,
+    gallery_images: obj.galleryImages || null,
+    day_by_day: obj.dayByDay || null,
+    pricing_data: obj.pricingData || null,
     terms_and_conditions: obj.termsAndConditions,
   };
+  
+  // Only set slug if explicitly provided or if this is a new item (no existing slug)
+  if (obj.slug) {
+    result.slug = obj.slug;
+  }
+  
+  return result;
 }
 
 export function mapInquiryFromDB(row: any): Inquiry {
@@ -477,10 +499,12 @@ export function mapAdminDestinationToDB(obj: any): Record<string, any> {
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
   // New fields - require SUPABASE_COMPLETE_UPDATE.sql migration
+  // Only set slug if explicitly provided - deterministic slug for consistency
   if (obj.slug !== undefined && obj.slug !== null && obj.slug !== '') {
     mapped.slug = obj.slug;
-  } else if (obj.name) {
-    mapped.slug = obj.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  } else if (obj.name && !obj.id) {
+    // Only generate slug for new items (no id) - use deterministic slug
+    mapped.slug = generateSlug(obj.name);
   }
   if (obj.cardDescription !== undefined) mapped.card_description = obj.cardDescription;
   if (obj.fullDescription !== undefined) mapped.full_description = obj.fullDescription;
@@ -588,14 +612,12 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
   // All fields - require SUPABASE_COMPLETE_UPDATE.sql migration
-  // Always generate proper slug from provided value or name
-  const itinSlugSource = (obj.slug && obj.slug.trim() !== '') ? obj.slug : obj.name;
-  if (itinSlugSource) {
-    mapped.slug = itinSlugSource.toLowerCase().trim()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/(^-|-$)/g, '');
+  // Only set slug if explicitly provided - deterministic slug for consistency
+  if (obj.slug !== undefined && obj.slug !== null && obj.slug.trim() !== '') {
+    mapped.slug = obj.slug;
+  } else if (obj.name && !obj.id) {
+    // Only generate slug for new items (no id) - use deterministic slug
+    mapped.slug = generateSlug(obj.name);
   }
   if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   if (obj.whatsNotIncluded !== undefined) mapped.whats_not_included = obj.whatsNotIncluded;
