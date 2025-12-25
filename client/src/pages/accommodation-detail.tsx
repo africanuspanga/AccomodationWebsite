@@ -248,24 +248,24 @@ export default function AccommodationDetail() {
                 </div>
               ) : (
                 <>
-                  {/* Facilities Tab */}
+                  {/* Facilities Tab - uses features from main accommodation */}
                   {activeTab === 'facilities' && (
                     <div className="space-y-8">
                       <div>
-                        <h2 className="font-serif text-2xl font-bold text-foreground mb-6 uppercase">Our Facilities</h2>
+                        <h2 className="font-serif text-2xl font-bold text-foreground mb-6 uppercase">Features & Amenities</h2>
                         <div className="grid md:grid-cols-2 gap-4">
-                          {accommodationDetail?.facilities && accommodationDetail.facilities.length > 0 ? (
-                            accommodationDetail.facilities.map((facility, index) => {
-                              const Icon = getFacilityIcon(facility);
+                          {accommodation.features && accommodation.features.length > 0 ? (
+                            accommodation.features.map((feature, index) => {
+                              const Icon = getFacilityIcon(feature);
                               return (
                                 <div key={index} className="flex items-start space-x-3 p-4 rounded-lg bg-primary/5 border border-primary/10">
                                   <Icon className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-                                  <span className="text-foreground font-medium">{facility}</span>
+                                  <span className="text-foreground font-medium">{feature}</span>
                                 </div>
                               );
                             })
                           ) : (
-                            <p className="text-muted-foreground col-span-2">No facilities information available</p>
+                            <p className="text-muted-foreground col-span-2">No features information available</p>
                           )}
                         </div>
                       </div>
