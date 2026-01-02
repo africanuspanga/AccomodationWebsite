@@ -32,7 +32,7 @@ export async function sendBookingNotification(data: BookingEmailData): Promise<b
   try {
     const { error } = await resend.emails.send({
       from: 'Accommodation Collection <onboarding@resend.dev>',
-      to: 'reservations@accommodations.guide',
+      to: 'leonbetads@gmail.com',
       subject: `New Booking Request: ${data.itemName}`,
       html: `
         <h2>New Booking Request</h2>
@@ -71,7 +71,7 @@ export async function sendInquiryNotification(data: InquiryEmailData): Promise<b
   try {
     const { error } = await resend.emails.send({
       from: 'Accommodation Collection <onboarding@resend.dev>',
-      to: 'reservations@accommodations.guide',
+      to: 'leonbetads@gmail.com',
       subject: `New Inquiry: ${data.subject}`,
       html: `
         <h2>New Inquiry from Contact Form</h2>
@@ -103,7 +103,7 @@ export async function sendNewsletterSignup(data: NewsletterEmailData): Promise<b
   try {
     const { error } = await resend.emails.send({
       from: 'Accommodation Collection <onboarding@resend.dev>',
-      to: 'info@accommodations.guide',
+      to: 'leonbetads@gmail.com',
       subject: `New Newsletter Subscription: ${data.email}`,
       html: `
         <h2>New Newsletter Subscription</h2>
