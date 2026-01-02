@@ -185,8 +185,8 @@ export default function CookiePolicy() {
                 
                 <div className="space-y-2">
                   <p className="font-semibold">Email:</p>
-                  <a href="mailto:accommodationcollection@gmail.com" className="text-primary hover:underline">
-                    accommodationcollection@gmail.com
+                  <a href="mailto:info@accommodations.guide" className="text-primary hover:underline">
+                    info@accommodations.guide
                   </a>
                 </div>
                 

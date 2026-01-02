@@ -1,0 +1,34 @@
+Corrections for the Accommodations website 
+
+On Frontend end side of pricing information of itineraries should display in a like a sheet design but on the admin side you will have to put it in a way he can know how to add correctly - I have attached 2 screenshot as example, you are smart i know you will understand and know what to do and if you need me to go run and sql script on superbase i will 
+
+Also on itineraries below what to bring can we add Optional Activities both on Fronted and admin system where admin can be able to add Optional activities on each tour he is adding, please do it correctly and i will help go run any required sql scripts please 
+
+ Also make the Search Experiences button filter on hero section of homepage work please - like it should just be functional when user filters things please 
+
+On /contact page and footer please Replace email of accommodationcollection@gmail.com
+Please info@accommodations.guide please
+
+New Blogs added by Admin only show on the cards of /blog page but when you click read more content doesnt show please, help me fix this and if there is an sql scripts needed to be run on supabase i will go run them 
+
+
+Resend API re_YVoQcBKp_AvcpxzcE9eFiKPjuD2tWDDde 
+
+
+import { Resend } from 'resend';
+
+const resend = new Resend('re_YVoQcBKp_AvcpxzcE9eFiKPjuD2tWDDde');
+
+resend.emails.send({
+  from: 'onboarding@resend.dev',
+  to: 'leonbetads@gmail.com',
+  subject: 'Hello World',
+  html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
+});
+
+On the booking forms we needs to specific something on age, place of Adults let’s add 15 years and Above and Children we put Below 15 years please - do this on all booking forms, its a fronted thing - please do it smart and correctly 
+
+The information collected on booking forms all over the website from Accommodation, itineraries, contact page, destination, and all other booking forms. Modals should be sent to reservations@accommodations.guide and we are going to use resent to do this, I I have attached the API keys and instructions on how to do 
+
+Subscribe to Our Newsletter
+Get the latest travel tips, exclusive offers, and destination updates delivered to your inbox please send these email added here using resend to info@accommodations.guide 

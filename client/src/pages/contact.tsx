@@ -109,7 +109,7 @@ export default function Contact() {
     {
       icon: Mail,
       title: 'Email Address',
-      value: 'accommodationcollection@gmail.com',
+      value: 'info@accommodations.guide',
       description: 'We respond within 24 hours',
     },
     {

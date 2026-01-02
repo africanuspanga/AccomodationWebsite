@@ -159,7 +159,7 @@ export default function PrivacyPolicy() {
                 </ul>
                 
                 <p>
-                  If you would like access to a full list of our service providers please contact us at accommodationcollection@gmail.com. We are not responsible for, nor do we endorse the privacy practices of these external third parties.
+                  If you would like access to a full list of our service providers please contact us at info@accommodations.guide. We are not responsible for, nor do we endorse the privacy practices of these external third parties.
                 </p>
               </CardContent>
             </Card>
