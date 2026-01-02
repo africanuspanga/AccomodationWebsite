@@ -31,8 +31,8 @@ interface NewsletterEmailData {
 export async function sendBookingNotification(data: BookingEmailData): Promise<boolean> {
   try {
     const { error } = await resend.emails.send({
-      from: 'Accommodation Collection <onboarding@resend.dev>',
-      to: 'leonbetads@gmail.com',
+      from: 'Accommodation Collection <noreply@accommodations.guide>',
+      to: 'reservations@accommodations.guide',
       subject: `New Booking Request: ${data.itemName}`,
       html: `
         <h2>New Booking Request</h2>
@@ -70,8 +70,8 @@ export async function sendBookingNotification(data: BookingEmailData): Promise<b
 export async function sendInquiryNotification(data: InquiryEmailData): Promise<boolean> {
   try {
     const { error } = await resend.emails.send({
-      from: 'Accommodation Collection <onboarding@resend.dev>',
-      to: 'leonbetads@gmail.com',
+      from: 'Accommodation Collection <noreply@accommodations.guide>',
+      to: 'reservations@accommodations.guide',
       subject: `New Inquiry: ${data.subject}`,
       html: `
         <h2>New Inquiry from Contact Form</h2>
@@ -102,8 +102,8 @@ export async function sendInquiryNotification(data: InquiryEmailData): Promise<b
 export async function sendNewsletterSignup(data: NewsletterEmailData): Promise<boolean> {
   try {
     const { error } = await resend.emails.send({
-      from: 'Accommodation Collection <onboarding@resend.dev>',
-      to: 'leonbetads@gmail.com',
+      from: 'Accommodation Collection <noreply@accommodations.guide>',
+      to: 'info@accommodations.guide',
       subject: `New Newsletter Subscription: ${data.email}`,
       html: `
         <h2>New Newsletter Subscription</h2>
