@@ -1,22 +1,59 @@
 import { Link, useParams } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, User, ArrowLeft, Share2 } from 'lucide-react';
-import { blogPosts } from '@/data/blog-data';
+import { Calendar, Clock, User, ArrowLeft, Share2, Loader2 } from 'lucide-react';
+import { blogPosts, type BlogPost as HardcodedBlogPost } from '@/data/blog-data';
 import SEOHead from '@/components/seo/seo-head';
+import { useQuery } from '@tanstack/react-query';
+
+interface AdminBlog {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  category: string;
+  imageUrl?: string;
+  createdAt?: string;
+}
 
 export default function BlogPost() {
   const { id } = useParams<{ id: string }>();
   
-  // Find the blog post by ID
-  const post = blogPosts.find(p => p.id === id);
+  // Fetch admin-created blogs
+  const { data: adminBlogs = [], isLoading } = useQuery<AdminBlog[]>({
+    queryKey: ['/api/public/blogs'],
+    enabled: true,
+  });
+
+  // Transform admin blogs to match BlogPost interface
+  const transformedAdminBlogs: HardcodedBlogPost[] = adminBlogs.map(blog => ({
+    id: blog.id,
+    title: blog.title,
+    excerpt: blog.excerpt,
+    content: blog.content,
+    imageUrl: blog.imageUrl || '/attached_assets/victoria fals_1759175723488.jpg',
+    readTime: '5 min read',
+    date: blog.createdAt ? new Date(blog.createdAt).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    }) : 'Recently published',
+    author: blog.author,
+  }));
+
+  // Merge all blogs
+  const allBlogs = [...transformedAdminBlogs, ...blogPosts];
+  
+  // Find the blog post by ID from all blogs
+  const post = allBlogs.find(p => p.id === id);
   
   // Get circular recommendations - next 2 posts after current one, excluding current post
   const getCircularRecommendations = () => {
-    const currentIndex = blogPosts.findIndex(p => p.id === id);
+    const currentIndex = allBlogs.findIndex(p => p.id === id);
     if (currentIndex === -1) return [];
     
-    const recommendations = [];
-    const totalPosts = blogPosts.length;
+    const recommendations: HardcodedBlogPost[] = [];
+    const totalPosts = allBlogs.length;
     
     // Need at least 2 other posts to show recommendations
     if (totalPosts < 2) return [];
@@ -27,7 +64,7 @@ export default function BlogPost() {
     
     while (recommendations.length < 2 && positionsChecked < totalPosts) {
       const nextIndex = (currentIndex + nextOffset) % totalPosts;
-      const nextPost = blogPosts[nextIndex];
+      const nextPost = allBlogs[nextIndex];
       
       // Only add if it's not the current post
       if (nextPost.id !== id) {
@@ -42,6 +79,18 @@ export default function BlogPost() {
   };
   
   const recommendedPosts = getCircularRecommendations();
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="pt-32 pb-20 text-center">
+        <div className="container-custom max-w-4xl">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
+          <p className="mt-4 text-muted-foreground">Loading blog post...</p>
+        </div>
+      </div>
+    );
+  }
 
   // If post not found, show 404
   if (!post) {

@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Search } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 interface SearchWidgetProps {
   className?: string;
@@ -138,6 +139,7 @@ const continentData = {
 };
 
 export default function SearchWidget({ className = '' }: SearchWidgetProps) {
+  const [, setLocation] = useLocation();
   const [continent, setContinent] = useState('africa');
   const [country, setCountry] = useState('tanzania');
   const [category, setCategory] = useState('');
@@ -222,8 +224,19 @@ export default function SearchWidget({ className = '' }: SearchWidgetProps) {
   }, [country]);
 
   const handleSearch = () => {
-    // TODO: Implement search functionality
-    console.log('Search:', { continent, country, category, destination, checkIn, checkOut });
+    // Build query parameters
+    const params = new URLSearchParams();
+    
+    if (continent) params.append('continent', continent);
+    if (country) params.append('country', country);
+    if (category) params.append('category', category);
+    if (destination) params.append('destination', destination);
+    if (checkIn) params.append('checkIn', checkIn);
+    if (checkOut) params.append('checkOut', checkOut);
+    
+    // Navigate to accommodations page with filters
+    const queryString = params.toString();
+    setLocation(`/accommodations${queryString ? `?${queryString}` : ''}`);
   };
 
   return (

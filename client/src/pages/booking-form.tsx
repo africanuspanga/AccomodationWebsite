@@ -345,7 +345,7 @@ export default function BookingForm() {
                         <FormItem>
                           <FormLabel className="flex items-center space-x-2">
                             <Users className="h-4 w-4" />
-                            <span>Adults</span>
+                            <span>Adults <span className="text-muted-foreground font-normal">(15 years and Above)</span></span>
                           </FormLabel>
                           <FormControl>
                             <Input 
@@ -369,7 +369,7 @@ export default function BookingForm() {
                         <FormItem>
                           <FormLabel className="flex items-center space-x-2">
                             <Users className="h-4 w-4" />
-                            <span>Children</span>
+                            <span>Children <span className="text-muted-foreground font-normal">(Below 15 years)</span></span>
                           </FormLabel>
                           <FormControl>
                             <Input 
