@@ -1,11 +1,46 @@
+import { useState } from 'react';
 import { Link } from 'wouter';
-import { Mountain, Phone, Mail, MapPin } from 'lucide-react';
+import { Mountain, Phone, Mail, MapPin, Loader2 } from 'lucide-react';
 import { SiInstagram, SiFacebook, SiYoutube, SiX, SiTiktok, SiLinkedin, SiWhatsapp, SiPinterest } from 'react-icons/si';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
 import likeeIcon from '@assets/images-removebg-preview_1760198548949.png';
 
 export default function Footer() {
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleNewsletterSubmit = async () => {
+    if (!newsletterEmail || !newsletterEmail.includes('@')) {
+      toast({
+        title: 'Invalid Email',
+        description: 'Please enter a valid email address.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await apiRequest('POST', '/api/newsletter', { email: newsletterEmail });
+      toast({
+        title: 'Successfully Subscribed!',
+        description: 'Thank you for subscribing to our newsletter.',
+      });
+      setNewsletterEmail('');
+    } catch (error) {
+      toast({
+        title: 'Subscription Failed',
+        description: 'Please try again later.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   const quickLinks = [
     { name: 'Home', href: '/' },
     { name: 'About Us', href: '/about' },
@@ -150,14 +185,18 @@ export default function Footer() {
               <Input
                 type="email"
                 placeholder="Enter your email"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
                 className="bg-background text-foreground flex-1"
                 data-testid="newsletter-email-input"
               />
               <Button 
                 className="btn-accent whitespace-nowrap"
+                onClick={handleNewsletterSubmit}
+                disabled={isSubmitting}
                 data-testid="newsletter-subscribe-button"
               >
-                Subscribe
+                {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Subscribe'}
               </Button>
             </div>
           </div>

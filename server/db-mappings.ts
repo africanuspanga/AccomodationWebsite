@@ -150,6 +150,7 @@ export function mapItineraryFromDB(row: any): Itinerary {
     includes: row.includes,
     whatsNotIncluded: row.whats_not_included || null,
     whatToBring: row.what_to_bring || null,
+    optionalActivities: row.optional_activities || null,
     difficulty: row.difficulty,
     groupSize: row.group_size,
     rating: row.rating,
@@ -174,6 +175,7 @@ export function mapItineraryToDB(obj: any): Record<string, any> {
     includes: obj.includes,
     whats_not_included: obj.whatsNotIncluded,
     what_to_bring: obj.whatToBring,
+    optional_activities: obj.optionalActivities || null,
     difficulty: obj.difficulty,
     group_size: obj.groupSize,
     rating: obj.rating,
@@ -581,6 +583,7 @@ export function mapAdminItineraryFromDB(row: any): AdminItinerary {
     includes: row.includes || [],
     whatsNotIncluded: row.whats_not_included || null,
     whatToBring: row.what_to_bring || null,
+    optionalActivities: row.optional_activities || null,
     difficulty: row.difficulty || null,
     groupSize: row.group_size || null,
     rating: row.rating || null,
@@ -622,6 +625,7 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
   if (obj.galleryImages !== undefined) mapped.gallery_images = obj.galleryImages;
   if (obj.whatsNotIncluded !== undefined) mapped.whats_not_included = obj.whatsNotIncluded;
   if (obj.whatToBring !== undefined) mapped.what_to_bring = obj.whatToBring;
+  if (obj.optionalActivities !== undefined) mapped.optional_activities = obj.optionalActivities;
   if (obj.termsAndConditions !== undefined) mapped.terms_and_conditions = obj.termsAndConditions;
   if (obj.dayByDay !== undefined) mapped.day_by_day = obj.dayByDay;
   if (obj.pricingData !== undefined) mapped.pricing_data = obj.pricingData;

@@ -41,6 +41,7 @@ const itineraryFormSchema = z.object({
   includes: z.array(z.string()).min(1, 'At least one inclusion is required'),
   whatsNotIncluded: z.array(z.string()).optional(),
   whatToBring: z.array(z.string()).optional(),
+  optionalActivities: z.array(z.string()).optional(),
   difficulty: z.string().optional(),
   groupSize: z.string().optional(),
   rating: z.coerce.number().min(1).max(5).default(5),
@@ -63,6 +64,7 @@ export default function AdminItineraryForm() {
   const [newInclusion, setNewInclusion] = useState('');
   const [newNotIncluded, setNewNotIncluded] = useState('');
   const [newToBring, setNewToBring] = useState('');
+  const [newOptionalActivity, setNewOptionalActivity] = useState('');
   const [newDayTitle, setNewDayTitle] = useState('');
   const [newDayDescription, setNewDayDescription] = useState('');
   const isEdit = id && id !== 'new';
@@ -79,6 +81,7 @@ export default function AdminItineraryForm() {
       includes: [],
       whatsNotIncluded: [],
       whatToBring: [],
+      optionalActivities: [],
       difficulty: '',
       groupSize: '',
       rating: 5,
@@ -132,6 +135,7 @@ export default function AdminItineraryForm() {
           includes: itinerary.includes || [],
           whatsNotIncluded: itinerary.whatsNotIncluded || [],
           whatToBring: itinerary.whatToBring || [],
+          optionalActivities: itinerary.optionalActivities || [],
           difficulty: itinerary.difficulty || '',
           groupSize: itinerary.groupSize || '',
           rating: itinerary.rating || 5,
@@ -197,6 +201,19 @@ export default function AdminItineraryForm() {
   const removeToBring = (index: number) => {
     const current = form.getValues('whatToBring') || [];
     form.setValue('whatToBring', current.filter((_, i) => i !== index));
+  };
+
+  const addOptionalActivity = () => {
+    if (newOptionalActivity.trim()) {
+      const current = form.getValues('optionalActivities') || [];
+      form.setValue('optionalActivities', [...current, newOptionalActivity.trim()]);
+      setNewOptionalActivity('');
+    }
+  };
+
+  const removeOptionalActivity = (index: number) => {
+    const current = form.getValues('optionalActivities') || [];
+    form.setValue('optionalActivities', current.filter((_, i) => i !== index));
   };
 
   const addDayByDay = () => {
@@ -606,6 +623,58 @@ export default function AdminItineraryForm() {
                               variant="ghost"
                               size="sm"
                               onClick={() => removeToBring(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="optionalActivities"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Optional Activities (Optional)</FormLabel>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Add an optional activity"
+                        value={newOptionalActivity}
+                        onChange={(e) => setNewOptionalActivity(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            addOptionalActivity();
+                          }
+                        }}
+                        data-testid="input-optional-activity"
+                      />
+                      <Button type="button" onClick={addOptionalActivity} data-testid="button-add-optional-activity">
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {field.value && field.value.length > 0 && (
+                      <div className="space-y-2">
+                        {field.value.map((item, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-muted rounded"
+                            data-testid={`optional-activity-item-${index}`}
+                          >
+                            <span>{item}</span>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeOptionalActivity(index)}
+                              data-testid={`button-remove-optional-activity-${index}`}
                             >
                               <X className="h-4 w-4" />
                             </Button>

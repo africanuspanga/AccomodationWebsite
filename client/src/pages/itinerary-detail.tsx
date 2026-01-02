@@ -123,6 +123,7 @@ export default function ItineraryDetail() {
   const whatsIncluded = itinerary?.includes || itineraryDetail?.whatsIncluded || [];
   const whatsNotIncluded = itinerary?.whatsNotIncluded || itineraryDetail?.whatsNotIncluded || [];
   const whatToBring = itinerary?.whatToBring || itineraryDetail?.whatToBring || [];
+  const optionalActivities = itinerary?.optionalActivities || itineraryDetail?.optionalActivities || [];
   const termsAndConditions = itinerary?.termsAndConditions || itineraryDetail?.termsAndConditions || null;
   
   // Get gallery images from itinerary - safely parse if it's a JSON string
@@ -311,6 +312,21 @@ export default function ItineraryDetail() {
                           )}
                         </div>
                       </div>
+
+                      {/* Optional Activities */}
+                      {optionalActivities && optionalActivities.length > 0 && (
+                        <div>
+                          <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">Optional Activities</h2>
+                          <div className="grid md:grid-cols-2 gap-3">
+                            {optionalActivities.map((item, index) => (
+                              <div key={index} className="flex items-start space-x-3">
+                                <Star className="h-5 w-5 text-amber-500 fill-current flex-shrink-0 mt-0.5" />
+                                <span className="text-foreground">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
 

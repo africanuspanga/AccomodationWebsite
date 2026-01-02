@@ -66,6 +66,7 @@ export interface Itinerary {
   includes: string[] | null;
   whatsNotIncluded: string[] | null;
   whatToBring: string[] | null;
+  optionalActivities: string[] | null;
   difficulty: string | null;
   groupSize: string | null;
   rating: number | null;
@@ -204,6 +205,7 @@ export interface AdminItinerary {
   includes: string[];
   whatsNotIncluded: string[] | null;
   whatToBring: string[] | null;
+  optionalActivities: string[] | null;
   difficulty: string | null;
   groupSize: string | null;
   rating: number | null;
@@ -365,6 +367,7 @@ export const insertItinerarySchema = z.object({
   includes: z.array(z.string()).nullable().optional(),
   whatsNotIncluded: z.array(z.string()).nullable().optional(),
   whatToBring: z.array(z.string()).nullable().optional(),
+  optionalActivities: z.array(z.string()).nullable().optional(),
   difficulty: z.string().nullable().optional(),
   groupSize: z.string().nullable().optional(),
   rating: z.number().min(1).max(5).nullable().optional(),
@@ -383,6 +386,7 @@ export const itinerarySchema = z.object({
   includes: z.array(z.string()).nullable(),
   whatsNotIncluded: z.array(z.string()).nullable(),
   whatToBring: z.array(z.string()).nullable(),
+  optionalActivities: z.array(z.string()).nullable(),
   difficulty: z.string().nullable(),
   groupSize: z.string().nullable(),
   rating: z.number().nullable(),
@@ -505,6 +509,7 @@ export const insertAdminItinerarySchema = z.object({
   includes: z.array(z.string()).min(1),
   whatsNotIncluded: z.array(z.string()).nullable().optional(),
   whatToBring: z.array(z.string()).nullable().optional(),
+  optionalActivities: z.array(z.string()).nullable().optional(),
   difficulty: z.string().nullable().optional(),
   groupSize: z.string().nullable().optional(),
   rating: z.coerce.number().min(1).max(5).nullable().optional(),

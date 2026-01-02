@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema, insertItinerarySchema, insertVolunteerApplicationSchema, insertBookingSchema } from "@shared/schema";
 import { generateUploadSignature } from "./cloudinary";
+import { sendBookingNotification, sendInquiryNotification, sendNewsletterSignup } from "./email";
 // Old auth system removed - now using Supabase Auth for users
 // import { setupAuth } from "./auth";
 
@@ -23,10 +24,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertInquirySchema.parse(req.body);
       const inquiry = await storage.createInquiry(validatedData);
+      
+      // Send email notification to reservations@accommodations.guide
+      await sendInquiryNotification({
+        name: `${validatedData.firstName} ${validatedData.lastName}`,
+        email: validatedData.email,
+        phone: validatedData.phone || undefined,
+        subject: 'Contact Form Inquiry',
+        message: validatedData.message,
+      });
+      
       res.json({ success: true, inquiry });
     } catch (error) {
       console.error("Error creating inquiry:", error);
       res.status(400).json({ success: false, error: error instanceof Error ? error.message : "Invalid data" });
+    }
+  });
+
+  // Newsletter signup route
+  app.post("/api/newsletter", async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email || typeof email !== 'string') {
+        return res.status(400).json({ success: false, error: "Email is required" });
+      }
+      
+      // Send notification to info@accommodations.guide
+      await sendNewsletterSignup({ email });
+      
+      res.json({ success: true, message: "Successfully subscribed to newsletter" });
+    } catch (error) {
+      console.error("Error processing newsletter signup:", error);
+      res.status(400).json({ success: false, error: error instanceof Error ? error.message : "Failed to subscribe" });
     }
   });
 
@@ -337,6 +366,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertBookingSchema.parse(req.body);
       const booking = await storage.createBooking(validatedData);
+      
+      // Send email notification to reservations@accommodations.guide
+      await sendBookingNotification({
+        bookingType: validatedData.bookingType,
+        itemName: validatedData.itemName,
+        fullName: validatedData.fullName,
+        email: validatedData.email,
+        phone: validatedData.phone,
+        checkInDate: validatedData.checkInDate,
+        checkOutDate: validatedData.checkOutDate,
+        numberOfDays: validatedData.numberOfDays,
+        adults: validatedData.adults,
+        children: validatedData.children,
+        specialRequests: validatedData.specialRequests || undefined,
+      });
+      
       res.json({ success: true, booking });
     } catch (error) {
       console.error("Error creating booking:", error);
