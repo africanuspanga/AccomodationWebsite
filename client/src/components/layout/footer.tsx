@@ -54,12 +54,12 @@ export default function Footer() {
   ];
 
   const destinations = [
-    'Serengeti National Park',
-    'Ngorongoro Crater',
-    'Tarangire National Park',
-    'Lake Manyara',
-    'Mount Kilimanjaro',
-    'Zanzibar Island',
+    { name: 'Serengeti National Park', href: '/destinations/serengeti-national-park' },
+    { name: 'Ngorongoro Crater', href: '/destinations/ngorongoro-conservation-area' },
+    { name: 'Tarangire National Park', href: '/destinations/tarangire-national-park' },
+    { name: 'Lake Manyara', href: '/destinations/lake-manyara-national-park' },
+    { name: 'Mount Kilimanjaro', href: '/destinations/mount-kilimanjaro' },
+    { name: 'Zanzibar Island', href: '/destinations/zanzibar-island' },
   ];
 
   const socialLinks = [
@@ -136,14 +136,15 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-6">Popular Destinations</h3>
             <ul className="space-y-3">
               {destinations.map((destination) => (
-                <li key={destination}>
-                  <a
-                    href="#"
+                <li key={destination.name}>
+                  <Link
+                    href={destination.href}
+                    onClick={() => window.scrollTo(0, 0)}
                     className="text-primary-foreground/80 hover:text-accent transition-colors"
-                    data-testid={`destination-link-${destination.toLowerCase().replace(/\s+/g, '-')}`}
+                    data-testid={`destination-link-${destination.name.toLowerCase().replace(/\s+/g, '-')}`}
                   >
-                    {destination}
-                  </a>
+                    {destination.name}
+                  </Link>
                 </li>
               ))}
             </ul>
