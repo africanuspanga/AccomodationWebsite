@@ -1,12 +1,16 @@
--- SQL Migration: Add optional_activities column to itineraries table
+-- SQL Migration: Add optional_activities column to itineraries tables
 -- Run this in Supabase SQL Editor
 
--- Add optional_activities column to itineraries table
+-- Add optional_activities column to itineraries table (public data)
 ALTER TABLE itineraries 
 ADD COLUMN IF NOT EXISTS optional_activities TEXT[];
 
--- Verify the column was added
-SELECT column_name, data_type 
+-- Add optional_activities column to admin_itineraries table (admin CMS)
+ALTER TABLE admin_itineraries 
+ADD COLUMN IF NOT EXISTS optional_activities TEXT[];
+
+-- Verify the columns were added
+SELECT table_name, column_name, data_type 
 FROM information_schema.columns 
-WHERE table_name = 'itineraries' 
-AND column_name = 'optional_activities';
+WHERE column_name = 'optional_activities' 
+AND table_name IN ('itineraries', 'admin_itineraries');
