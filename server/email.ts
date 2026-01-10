@@ -28,6 +28,18 @@ interface NewsletterEmailData {
   email: string;
 }
 
+interface VolunteerApplicationEmailData {
+  programTitle: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  nationality: string;
+  preferredStartDate: string;
+  duration: string;
+  experience?: string;
+  motivation?: string;
+}
+
 export async function sendBookingNotification(data: BookingEmailData): Promise<boolean> {
   try {
     const { error } = await resend.emails.send({
@@ -121,6 +133,43 @@ export async function sendNewsletterSignup(data: NewsletterEmailData): Promise<b
     return true;
   } catch (error) {
     console.error('Error sending newsletter signup:', error);
+    return false;
+  }
+}
+
+export async function sendVolunteerApplicationNotification(data: VolunteerApplicationEmailData): Promise<boolean> {
+  try {
+    const { error } = await resend.emails.send({
+      from: 'Accommodation Collection <noreply@accommodations.guide>',
+      to: 'info@accommodations.guide',
+      subject: `New Volunteer Application: ${data.programTitle}`,
+      html: `
+        <h2>New Volunteer Application</h2>
+        <p><strong>Program:</strong> ${data.programTitle}</p>
+        <hr />
+        <h3>Applicant Information</h3>
+        <p><strong>Name:</strong> ${data.fullName}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Phone:</strong> ${data.phone}</p>
+        <p><strong>Nationality:</strong> ${data.nationality}</p>
+        <hr />
+        <h3>Program Details</h3>
+        <p><strong>Preferred Start Date:</strong> ${data.preferredStartDate}</p>
+        <p><strong>Duration:</strong> ${data.duration}</p>
+        ${data.experience ? `<p><strong>Relevant Experience:</strong> ${data.experience}</p>` : ''}
+        ${data.motivation ? `<p><strong>Motivation:</strong> ${data.motivation}</p>` : ''}
+        <hr />
+        <p><em>This email was sent from the Accommodation Collection website volunteer application form.</em></p>
+      `,
+    });
+
+    if (error) {
+      console.error('Error sending volunteer application email:', error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Error sending volunteer application notification:', error);
     return false;
   }
 }

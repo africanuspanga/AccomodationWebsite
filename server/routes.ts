@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema, insertItinerarySchema, insertVolunteerApplicationSchema, insertBookingSchema } from "@shared/schema";
 import { generateUploadSignature } from "./cloudinary";
-import { sendBookingNotification, sendInquiryNotification, sendNewsletterSignup } from "./email";
+import { sendBookingNotification, sendInquiryNotification, sendNewsletterSignup, sendVolunteerApplicationNotification } from "./email";
 // Old auth system removed - now using Supabase Auth for users
 // import { setupAuth } from "./auth";
 
@@ -321,6 +321,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertVolunteerApplicationSchema.parse(req.body);
       const application = await storage.createVolunteerApplication(validatedData);
+      
+      // Send email notification to info@accommodations.guide
+      await sendVolunteerApplicationNotification({
+        programTitle: 'Volunteer Program',
+        fullName: `${validatedData.firstName} ${validatedData.lastName}`,
+        email: validatedData.email,
+        phone: validatedData.mobile || validatedData.telephone,
+        nationality: validatedData.nationality,
+        preferredStartDate: validatedData.expectedArrivalDate,
+        duration: validatedData.volunteerDuration,
+        experience: validatedData.workingExperience || undefined,
+        motivation: undefined,
+      });
+      
       res.json({ success: true, application });
     } catch (error) {
       console.error("Error creating volunteer application:", error);

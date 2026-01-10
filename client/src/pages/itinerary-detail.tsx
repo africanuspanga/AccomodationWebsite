@@ -14,25 +14,22 @@ interface DayByDayItem {
   description: string;
 }
 
-interface PricingPackage {
-  name: string;
+interface SeasonPricing {
+  months: string;
   prices: {
-    '1person': string;
-    '2persons': string;
-    '4persons': string;
-    '6+persons': string;
+    person1: string;
+    person2: string;
+    person3: string;
+    person4: string;
+    person5: string;
+    person6: string;
+    person7: string;
   };
 }
 
 interface PricingData {
-  lowSeason: {
-    months: string;
-    packages: PricingPackage[];
-  };
-  highSeason: {
-    months: string;
-    packages: PricingPackage[];
-  };
+  lowSeason: SeasonPricing;
+  highSeason: SeasonPricing;
 }
 
 export default function ItineraryDetail() {
@@ -412,34 +409,50 @@ export default function ItineraryDetail() {
                           The total Seasonal cost of this itinerary is <span className="font-semibold">Per person</span>
                         </p>
 
-                        {pricingData ? (
+                        {pricingData?.lowSeason && pricingData?.highSeason ? (
                           <>
                             {/* Low Season */}
-                            <div className="mb-8">
-                              <h3 className="font-serif text-xl font-bold text-foreground mb-2 uppercase">Low Season</h3>
-                              <p className="text-sm text-muted-foreground mb-4">{pricingData.lowSeason.months}</p>
+                            <div className="mb-10">
+                              <h3 className="font-serif text-xl font-bold text-foreground mb-1 uppercase tracking-wide">Low Season</h3>
+                              <p className="text-sm text-muted-foreground mb-4">{pricingData.lowSeason?.months || 'April, May, November'}</p>
                               
-                              <div className="overflow-x-auto">
-                                <table className="w-full border border-border">
+                              <div className="overflow-x-auto rounded-lg border border-border">
+                                <table className="w-full">
                                   <thead>
                                     <tr className="bg-primary text-primary-foreground">
-                                      <th className="px-4 py-3 text-left font-serif">Level</th>
-                                      <th className="px-4 py-3 text-center font-serif">1 person</th>
-                                      <th className="px-4 py-3 text-center font-serif">2 persons</th>
-                                      <th className="px-4 py-3 text-center font-serif">4 persons</th>
-                                      <th className="px-4 py-3 text-center font-serif">6+ persons</th>
+                                      <th className="px-6 py-4 text-left font-serif text-sm uppercase tracking-wider">Group Size</th>
+                                      <th className="px-6 py-4 text-right font-serif text-sm uppercase tracking-wider">Price Per Person</th>
                                     </tr>
                                   </thead>
-                                  <tbody>
-                                    {pricingData.lowSeason.packages.map((pkg, index) => (
-                                      <tr key={index} className={index % 2 === 0 ? 'bg-muted/30' : 'bg-card'}>
-                                        <td className="px-4 py-3 font-medium border-r border-border">{pkg.name}</td>
-                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['1person']}</td>
-                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['2persons']}</td>
-                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['4persons']}</td>
-                                        <td className="px-4 py-3 text-center">{pkg.prices['6+persons']}</td>
-                                      </tr>
-                                    ))}
+                                  <tbody className="divide-y divide-border">
+                                    <tr className="bg-card hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">1 person</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.lowSeason?.prices?.person1 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-muted/30 hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">2 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.lowSeason?.prices?.person2 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-card hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">3 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.lowSeason?.prices?.person3 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-muted/30 hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">4 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.lowSeason?.prices?.person4 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-card hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">5 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.lowSeason?.prices?.person5 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-muted/30 hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">6 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.lowSeason?.prices?.person6 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-card hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">7 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.lowSeason?.prices?.person7 || '-'}</td>
+                                    </tr>
                                   </tbody>
                                 </table>
                               </div>
@@ -447,30 +460,46 @@ export default function ItineraryDetail() {
 
                             {/* High Season */}
                             <div>
-                              <h3 className="font-serif text-xl font-bold text-foreground mb-2 uppercase">High Season</h3>
-                              <p className="text-sm text-muted-foreground mb-4">{pricingData.highSeason.months}</p>
+                              <h3 className="font-serif text-xl font-bold text-foreground mb-1 uppercase tracking-wide">High Season</h3>
+                              <p className="text-sm text-muted-foreground mb-4">{pricingData.highSeason?.months || 'Jan, Feb, Mar, Jun, Jul, Aug, Sep, Oct, Dec'}</p>
                               
-                              <div className="overflow-x-auto">
-                                <table className="w-full border border-border">
+                              <div className="overflow-x-auto rounded-lg border border-border">
+                                <table className="w-full">
                                   <thead>
                                     <tr className="bg-primary text-primary-foreground">
-                                      <th className="px-4 py-3 text-left font-serif">Level</th>
-                                      <th className="px-4 py-3 text-center font-serif">1 person</th>
-                                      <th className="px-4 py-3 text-center font-serif">2 persons</th>
-                                      <th className="px-4 py-3 text-center font-serif">4 persons</th>
-                                      <th className="px-4 py-3 text-center font-serif">6+ persons</th>
+                                      <th className="px-6 py-4 text-left font-serif text-sm uppercase tracking-wider">Group Size</th>
+                                      <th className="px-6 py-4 text-right font-serif text-sm uppercase tracking-wider">Price Per Person</th>
                                     </tr>
                                   </thead>
-                                  <tbody>
-                                    {pricingData.highSeason.packages.map((pkg, index) => (
-                                      <tr key={index} className={index % 2 === 0 ? 'bg-muted/30' : 'bg-card'}>
-                                        <td className="px-4 py-3 font-medium border-r border-border">{pkg.name}</td>
-                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['1person']}</td>
-                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['2persons']}</td>
-                                        <td className="px-4 py-3 text-center border-r border-border">{pkg.prices['4persons']}</td>
-                                        <td className="px-4 py-3 text-center">{pkg.prices['6+persons']}</td>
-                                      </tr>
-                                    ))}
+                                  <tbody className="divide-y divide-border">
+                                    <tr className="bg-card hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">1 person</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.highSeason?.prices?.person1 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-muted/30 hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">2 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.highSeason?.prices?.person2 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-card hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">3 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.highSeason?.prices?.person3 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-muted/30 hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">4 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.highSeason?.prices?.person4 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-card hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">5 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.highSeason?.prices?.person5 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-muted/30 hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">6 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.highSeason?.prices?.person6 || '-'}</td>
+                                    </tr>
+                                    <tr className="bg-card hover:bg-muted/50 transition-colors">
+                                      <td className="px-6 py-4 font-medium text-foreground">7 people</td>
+                                      <td className="px-6 py-4 text-right text-foreground font-semibold">{pricingData.highSeason?.prices?.person7 || '-'}</td>
+                                    </tr>
                                   </tbody>
                                 </table>
                               </div>

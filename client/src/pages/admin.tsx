@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { LogOut, Plus, Edit, Trash2 } from 'lucide-react';
+import { LogOut, Plus, Edit, Trash2, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   Table,
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-6 mb-8">
             <TabsTrigger value="accommodations" data-testid="tab-accommodations">
               Accommodations
             </TabsTrigger>
@@ -117,6 +117,10 @@ export default function AdminDashboard() {
             </TabsTrigger>
             <TabsTrigger value="itineraries" data-testid="tab-itineraries">
               Itineraries
+            </TabsTrigger>
+            <TabsTrigger value="users" data-testid="tab-users">
+              <Users className="mr-1 h-4 w-4 inline" />
+              Users
             </TabsTrigger>
           </TabsList>
 
@@ -198,6 +202,13 @@ export default function AdminDashboard() {
               token={adminToken}
               onDelete={(id) => setDeleteDialog({ open: true, type: 'itineraries', id })}
             />
+          </TabsContent>
+
+          <TabsContent value="users">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Registered Users</h2>
+            </div>
+            <AdminUsersTable key={refreshKey} token={adminToken} />
           </TabsContent>
         </Tabs>
       </div>
@@ -313,6 +324,116 @@ function AdminContentTable({
           ))}
         </TableBody>
       </Table>
+    </div>
+  );
+}
+
+function AdminUsersTable({ token }: { token: string }) {
+  const [users, setUsers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('/api/admin/users', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data);
+        } else {
+          const errorData = await response.json();
+          setError(errorData.error || 'Failed to fetch users');
+        }
+      } catch (err) {
+        console.error('Failed to fetch users:', err);
+        setError('Failed to fetch users');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, [token]);
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading users...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12 border rounded-lg bg-destructive/10">
+        <p className="text-destructive">{error}</p>
+      </div>
+    );
+  }
+
+  if (users.length === 0) {
+    return (
+      <div className="text-center py-12 border rounded-lg bg-muted/20">
+        <p className="text-muted-foreground">No registered users found.</p>
+      </div>
+    );
+  }
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'Never';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  return (
+    <div className="border rounded-lg bg-background">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Email</TableHead>
+            <TableHead>Full Name</TableHead>
+            <TableHead>Registered</TableHead>
+            <TableHead>Last Sign In</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id} data-testid={`row-user-${user.id}`}>
+              <TableCell className="font-medium">{user.email}</TableCell>
+              <TableCell>{user.userMetadata?.full_name || '-'}</TableCell>
+              <TableCell className="text-sm text-muted-foreground">
+                {formatDate(user.createdAt)}
+              </TableCell>
+              <TableCell className="text-sm text-muted-foreground">
+                {formatDate(user.lastSignInAt)}
+              </TableCell>
+              <TableCell>
+                {user.emailConfirmedAt ? (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Verified
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    Pending
+                  </span>
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <div className="p-4 border-t bg-muted/10">
+        <p className="text-sm text-muted-foreground">
+          Total users: {users.length}
+        </p>
+      </div>
     </div>
   );
 }

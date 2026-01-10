@@ -1,5 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { storage } from "./storage";
+import { createClient } from '@supabase/supabase-js';
 import { 
   insertAdminBlogSchema,
   insertAdminVolunteerProgramSchema,
@@ -7,6 +8,13 @@ import {
   insertAdminItinerarySchema,
   insertAdminDestinationSchema,
 } from "@shared/schema";
+
+// Create Supabase admin client for user management
+const supabaseAdmin = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY
+  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    })
+  : null;
 
 // Simple admin check middleware
 function isAdmin(req: Request, res: Response, next: Function) {
@@ -405,6 +413,40 @@ export function registerAdminRoutes(app: Express) {
       const destinations = await storage.getAllAdminDestinations();
       res.json(destinations);
     } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ===== USERS ROUTES =====
+
+  // Get all users from Supabase Auth
+  app.get("/api/admin/users", isAdmin, async (req, res) => {
+    try {
+      if (!supabaseAdmin) {
+        return res.status(500).json({ error: 'Supabase admin client not configured' });
+      }
+
+      const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
+      
+      if (error) {
+        console.error('Error fetching users:', error);
+        return res.status(500).json({ error: error.message });
+      }
+
+      // Return sanitized user data
+      const sanitizedUsers = users.map(user => ({
+        id: user.id,
+        email: user.email,
+        createdAt: user.created_at,
+        lastSignInAt: user.last_sign_in_at,
+        emailConfirmedAt: user.email_confirmed_at,
+        phone: user.phone,
+        userMetadata: user.user_metadata,
+      }));
+
+      res.json(sanitizedUsers);
+    } catch (error: any) {
+      console.error('Error fetching users:', error);
       res.status(500).json({ error: error.message });
     }
   });

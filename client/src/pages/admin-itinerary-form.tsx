@@ -31,6 +31,24 @@ const dayByDaySchema = z.object({
   description: z.string().min(1),
 });
 
+const seasonPricingSchema = z.object({
+  months: z.string().optional(),
+  prices: z.object({
+    person1: z.string().optional(),
+    person2: z.string().optional(),
+    person3: z.string().optional(),
+    person4: z.string().optional(),
+    person5: z.string().optional(),
+    person6: z.string().optional(),
+    person7: z.string().optional(),
+  }).optional(),
+});
+
+const pricingDataSchema = z.object({
+  lowSeason: seasonPricingSchema.optional(),
+  highSeason: seasonPricingSchema.optional(),
+}).optional();
+
 const itineraryFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   duration: z.string().min(1, 'Duration is required'),
@@ -49,7 +67,7 @@ const itineraryFormSchema = z.object({
   galleryImages: z.array(z.string()).optional(),
   termsAndConditions: z.string().optional(),
   dayByDay: z.array(dayByDaySchema).optional(),
-  pricingData: z.string().optional(),
+  pricingData: pricingDataSchema,
 });
 
 type ItineraryFormData = z.infer<typeof itineraryFormSchema>;
@@ -89,7 +107,16 @@ export default function AdminItineraryForm() {
       galleryImages: [],
       termsAndConditions: '',
       dayByDay: [],
-      pricingData: '',
+      pricingData: {
+        lowSeason: {
+          months: 'April, May, November',
+          prices: { person1: '', person2: '', person3: '', person4: '', person5: '', person6: '', person7: '' }
+        },
+        highSeason: {
+          months: 'Jan, Feb, Mar, Jun, Jul, Aug, Sep, Oct, Dec',
+          prices: { person1: '', person2: '', person3: '', person4: '', person5: '', person6: '', person7: '' }
+        }
+      },
     },
   });
 
@@ -143,7 +170,23 @@ export default function AdminItineraryForm() {
           galleryImages: itinerary.galleryImages || [],
           termsAndConditions: itinerary.termsAndConditions || '',
           dayByDay: parsedDayByDay,
-          pricingData: itinerary.pricingData || '',
+          pricingData: (() => {
+            if (!itinerary.pricingData) return {
+              lowSeason: { months: 'April, May, November', prices: { person1: '', person2: '', person3: '', person4: '', person5: '', person6: '', person7: '' } },
+              highSeason: { months: 'Jan, Feb, Mar, Jun, Jul, Aug, Sep, Oct, Dec', prices: { person1: '', person2: '', person3: '', person4: '', person5: '', person6: '', person7: '' } }
+            };
+            if (typeof itinerary.pricingData === 'string') {
+              try {
+                return JSON.parse(itinerary.pricingData);
+              } catch {
+                return {
+                  lowSeason: { months: 'April, May, November', prices: { person1: '', person2: '', person3: '', person4: '', person5: '', person6: '', person7: '' } },
+                  highSeason: { months: 'Jan, Feb, Mar, Jun, Jul, Aug, Sep, Oct, Dec', prices: { person1: '', person2: '', person3: '', person4: '', person5: '', person6: '', person7: '' } }
+                };
+              }
+            }
+            return itinerary.pricingData;
+          })(),
         });
       }
     } catch (error) {
@@ -243,6 +286,7 @@ export default function AdminItineraryForm() {
         dayByDay: data.dayByDay && data.dayByDay.length > 0 
           ? JSON.stringify(data.dayByDay) 
           : null,
+        pricingData: data.pricingData ? JSON.stringify(data.pricingData) : null,
       };
 
       const response = await fetch(url, {
@@ -746,24 +790,90 @@ export default function AdminItineraryForm() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="pricingData"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pricing Information (Optional)</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter pricing details, group rates, seasonal pricing, etc..."
-                      className="min-h-[150px]"
-                      {...field}
-                      data-testid="textarea-pricing-data"
+            {/* Pricing Data - Structured Inputs */}
+            <div className="space-y-6 p-6 border rounded-lg bg-muted/30">
+              <h3 className="text-lg font-semibold text-foreground">Seasonal Pricing (Per Person)</h3>
+              
+              {/* Low Season */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-medium text-primary">LOW SEASON</h4>
+                  <FormField
+                    control={form.control}
+                    name="pricingData.lowSeason.months"
+                    render={({ field }) => (
+                      <Input
+                        placeholder="e.g., April, May, November"
+                        className="flex-1 max-w-xs"
+                        {...field}
+                        value={field.value || ''}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[1, 2, 3, 4, 5, 6, 7].map((num) => (
+                    <FormField
+                      key={`low-${num}`}
+                      control={form.control}
+                      name={`pricingData.lowSeason.prices.person${num}` as any}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs">{num} {num === 1 ? 'person' : 'people'}</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder={`e.g., $2,386`}
+                              {...field}
+                              value={field.value || ''}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  ))}
+                </div>
+              </div>
+
+              {/* High Season */}
+              <div className="space-y-4 pt-4 border-t">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-medium text-primary">HIGH SEASON</h4>
+                  <FormField
+                    control={form.control}
+                    name="pricingData.highSeason.months"
+                    render={({ field }) => (
+                      <Input
+                        placeholder="e.g., Jan, Feb, Mar, Jun, Jul, Aug, Sep, Oct, Dec"
+                        className="flex-1 max-w-xs"
+                        {...field}
+                        value={field.value || ''}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[1, 2, 3, 4, 5, 6, 7].map((num) => (
+                    <FormField
+                      key={`high-${num}`}
+                      control={form.control}
+                      name={`pricingData.highSeason.prices.person${num}` as any}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs">{num} {num === 1 ? 'person' : 'people'}</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder={`e.g., $2,616`}
+                              {...field}
+                              value={field.value || ''}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
 
             <FormField
               control={form.control}
