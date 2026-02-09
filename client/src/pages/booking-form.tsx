@@ -316,19 +316,19 @@ export default function BookingForm() {
                               min="1"
                               max="30"
                               className="no-spinner"
-                              {...field}
-                              value={field.value ?? ''}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                if (value === '') {
-                                  field.onChange(undefined);
-                                  return;
-                                }
-                                const parsed = parseInt(value, 10);
-                                field.onChange(Number.isNaN(parsed) ? undefined : parsed);
-                              }}
-                              data-testid="input-nights"
-                            />
+                            {...field}
+                            value={field.value ?? ''}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === '') {
+                                field.onChange(null);
+                                return;
+                              }
+                              const parsed = parseInt(value, 10);
+                              field.onChange(Number.isNaN(parsed) ? null : parsed);
+                            }}
+                            data-testid="input-nights"
+                          />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -356,11 +356,11 @@ export default function BookingForm() {
                             onChange={(e) => {
                               const value = e.target.value;
                               if (value === '') {
-                                field.onChange(undefined);
+                                field.onChange(null);
                                 return;
                               }
                               const parsed = parseInt(value, 10);
-                              field.onChange(Number.isNaN(parsed) ? undefined : parsed);
+                              field.onChange(Number.isNaN(parsed) ? null : parsed);
                             }}
                             data-testid="input-adults"
                           />
