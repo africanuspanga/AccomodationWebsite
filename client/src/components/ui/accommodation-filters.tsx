@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { RotateCcw, Filter } from 'lucide-react';
+import type { Accommodation } from '@shared/schema';
 
 interface AccommodationFiltersProps {
   onFilterChange: (filters: FilterState) => void;
+  filters: FilterState;
+  accommodations: Accommodation[];
   className?: string;
 }
 
@@ -16,50 +19,81 @@ export interface FilterState {
   category: string;
 }
 
-export default function AccommodationFilters({ onFilterChange, className = '' }: AccommodationFiltersProps) {
-  const [filters, setFilters] = useState<FilterState>({
-    continental: 'all',
-    country: 'all',
-    destination: 'all',
-    category: 'all',
+const requestedDestinations = [
+  'Nyerere National Park',
+  'Mikumi National Park',
+  'Katavi National Park',
+  'Arusha',
+  'Karatu',
+  'Mbeya',
+  'Mwanza',
+  'Dodoma',
+  'Kilimanjaro',
+  'Dar es Salaam',
+];
+
+function normalizeFilterValue(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function formatLabel(value: string): string {
+  return value
+    .trim()
+    .replace(/[-_]+/g, ' ')
+    .split(' ')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+function buildUniqueOptions(values: string[]): Array<{ value: string; label: string }> {
+  const optionsMap = new Map<string, string>();
+
+  values.forEach((rawValue) => {
+    const normalizedValue = normalizeFilterValue(rawValue);
+    if (!normalizedValue) return;
+    if (!optionsMap.has(normalizedValue)) {
+      optionsMap.set(normalizedValue, formatLabel(rawValue));
+    }
   });
 
-  const continentals = [
-    { value: 'africa', label: 'Africa' },
-    { value: 'asia', label: 'Asia' },
-    { value: 'europe', label: 'Europe' },
-    { value: 'america', label: 'America' },
-  ];
+  return Array.from(optionsMap.entries())
+    .map(([value, label]) => ({ value, label }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
 
-  const countries = [
-    { value: 'tanzania', label: 'Tanzania' },
-    { value: 'kenya', label: 'Kenya' },
-    { value: 'uganda', label: 'Uganda' },
-    { value: 'rwanda', label: 'Rwanda' },
-  ];
+export default function AccommodationFilters({
+  onFilterChange,
+  filters,
+  accommodations,
+  className = '',
+}: AccommodationFiltersProps) {
+  const continentals = useMemo(
+    () => buildUniqueOptions(accommodations.map((item) => item.continental).filter(Boolean)),
+    [accommodations]
+  );
 
-  const destinations = [
-    { value: 'serengeti', label: 'Serengeti National Park' },
-    { value: 'ngorongoro', label: 'Ngorongoro Conservation Area' },
-    { value: 'tarangire', label: 'Tarangire National Park' },
-    { value: 'manyara', label: 'Lake Manyara National Park' },
-    { value: 'ruaha', label: 'Ruaha National Park' },
-    { value: 'zanzibar', label: 'Zanzibar Island' },
-  ];
+  const countries = useMemo(
+    () => buildUniqueOptions(accommodations.map((item) => item.country).filter(Boolean)),
+    [accommodations]
+  );
 
-  const categories = [
-    { value: 'camping', label: 'Camping' },
-    { value: 'basic', label: 'Basic' },
-    { value: 'standard', label: 'Standard' },
-    { value: 'mid-range', label: 'Mid Range' },
-    { value: 'luxury', label: 'Luxury' },
-    { value: 'ultra-luxury', label: 'Ultra Luxury' },
-  ];
+  const destinations = useMemo(() => {
+    const fromAccommodations = accommodations.map((item) => item.destination).filter(Boolean);
+    return buildUniqueOptions([...requestedDestinations, ...fromAccommodations]);
+  }, [accommodations]);
+
+  const categories = useMemo(
+    () => buildUniqueOptions(accommodations.map((item) => item.category).filter(Boolean)),
+    [accommodations]
+  );
 
   const handleFilterChange = (key: keyof FilterState, value: string) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFilterChange(newFilters);
+    onFilterChange({ ...filters, [key]: value });
   };
 
   const handleClearFilters = () => {
@@ -69,7 +103,6 @@ export default function AccommodationFilters({ onFilterChange, className = '' }:
       destination: 'all',
       category: 'all',
     };
-    setFilters(clearedFilters);
     onFilterChange(clearedFilters);
   };
 

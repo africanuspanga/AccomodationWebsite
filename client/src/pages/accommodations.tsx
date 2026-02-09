@@ -4,22 +4,49 @@ import SEOHead from '@/components/seo/seo-head';
 import AccommodationFilters, { type FilterState } from '@/components/ui/accommodation-filters';
 import { useContent } from '@/hooks/use-content';
 
+function normalizeFilterValue(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function getInitialFiltersFromUrl(): FilterState {
+  if (typeof window === 'undefined') {
+    return { continental: 'all', country: 'all', destination: 'all', category: 'all' };
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const getValue = (key: string) => {
+    const value = params.get(key);
+    return value ? normalizeFilterValue(value) : 'all';
+  };
+
+  return {
+    continental: getValue('continental') !== 'all' ? getValue('continental') : getValue('continent'),
+    country: getValue('country'),
+    destination: getValue('destination'),
+    category: getValue('category'),
+  };
+}
+
 export default function Accommodations() {
   const { accommodations } = useContent();
-  const [filters, setFilters] = useState<FilterState>({
-    continental: 'all',
-    country: 'all',
-    destination: 'all',
-    category: 'all',
-  });
+  const [filters, setFilters] = useState<FilterState>(getInitialFiltersFromUrl);
 
   const filteredAccommodations = useMemo(() => {
     return accommodations
       .filter((accommodation) => {
-        if (filters.continental && filters.continental !== 'all' && accommodation.continental?.toLowerCase() !== filters.continental.toLowerCase()) return false;
-        if (filters.country && filters.country !== 'all' && accommodation.country?.toLowerCase() !== filters.country.toLowerCase()) return false;
-        if (filters.destination && filters.destination !== 'all' && !accommodation.destination?.toLowerCase().includes(filters.destination.toLowerCase())) return false;
-        if (filters.category && filters.category !== 'all' && accommodation.category?.toLowerCase().replace(/\s+/g, '-') !== filters.category.toLowerCase()) return false;
+        const accommodationContinental = normalizeFilterValue(accommodation.continental || '');
+        const accommodationCountry = normalizeFilterValue(accommodation.country || '');
+        const accommodationDestination = normalizeFilterValue(accommodation.destination || '');
+        const accommodationCategory = normalizeFilterValue(accommodation.category || '');
+
+        if (filters.continental !== 'all' && accommodationContinental !== filters.continental) return false;
+        if (filters.country !== 'all' && accommodationCountry !== filters.country) return false;
+        if (filters.destination !== 'all' && !accommodationDestination.includes(filters.destination)) return false;
+        if (filters.category !== 'all' && accommodationCategory !== filters.category) return false;
         return true;
       })
       .sort((a, b) => {
@@ -56,6 +83,8 @@ export default function Accommodations() {
 
         {/* Filters */}
         <AccommodationFilters 
+          filters={filters}
+          accommodations={accommodations}
           onFilterChange={handleFilterChange}
           className="mb-12"
         />

@@ -64,9 +64,9 @@ export default function Footer() {
 
   const socialLinks = [
     { icon: SiInstagram, href: 'https://www.instagram.com/accommodationcollection?igsh=amtmazU2dmxqOGRh&utm_source=ig_contact_invite', label: 'Instagram' },
-    { icon: SiFacebook, href: 'https://www.facebook.com/share/1B8V3VVZ9j/?mibextid=wwXIfr', label: 'Facebook' },
+    { icon: SiFacebook, href: 'https://www.facebook.com/share/1AT6FFsUCX/?mibextid=wwXIfr', label: 'Facebook' },
     { icon: SiYoutube, href: 'https://www.youtube.com/@AccommodationCollection', label: 'YouTube' },
-    { icon: SiX, href: 'https://x.com/africalodges?s=21', label: 'X (Twitter)' },
+    { icon: SiX, href: 'https://x.com/accommodat3621?s=21', label: 'X (Twitter)' },
     { icon: SiTiktok, href: 'https://www.tiktok.com/@accommodationcollection', label: 'TikTok' },
     { icon: SiLinkedin, href: 'https://www.linkedin.com/company/accommodation-collection', label: 'LinkedIn' },
     { icon: SiWhatsapp, href: 'https://wa.me/255768512626', label: 'WhatsApp' },

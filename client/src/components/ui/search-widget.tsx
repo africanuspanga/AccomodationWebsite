@@ -17,7 +17,28 @@ const continentData = {
     countries: {
       tanzania: {
         name: 'Tanzania',
-        destinations: ['Serengeti National Park', 'Ngorongoro Conservation Area', 'Mount Kilimanjaro', 'Zanzibar Island', 'Tarangire National Park', 'Lake Manyara National Park', 'Ruaha National Park', 'Nyerere National Park', 'Stone Town', 'Dar es Salaam', 'Arusha', 'Mount Meru', 'Pemba Island', 'Moshi']
+        destinations: [
+          'Serengeti National Park',
+          'Ngorongoro Conservation Area',
+          'Mount Kilimanjaro',
+          'Zanzibar Island',
+          'Tarangire National Park',
+          'Lake Manyara National Park',
+          'Ruaha National Park',
+          'Nyerere National Park',
+          'Mikumi National Park',
+          'Katavi National Park',
+          'Stone Town',
+          'Dar es Salaam',
+          'Arusha',
+          'Karatu',
+          'Mbeya',
+          'Mwanza',
+          'Dodoma',
+          'Mount Meru',
+          'Pemba Island',
+          'Moshi'
+        ]
       },
       kenya: {
         name: 'Kenya',

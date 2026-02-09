@@ -135,11 +135,11 @@ export default function Contact() {
   const socialLinks = [
     { icon: SiInstagram, href: 'https://www.instagram.com/accommodationcollection?igsh=amtmazU2dmxqOGRh&utm_source=ig_contact_invite', label: 'Instagram' },
     { icon: SiThreads, href: 'https://www.threads.com/@accommodationcollection?igshid=NTc4MTIwNjQ2YQ==', label: 'Threads' },
-    { icon: SiFacebook, href: 'https://www.facebook.com/share/1B8V3VVZ9j/?mibextid=wwXIfr', label: 'Facebook' },
+    { icon: SiFacebook, href: 'https://www.facebook.com/share/1AT6FFsUCX/?mibextid=wwXIfr', label: 'Facebook' },
     { icon: SiTiktok, href: 'https://www.tiktok.com/@accommodationcollection', label: 'TikTok' },
     { icon: SiYoutube, href: 'https://www.youtube.com/@AccommodationCollection', label: 'YouTube' },
     { icon: SiWhatsapp, href: 'https://wa.me/255768512626', label: 'WhatsApp' },
-    { icon: SiX, href: 'https://x.com/africalodges?s=21', label: 'X (Twitter)' },
+    { icon: SiX, href: 'https://x.com/accommodat3621?s=21', label: 'X (Twitter)' },
     { icon: SiPinterest, href: 'https://pin.it/5fIXuXfWK', label: 'Pinterest' },
     { icon: SiLinkedin, href: 'https://www.linkedin.com/company/kim-zebra-adventures-and-safaris-limited/', label: 'LinkedIn' },
     { icon: SiTumblr, href: 'https://www.tumblr.com/kimzebraadventuressafaris', label: 'Tumblr' },

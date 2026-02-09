@@ -79,7 +79,7 @@ export default function VolunteerApplication() {
 
   const mutation = useMutation({
     mutationFn: (data: VolunteerApplicationForm) => 
-      apiRequest("/api/volunteer-applications", "POST", data),
+      apiRequest("POST", "/api/volunteer-applications", data),
     onSuccess: () => {
       toast({
         title: "Application submitted successfully!",
@@ -107,12 +107,12 @@ export default function VolunteerApplication() {
   };
 
   const handleExcursionChange = (excursion: string, checked: boolean) => {
-    setSelectedExcursions(prev => 
-      checked 
-        ? [...prev, excursion]
-        : prev.filter(e => e !== excursion)
-    );
-    form.setValue('excursions', selectedExcursions);
+    const updatedExcursions = checked
+      ? [...selectedExcursions, excursion]
+      : selectedExcursions.filter(e => e !== excursion);
+
+    setSelectedExcursions(updatedExcursions);
+    form.setValue('excursions', updatedExcursions);
   };
 
   if (!program) {
