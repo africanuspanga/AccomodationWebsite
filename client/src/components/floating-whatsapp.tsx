@@ -1,4 +1,3 @@
-import { MessageCircle } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 import { Button } from '@/components/ui/button';
 
@@ -18,9 +17,9 @@ export default function FloatingWhatsApp() {
       >
         <Button
           size="lg"
-          className="h-16 w-16 rounded-full bg-[#25D366] hover:bg-[#128C7E] border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-110 p-0 flex items-center justify-center"
+          className="h-16 w-16 rounded-full bg-[#25D366] hover:bg-[#128C7E] border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-110 p-0 flex items-center justify-center [&_svg]:!size-10"
         >
-          <SiWhatsapp className="h-10 w-10 text-white" />
+          <SiWhatsapp className="text-white" />
         </Button>
       </a>
       

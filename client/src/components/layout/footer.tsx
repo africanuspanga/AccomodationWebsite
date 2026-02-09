@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { useContent } from '@/hooks/use-content';
 import likeeIcon from '@assets/images-removebg-preview_1760198548949.png';
 
 export default function Footer() {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { destinations: contentDestinations } = useContent();
 
   const handleNewsletterSubmit = async () => {
     if (!newsletterEmail || !newsletterEmail.includes('@')) {
@@ -53,13 +55,22 @@ export default function Footer() {
     { name: 'Contact', href: '/contact' },
   ];
 
-  const destinations = [
-    { name: 'Serengeti National Park', href: '/destinations/serengeti-national-park' },
-    { name: 'Ngorongoro Crater', href: '/destinations/ngorongoro-conservation-area' },
-    { name: 'Tarangire National Park', href: '/destinations/tarangire-national-park' },
-    { name: 'Lake Manyara', href: '/destinations/lake-manyara-national-park' },
-    { name: 'Mount Kilimanjaro', href: '/destinations/mount-kilimanjaro' },
-    { name: 'Zanzibar Island', href: '/destinations/zanzibar-island' },
+  const getDestinationHref = (...candidateNames: string[]) => {
+    const destination = contentDestinations.find((item) => {
+      const itemName = item.name.trim().toLowerCase();
+      return candidateNames.some((name) => itemName === name.trim().toLowerCase());
+    });
+
+    return destination ? `/destinations/${destination.slug || destination.id}` : '/destinations';
+  };
+
+  const popularDestinations = [
+    { name: 'Serengeti National Park', href: getDestinationHref('Serengeti National Park') },
+    { name: 'Ngorongoro Crater', href: getDestinationHref('Ngorongoro Crater', 'Ngorongoro Conservation Area') },
+    { name: 'Tarangire National Park', href: getDestinationHref('Tarangire National Park') },
+    { name: 'Lake Manyara', href: getDestinationHref('Lake Manyara', 'Lake Manyara National Park') },
+    { name: 'Mount Kilimanjaro', href: getDestinationHref('Mount Kilimanjaro', 'Kilimanjaro') },
+    { name: 'Zanzibar Island', href: getDestinationHref('Zanzibar Island', 'Zanzibar') },
   ];
 
   const socialLinks = [
@@ -135,7 +146,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-6">Popular Destinations</h3>
             <ul className="space-y-3">
-              {destinations.map((destination) => (
+              {popularDestinations.map((destination) => (
                 <li key={destination.name}>
                   <Link
                     href={destination.href}
