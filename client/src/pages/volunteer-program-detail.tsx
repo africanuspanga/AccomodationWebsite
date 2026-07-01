@@ -17,12 +17,29 @@ import {
 } from 'lucide-react';
 import SEOHead from '@/components/seo/seo-head';
 import { volunteerPrograms } from '@/data/volunteer-programs';
+import { useQuery } from '@tanstack/react-query';
+import { type AdminVolunteerProgram, mergeVolunteerPrograms } from '@/lib/volunteer-programs';
 
 export default function VolunteerProgramDetail() {
   const { id } = useParams();
-  const program = volunteerPrograms.find(p => p.id === id);
+  const { data: adminPrograms = [], isLoading } = useQuery<AdminVolunteerProgram[]>({
+    queryKey: ['/api/public/volunteer-programs'],
+    enabled: true,
+  });
+  const allPrograms = mergeVolunteerPrograms(adminPrograms, volunteerPrograms);
+  const program = allPrograms.find(p => p.id === id);
 
   if (!program) {
+    if (isLoading) {
+      return (
+        <div className="pt-32 pb-20">
+          <div className="container-custom text-center">
+            <p className="text-muted-foreground">Loading program...</p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="pt-32 pb-20">
         <div className="container-custom text-center">
@@ -168,6 +185,8 @@ export default function VolunteerProgramDetail() {
                 <div className="grid md:grid-cols-2 gap-4">
                   {Object.entries(program.activities).map(([key, available]) => {
                     const activity = activityIcons[key as keyof typeof activityIcons];
+                    if (!activity) return null;
+
                     return (
                       <div 
                         key={key}

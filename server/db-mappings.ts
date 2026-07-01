@@ -634,6 +634,18 @@ export function mapAdminItineraryToDB(obj: any): Record<string, any> {
 }
 
 export function mapAdminVolunteerProgramFromDB(row: any): AdminVolunteerProgram {
+  const defaultActivities = JSON.stringify({
+    safari: false,
+    hiking: false,
+    mountainClimbing: false,
+    culturalTours: false,
+  });
+  const activities = typeof row.activities === 'string'
+    ? row.activities
+    : row.activities
+      ? JSON.stringify(row.activities)
+      : defaultActivities;
+
   return {
     id: row.id,
     title: row.title,
@@ -644,34 +656,44 @@ export function mapAdminVolunteerProgramFromDB(row: any): AdminVolunteerProgram 
     duration: row.duration,
     cost: row.cost,
     focusAreas: row.focus_areas || [],
-    image: row.image || null,
+    image: row.image || row.image_url || '',
     description: row.description || '',
     fullExplanation: row.full_explanation || '',
-    activities: row.activities || '',
+    activities: activities || defaultActivities,
     highlights: row.highlights || [],
     createdAt: row.created_at,
   };
 }
 
 export function mapAdminVolunteerProgramToDB(obj: any): Record<string, any> {
-  const mapped: Record<string, any> = {
-    title: obj.title,
-    location: obj.location,
-    country: obj.country,
-    flag: obj.flag,
-    min_age: obj.minAge,
-    duration: obj.duration,
-    cost: obj.cost,
-    focus_areas: obj.focusAreas,
-    image: obj.image,
-    description: obj.description,
-    full_explanation: obj.fullExplanation,
-    activities: obj.activities,
-    highlights: obj.highlights,
-  };
-  
+  const mapped: Record<string, any> = {};
+
   if (obj.id !== undefined) mapped.id = obj.id;
+  if (obj.title !== undefined) mapped.title = obj.title;
+  if (obj.location !== undefined) mapped.location = obj.location;
+  if (obj.country !== undefined) mapped.country = obj.country;
+  if (obj.flag !== undefined) mapped.flag = obj.flag;
+  if (obj.minAge !== undefined) mapped.min_age = obj.minAge;
+  if (obj.duration !== undefined) mapped.duration = obj.duration;
+  if (obj.cost !== undefined) mapped.cost = obj.cost;
+  if (obj.focusAreas !== undefined) mapped.focus_areas = obj.focusAreas;
+  if (obj.image !== undefined) mapped.image = obj.image;
+  if (obj.description !== undefined) mapped.description = obj.description;
+  if (obj.fullExplanation !== undefined) mapped.full_explanation = obj.fullExplanation;
+  if (obj.activities !== undefined) mapped.activities = obj.activities;
+  if (obj.highlights !== undefined) mapped.highlights = obj.highlights;
   if (obj.createdAt !== undefined) mapped.created_at = obj.createdAt;
   
+  return mapped;
+}
+
+export function mapAdminVolunteerProgramToLegacyImageDB(obj: any): Record<string, any> {
+  const mapped = mapAdminVolunteerProgramToDB(obj);
+
+  if (mapped.image !== undefined) {
+    mapped.image_url = mapped.image;
+    delete mapped.image;
+  }
+
   return mapped;
 }

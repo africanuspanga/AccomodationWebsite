@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, Link } from 'wouter';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import SEOHead from '@/components/seo/seo-head';
 import { volunteerPrograms } from '@/data/volunteer-programs';
+import { type AdminVolunteerProgram, mergeVolunteerPrograms } from '@/lib/volunteer-programs';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
@@ -53,7 +54,12 @@ type VolunteerApplicationForm = z.infer<typeof volunteerApplicationSchema>;
 
 export default function VolunteerApplication() {
   const { id } = useParams();
-  const program = volunteerPrograms.find(p => p.id === id);
+  const { data: adminPrograms = [], isLoading } = useQuery<AdminVolunteerProgram[]>({
+    queryKey: ['/api/public/volunteer-programs'],
+    enabled: true,
+  });
+  const allPrograms = mergeVolunteerPrograms(adminPrograms, volunteerPrograms);
+  const program = allPrograms.find(p => p.id === id);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedExcursions, setSelectedExcursions] = useState<string[]>([]);
@@ -116,6 +122,16 @@ export default function VolunteerApplication() {
   };
 
   if (!program) {
+    if (isLoading) {
+      return (
+        <div className="pt-32 pb-20">
+          <div className="container-custom text-center">
+            <p className="text-muted-foreground">Loading program...</p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="pt-32 pb-20">
         <div className="container-custom text-center">

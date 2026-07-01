@@ -151,12 +151,15 @@ export default function AdminVolunteerForm() {
         });
         setLocation('/admin');
       } else {
-        throw new Error('Failed to save volunteer program');
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to save volunteer program');
       }
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to save volunteer program';
+      console.error('Failed to save volunteer program:', error);
       toast({
         title: 'Error',
-        description: 'Failed to save volunteer program',
+        description: message,
         variant: 'destructive',
       });
     } finally {

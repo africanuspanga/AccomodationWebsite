@@ -6,23 +6,7 @@ import { MapPin, Clock, Users, DollarSign, Heart, Plane } from 'lucide-react';
 import SEOHead from '@/components/seo/seo-head';
 import { volunteerPrograms } from '@/data/volunteer-programs';
 import { useQuery } from '@tanstack/react-query';
-
-interface AdminVolunteerProgram {
-  id: string;
-  title: string;
-  location: string;
-  country: string;
-  flag: string;
-  minAge: string;
-  duration: string;
-  cost: string;
-  focusAreas: string[];
-  image: string;
-  description: string;
-  fullExplanation: string;
-  activities: string;
-  highlights: string[];
-}
+import { type AdminVolunteerProgram, mergeVolunteerPrograms } from '@/lib/volunteer-programs';
 
 export default function VolunteersProgram() {
   // Fetch admin-created volunteer programs
@@ -31,28 +15,8 @@ export default function VolunteersProgram() {
     enabled: true,
   });
 
-  // Transform admin programs to match VolunteerProgram interface
-  const transformedAdminPrograms = adminPrograms.map(program => ({
-    id: program.id,
-    title: program.title,
-    location: program.location,
-    country: program.country,
-    flag: program.flag,
-    minAge: program.minAge,
-    duration: program.duration,
-    cost: program.cost,
-    focusAreas: program.focusAreas || [],
-    image: program.image,
-    description: program.description,
-    fullExplanation: program.fullExplanation,
-    activities: typeof program.activities === 'string' 
-      ? JSON.parse(program.activities) 
-      : program.activities,
-    highlights: program.highlights || [],
-  }));
-
   // Merge admin programs with hardcoded programs
-  const allPrograms = [...transformedAdminPrograms, ...volunteerPrograms];
+  const allPrograms = mergeVolunteerPrograms(adminPrograms, volunteerPrograms);
 
   return (
     <>

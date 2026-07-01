@@ -46,6 +46,7 @@ import {
   mapAdminItineraryToDB,
   mapAdminVolunteerProgramFromDB,
   mapAdminVolunteerProgramToDB,
+  mapAdminVolunteerProgramToLegacyImageDB,
 } from './db-mappings';
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -644,11 +645,23 @@ export class SupabaseStorage implements IStorage {
 
   async createAdminVolunteerProgram(program: InsertAdminVolunteerProgram): Promise<AdminVolunteerProgram> {
     const dbProgram = mapAdminVolunteerProgramToDB(program);
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
       .insert(dbProgram)
       .select()
       .single();
+
+    if (error && isMissingColumnError(error, 'image')) {
+      const legacyDbProgram = mapAdminVolunteerProgramToLegacyImageDB(program);
+      const retry = await supabase
+        .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
+        .insert(legacyDbProgram)
+        .select()
+        .single();
+
+      data = retry.data;
+      error = retry.error;
+    }
     
     if (error) handleSupabaseError(error);
     return mapAdminVolunteerProgramFromDB(data!);
@@ -656,12 +669,25 @@ export class SupabaseStorage implements IStorage {
 
   async updateAdminVolunteerProgram(id: string, program: Partial<InsertAdminVolunteerProgram>): Promise<AdminVolunteerProgram | undefined> {
     const dbProgram = mapAdminVolunteerProgramToDB(program);
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
       .update(dbProgram)
       .eq('id', id)
       .select()
       .single();
+
+    if (error && isMissingColumnError(error, 'image')) {
+      const legacyDbProgram = mapAdminVolunteerProgramToLegacyImageDB(program);
+      const retry = await supabase
+        .from(TABLES.ADMIN_VOLUNTEER_PROGRAMS)
+        .update(legacyDbProgram)
+        .eq('id', id)
+        .select()
+        .single();
+
+      data = retry.data;
+      error = retry.error;
+    }
     
     if (error) {
       if (error.code === 'PGRST116') return undefined;
@@ -880,6 +906,23 @@ export class SupabaseStorage implements IStorage {
     }
     return true;
   }
+}
+
+function isMissingColumnError(error: any, columnName: string): boolean {
+  const text = [
+    error?.message,
+    error?.details,
+    error?.hint,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+
+  return text.includes('column') && (
+    text.includes(`'${columnName.toLowerCase()}'`) ||
+    text.includes(`"${columnName.toLowerCase()}"`) ||
+    text.includes(` ${columnName.toLowerCase()} `)
+  );
 }
 
 export const storage = new SupabaseStorage();

@@ -17,7 +17,7 @@ The admin system allows you to manage content (accommodations, blogs, volunteer 
 
 Make sure these secrets are set in your Replit project (they should already be configured):
 - `SUPABASE_URL` - Your Supabase project URL
-- `SUPABASE_ANON_KEY` - Your Supabase anonymous key
+- `SUPABASE_SERVICE_KEY` - Your Supabase service role key for server-side admin saves
 
 ### Step 3: Access the Admin Dashboard
 
@@ -85,14 +85,18 @@ Both sources are merged and displayed together on the public-facing pages.
 - `id` (TEXT, Primary Key) - Auto-generated with "sb-" prefix
 - `title` (TEXT)
 - `location` (TEXT)
+- `country` (TEXT)
+- `flag` (TEXT)
+- `min_age` (TEXT)
 - `duration` (TEXT)
+- `cost` (TEXT)
+- `focus_areas` (TEXT[])
+- `image` (TEXT)
+- `image_url` (TEXT, compatibility fallback)
 - `description` (TEXT)
-- `requirements` (TEXT[])
-- `responsibilities` (TEXT[])
-- `benefits` (TEXT[])
-- `start_date` (TEXT)
-- `application_deadline` (TEXT)
-- `image_url` (TEXT)
+- `full_explanation` (TEXT)
+- `activities` (TEXT, JSON string)
+- `highlights` (TEXT[])
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
 

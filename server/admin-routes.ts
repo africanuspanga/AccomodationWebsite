@@ -139,6 +139,7 @@ export function registerAdminRoutes(app: Express) {
       const program = await storage.createAdminVolunteerProgram(validatedData);
       res.json(program);
     } catch (error: any) {
+      console.error('Error creating volunteer program:', error);
       res.status(400).json({ error: error.message });
     }
   });
@@ -153,6 +154,7 @@ export function registerAdminRoutes(app: Express) {
       }
       res.json(program);
     } catch (error: any) {
+      console.error('Error updating volunteer program:', error);
       res.status(400).json({ error: error.message });
     }
   });
