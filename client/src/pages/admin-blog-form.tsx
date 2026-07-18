@@ -5,10 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import {
   Form,
   FormControl,
@@ -212,11 +212,11 @@ export default function AdminBlogForm() {
                 <FormItem>
                   <FormLabel>Excerpt</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Enter a brief excerpt"
-                      className="resize-none"
-                      rows={3}
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
+                      minHeight={110}
                       data-testid="input-excerpt"
                     />
                   </FormControl>
@@ -232,11 +232,11 @@ export default function AdminBlogForm() {
                 <FormItem>
                   <FormLabel>Content</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Enter the full blog content"
-                      className="resize-none"
-                      rows={12}
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
+                      minHeight={320}
                       data-testid="input-content"
                     />
                   </FormControl>

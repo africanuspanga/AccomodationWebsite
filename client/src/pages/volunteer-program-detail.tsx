@@ -18,7 +18,9 @@ import {
 import SEOHead from '@/components/seo/seo-head';
 import { volunteerPrograms } from '@/data/volunteer-programs';
 import { useQuery } from '@tanstack/react-query';
-import { type AdminVolunteerProgram, mergeVolunteerPrograms } from '@/lib/volunteer-programs';
+import { getVolunteerProgramSlug, type AdminVolunteerProgram, mergeVolunteerPrograms } from '@/lib/volunteer-programs';
+import { plainTextFromRichText } from '@/lib/rich-text';
+import { RichText } from '@/components/ui/rich-text';
 
 const fallbackProgramImage = '/attached_assets/maasai immersion _1759178768271.jpg';
 
@@ -36,15 +38,6 @@ function getDisplayCost(cost: string) {
   return `From ${trimmedCost}`;
 }
 
-function getParagraphs(text: string) {
-  const paragraphs = text
-    .split(/\n{2,}/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean);
-
-  return paragraphs.length > 0 ? paragraphs : ['Details coming soon.'];
-}
-
 export default function VolunteerProgramDetail() {
   const { id } = useParams();
   const { data: adminPrograms = [], isLoading } = useQuery<AdminVolunteerProgram[]>({
@@ -52,7 +45,7 @@ export default function VolunteerProgramDetail() {
     enabled: true,
   });
   const allPrograms = mergeVolunteerPrograms(adminPrograms, volunteerPrograms);
-  const program = allPrograms.find(p => p.id === id);
+  const program = allPrograms.find(p => p.slug === id || p.id === id);
 
   if (!program) {
     if (isLoading) {
@@ -86,19 +79,21 @@ export default function VolunteerProgramDetail() {
   };
 
   const programImage = program.image || fallbackProgramImage;
+  const programSlug = getVolunteerProgramSlug(program);
   const focusAreas = program.focusAreas.filter(Boolean);
   const highlights = program.highlights.length > 0
     ? program.highlights
     : ['Meaningful volunteer experience'];
-  const explanationParagraphs = getParagraphs(program.fullExplanation || program.description);
+  const shortDescription = plainTextFromRichText(program.description);
+  const fullExplanation = program.fullExplanation || program.description || 'Details coming soon.';
   const availableActivitiesCount = Object.values(program.activities).filter(Boolean).length;
 
   return (
     <>
       <SEOHead 
         title={`${program.title} - Volunteer in ${program.country} | Accommodation Collection`}
-        description={program.description}
-        canonical={`/volunteer-program/${program.id}`}
+        description={shortDescription}
+        canonical={`/volunteer-program/${programSlug}`}
         ogImage={programImage}
       />
       
@@ -141,7 +136,7 @@ export default function VolunteerProgramDetail() {
                   {program.title}
                 </h1>
                 <p className="max-w-3xl text-lg leading-8 text-white/85 md:text-xl">
-                  {program.description}
+                  {shortDescription}
                 </p>
               </div>
 
@@ -182,13 +177,10 @@ export default function VolunteerProgramDetail() {
                 <h2 className="mt-3 font-serif text-3xl font-bold leading-tight text-foreground md:text-4xl">
                   A clearer look at the work, setting, and experience.
                 </h2>
-                <div className="mt-7 space-y-5">
-                  {explanationParagraphs.map((paragraph) => (
-                    <p key={paragraph} className="text-base leading-8 text-muted-foreground md:text-lg">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
+                <RichText
+                  content={fullExplanation}
+                  className="mt-7 text-base text-muted-foreground md:text-lg"
+                />
 
                 {focusAreas.length > 0 && (
                   <div className="mt-8 flex flex-wrap gap-2">
@@ -319,7 +311,7 @@ export default function VolunteerProgramDetail() {
                   </div>
 
                   <div className="space-y-3">
-                    <Link href={`/volunteer-application/${program.id}`} className="w-full">
+                    <Link href={`/volunteer-application/${programSlug}`} className="w-full">
                       <Button 
                         size="lg" 
                         className="h-12 w-full cursor-pointer bg-primary font-semibold text-primary-foreground hover:bg-primary/90"

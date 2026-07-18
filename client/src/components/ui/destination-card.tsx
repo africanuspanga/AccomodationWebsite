@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
 import type { Destination } from '@/hooks/use-content';
+import { plainTextFromRichText } from '@/lib/rich-text';
 
 interface DestinationCardProps {
   destination: Destination;
@@ -52,7 +53,7 @@ export default function DestinationCard({ destination, className = '' }: Destina
         </div>
 
         <p className="text-muted-foreground text-sm leading-relaxed">
-          {destination.description}
+          {plainTextFromRichText(destination.description)}
         </p>
 
         {destination.highlights && destination.highlights.length > 0 && (

@@ -12,6 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
 import { useContent } from '@/hooks/use-content';
+import { plainTextFromRichText } from '@/lib/rich-text';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -167,7 +168,7 @@ export default function BookingForm() {
                     {bookingType === 'accommodation' ? 'Accommodation' : 'Safari Package'}
                   </Badge>
                   <p className="text-muted-foreground text-sm">
-                    {(item.description || '').substring(0, 150)}...
+                    {plainTextFromRichText(item.description).substring(0, 150)}...
                   </p>
                 </div>
               </div>

@@ -6,7 +6,8 @@ import { ArrowRight, CheckCircle2, Clock, Heart, MapPin, Plane, Users } from 'lu
 import SEOHead from '@/components/seo/seo-head';
 import { volunteerPrograms } from '@/data/volunteer-programs';
 import { useQuery } from '@tanstack/react-query';
-import { type AdminVolunteerProgram, mergeVolunteerPrograms } from '@/lib/volunteer-programs';
+import { getVolunteerProgramSlug, type AdminVolunteerProgram, mergeVolunteerPrograms } from '@/lib/volunteer-programs';
+import { plainTextFromRichText } from '@/lib/rich-text';
 
 const fallbackProgramImage = '/attached_assets/maasai immersion _1759178768271.jpg';
 
@@ -188,7 +189,7 @@ export default function VolunteersProgram() {
                     </div>
 
                     <p className="mt-5 line-clamp-4 text-sm leading-7 text-muted-foreground">
-                      {program.description}
+                      {plainTextFromRichText(program.description)}
                     </p>
 
                     <div className="mt-6 flex flex-wrap gap-2">
@@ -210,7 +211,7 @@ export default function VolunteersProgram() {
                   </CardContent>
 
                   <CardFooter className="p-6 pt-0 md:p-7 md:pt-0">
-                    <Link href={`/volunteer-program/${program.id}`} className="w-full">
+                    <Link href={`/volunteer-program/${getVolunteerProgramSlug(program)}`} className="w-full">
                       <Button 
                         className="h-12 w-full cursor-pointer bg-primary font-semibold text-primary-foreground hover:bg-primary/90"
                         data-testid={`see-more-${program.id}`}

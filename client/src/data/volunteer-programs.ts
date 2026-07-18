@@ -1,5 +1,6 @@
 export interface VolunteerProgram {
   id: string;
+  slug?: string | null;
   title: string;
   location: string;
   country: string;

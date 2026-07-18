@@ -76,12 +76,12 @@ export default function Footer() {
   const socialLinks = [
     { icon: SiInstagram, href: 'https://www.instagram.com/accommodationcollection?igsh=amtmazU2dmxqOGRh&utm_source=ig_contact_invite', label: 'Instagram' },
     { icon: SiFacebook, href: 'https://www.facebook.com/share/1AT6FFsUCX/?mibextid=wwXIfr', label: 'Facebook' },
-    { icon: SiYoutube, href: 'https://www.youtube.com/@AccommodationCollection', label: 'YouTube' },
+    { icon: SiYoutube, href: 'https://www.youtube.com/@accommodationcollections', label: 'YouTube' },
     { icon: SiX, href: 'https://x.com/accommodat3621?s=21', label: 'X (Twitter)' },
     { icon: SiTiktok, href: 'https://www.tiktok.com/@accommodationcollection', label: 'TikTok' },
     { icon: SiLinkedin, href: 'https://www.linkedin.com/company/accommodation-collection', label: 'LinkedIn' },
     { icon: SiWhatsapp, href: 'https://wa.me/255768512626', label: 'WhatsApp' },
-    { icon: SiPinterest, href: 'https://www.pinterest.com/accommodationcollection', label: 'Pinterest' },
+    { icon: SiPinterest, href: 'https://pin.it/7tjYyt5au', label: 'Pinterest' },
     { iconImage: likeeIcon, href: 'https://l.likee.video/p/NYkOhC', label: 'Likee' },
   ];
 

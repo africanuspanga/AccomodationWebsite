@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Star, MapPin } from 'lucide-react';
 import { useLocation } from 'wouter';
 import type { Accommodation } from '@/hooks/use-content';
+import { plainTextFromRichText } from '@/lib/rich-text';
 
 interface AccommodationCardProps {
   accommodation: Accommodation;
@@ -91,7 +92,7 @@ export default function AccommodationCard({ accommodation, className = '' }: Acc
         </div>
 
         <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-          {accommodation.description}
+          {plainTextFromRichText(accommodation.description)}
         </p>
 
         {/* Features */}

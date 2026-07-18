@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { MapPin, ArrowLeft, Check, X, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import { useContent } from '@/hooks/use-content';
 import type { ItineraryDetail } from '@shared/schema';
+import { RichText } from '@/components/ui/rich-text';
+import { plainTextFromRichText } from '@/lib/rich-text';
 
 interface DayByDayItem {
   day: number;
@@ -147,7 +149,7 @@ export default function ItineraryDetail() {
     <>
       <SEOHead 
         title={`${itinerary.name} - Tanzania Safari Package`}
-        description={itinerary.description}
+        description={plainTextFromRichText(itinerary.description)}
         canonical={`/itineraries/${itinerary.slug || itinerary.id}`}
         ogImage={itinerary.imageUrl || undefined}
       />
@@ -333,9 +335,10 @@ export default function ItineraryDetail() {
                       {/* Itinerary Overview */}
                       <div>
                         <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">Itinerary Overview</h2>
-                        <p className="text-foreground leading-relaxed">
-                          {itineraryDetail?.itineraryOverview || itinerary.description}
-                        </p>
+                        <RichText
+                          content={itineraryDetail?.itineraryOverview || itinerary.description}
+                          className="text-foreground"
+                        />
                       </div>
 
                       {/* Day by Day */}
@@ -364,7 +367,7 @@ export default function ItineraryDetail() {
                               </button>
                               {expandedDay === day.day && (
                                 <div className="p-4 bg-card">
-                                  <p className="text-foreground leading-relaxed">{day.description}</p>
+                                  <RichText content={day.description} className="text-foreground" />
                                 </div>
                               )}
                             </div>
@@ -519,9 +522,7 @@ export default function ItineraryDetail() {
                         <h2 className="font-serif text-2xl font-bold text-foreground mb-4 uppercase">Terms and Conditions</h2>
                         {termsAndConditions ? (
                           <div className="prose prose-slate max-w-none">
-                            <p className="text-foreground whitespace-pre-wrap leading-relaxed">
-                              {termsAndConditions}
-                            </p>
+                            <RichText content={termsAndConditions} className="text-foreground" />
                           </div>
                         ) : (
                           <p className="text-muted-foreground">No terms and conditions available for this itinerary.</p>

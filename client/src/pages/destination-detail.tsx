@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { MapPin, ArrowLeft, Calendar, Navigation, Info, Camera, Star, Compass, Sunrise, TreePine } from 'lucide-react';
 import { useContent } from '@/hooks/use-content';
 import type { DestinationDetail } from '@shared/schema';
+import { RichText } from '@/components/ui/rich-text';
+import { plainTextFromRichText } from '@/lib/rich-text';
 
 export default function DestinationDetail() {
   const params = useParams();
@@ -82,7 +84,7 @@ export default function DestinationDetail() {
     <>
       <SEOHead 
         title={`${destination.name} - Tanzania Travel Guide | Accommodation Collection`}
-        description={destination.fullDescription || destinationDetail?.detailedDescription || destination.description}
+        description={plainTextFromRichText(destination.fullDescription || destinationDetail?.detailedDescription || destination.description)}
         canonical={`/destinations/${destination.slug || destination.id}`}
         ogImage={destinationDetail?.imageUrl || destination.imageUrl || ''}
       />
@@ -218,9 +220,14 @@ export default function DestinationDetail() {
                       </div>
                       <h2 className="font-serif text-3xl font-bold text-foreground">Discover {destination.name}</h2>
                     </div>
-                    <p className="text-lg text-foreground/80 leading-relaxed whitespace-pre-line">
-                      {isLoading ? 'Loading...' : destination.fullDescription || destinationDetail?.overview || destinationDetail?.detailedDescription || destination.description}
-                    </p>
+                    {isLoading ? (
+                      <p className="text-lg text-foreground/80 leading-relaxed">Loading...</p>
+                    ) : (
+                      <RichText
+                        content={destination.fullDescription || destinationDetail?.overview || destinationDetail?.detailedDescription || destination.description}
+                        className="text-lg text-foreground/80"
+                      />
+                    )}
                   </section>
 
                   {/* Highlights Grid */}
@@ -250,7 +257,7 @@ export default function DestinationDetail() {
                         <Navigation className="h-6 w-6 text-primary" />
                         <h3 className="font-serif text-2xl font-bold text-foreground">Getting There</h3>
                       </div>
-                      <p className="text-muted-foreground leading-relaxed">{destinationDetail.gettingThere}</p>
+                      <RichText content={destinationDetail.gettingThere} className="text-muted-foreground" />
                     </section>
                   )}
                 </div>
@@ -267,7 +274,7 @@ export default function DestinationDetail() {
                       <h2 className="font-serif text-3xl font-bold text-foreground">Wildlife & Nature</h2>
                     </div>
                     {destinationDetail?.wildlife ? (
-                      <p className="text-lg text-foreground/80 leading-relaxed">{destinationDetail.wildlife}</p>
+                      <RichText content={destinationDetail.wildlife} className="text-lg text-foreground/80" />
                     ) : (
                       <p className="text-lg text-foreground/80 leading-relaxed">
                         {destination.name} is home to an incredible array of wildlife and natural wonders. 
@@ -284,9 +291,10 @@ export default function DestinationDetail() {
                         <Calendar className="h-6 w-6 text-accent" />
                         <h3 className="font-serif text-2xl font-bold text-foreground">Best Time for Wildlife</h3>
                       </div>
-                      <p className="text-muted-foreground leading-relaxed">
-                        {destinationDetail?.bestTimeToVisit || destination.bestTime}
-                      </p>
+                      <RichText
+                        content={destinationDetail?.bestTimeToVisit || destination.bestTime}
+                        className="text-muted-foreground"
+                      />
                     </section>
                   )}
                 </div>
@@ -303,7 +311,7 @@ export default function DestinationDetail() {
                       <h2 className="font-serif text-3xl font-bold text-foreground">Activities & Experiences</h2>
                     </div>
                     {destinationDetail?.activities ? (
-                      <p className="text-lg text-foreground/80 leading-relaxed">{destinationDetail.activities}</p>
+                      <RichText content={destinationDetail.activities} className="text-lg text-foreground/80" />
                     ) : (
                       <p className="text-lg text-foreground/80 leading-relaxed">
                         Experience the best of {destination.name} with our curated activities including 
@@ -320,7 +328,7 @@ export default function DestinationDetail() {
                         <Info className="h-6 w-6 text-primary" />
                         <h3 className="font-serif text-2xl font-bold text-foreground">Practical Information</h3>
                       </div>
-                      <p className="text-muted-foreground leading-relaxed">{destinationDetail.practicalInfo}</p>
+                      <RichText content={destinationDetail.practicalInfo} className="text-muted-foreground" />
                     </section>
                   )}
                 </div>

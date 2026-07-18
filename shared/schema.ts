@@ -157,6 +157,7 @@ export interface AdminBlog {
 export interface AdminVolunteerProgram {
   id: string;
   title: string;
+  slug: string | null;
   location: string;
   country: string;
   flag: string;
@@ -465,6 +466,7 @@ export const insertAdminBlogSchema = z.object({
 // Admin Volunteer Program schemas
 export const insertAdminVolunteerProgramSchema = z.object({
   title: z.string().min(1),
+  slug: z.string().nullable().optional(),
   location: z.string().min(1),
   country: z.string().min(1),
   flag: z.string().min(1),
@@ -625,6 +627,9 @@ export const openSkyRawResponseSchema = z.object({
 export const openSkyResponseSchema = z.object({
   time: z.number(),
   states: z.array(flightDataSchema).nullable(),
+  source: z.enum(['live', 'cached', 'stale-cache', 'fallback']).optional(),
+  message: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 export type FlightData = z.infer<typeof flightDataSchema>;

@@ -5,9 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Plus, X } from 'lucide-react';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import {
   Form,
   FormControl,
@@ -24,6 +24,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ImageUpload } from '@/components/ui/image-upload';
+import {
+  ACCOMMODATION_CATEGORY_OPTIONS,
+  CONTINENT_OPTIONS,
+  COUNTRY_OPTIONS,
+} from '@/lib/admin-form-options';
 
 const accommodationFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -265,16 +270,18 @@ export default function AdminAccommodationForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Continental</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select continental" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="africa">Africa</SelectItem>
-                        <SelectItem value="europe">Europe</SelectItem>
-                        <SelectItem value="asia">Asia</SelectItem>
+                        {CONTINENT_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -288,17 +295,18 @@ export default function AdminAccommodationForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Country</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="tanzania">Tanzania</SelectItem>
-                        <SelectItem value="kenya">Kenya</SelectItem>
-                        <SelectItem value="rwanda">Rwanda</SelectItem>
-                        <SelectItem value="uganda">Uganda</SelectItem>
+                        {COUNTRY_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -328,17 +336,18 @@ export default function AdminAccommodationForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="ultra-luxury">Ultra Luxury</SelectItem>
-                        <SelectItem value="luxury">Luxury</SelectItem>
-                        <SelectItem value="mid-range">Mid Range</SelectItem>
-                        <SelectItem value="budget">Budget</SelectItem>
+                        {ACCOMMODATION_CATEGORY_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -354,10 +363,11 @@ export default function AdminAccommodationForm() {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Describe this accommodation..."
-                      className="min-h-[100px]"
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
+                      minHeight={160}
                     />
                   </FormControl>
                   <FormMessage />
@@ -516,10 +526,11 @@ export default function AdminAccommodationForm() {
                 <FormItem>
                   <FormLabel>Terms & Conditions</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Enter terms and conditions for this accommodation..."
-                      className="min-h-[200px]"
-                      {...field}
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                      minHeight={240}
                     />
                   </FormControl>
                   <FormMessage />

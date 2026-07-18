@@ -4,6 +4,8 @@ import { Calendar, Clock, User, ArrowLeft, Share2, Loader2 } from 'lucide-react'
 import { blogPosts, type BlogPost as HardcodedBlogPost } from '@/data/blog-data';
 import SEOHead from '@/components/seo/seo-head';
 import { useQuery } from '@tanstack/react-query';
+import { plainTextFromRichText } from '@/lib/rich-text';
+import { RichText } from '@/components/ui/rich-text';
 
 interface AdminBlog {
   id: string;
@@ -135,7 +137,7 @@ export default function BlogPost() {
     <>
       <SEOHead 
         title={`${post.title} | Accommodation Collection Blog`}
-        description={post.excerpt}
+        description={plainTextFromRichText(post.excerpt)}
         canonical={`/blog/${post.id}`}
         ogImage={post.imageUrl}
       />
@@ -207,19 +209,16 @@ export default function BlogPost() {
 
               {/* Excerpt */}
               <div className="bg-accent/10 border-l-4 border-accent p-4 rounded-r-lg mb-8">
-                <p className="text-lg text-muted-foreground italic" data-testid="blog-post-excerpt">
-                  {post.excerpt}
-                </p>
+                <RichText
+                  content={post.excerpt}
+                  compact
+                  className="text-lg italic text-muted-foreground"
+                  data-testid="blog-post-excerpt"
+                />
               </div>
 
               {/* Content */}
-              <div className="prose prose-lg max-w-none text-foreground" data-testid="blog-post-content">
-                {post.content.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="mb-6 leading-relaxed text-justify">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+              <RichText content={post.content} className="text-foreground" data-testid="blog-post-content" />
 
               {/* Call to Action */}
               <div className="mt-12 p-6 bg-primary rounded-xl text-center">

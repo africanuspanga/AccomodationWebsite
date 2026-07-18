@@ -1,11 +1,199 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertInquirySchema, insertAccommodationSchema, insertDestinationSchema, insertItinerarySchema, insertVolunteerApplicationSchema, insertBookingSchema } from "@shared/schema";
+import {
+  insertInquirySchema,
+  insertAccommodationSchema,
+  insertDestinationSchema,
+  insertItinerarySchema,
+  insertVolunteerApplicationSchema,
+  insertBookingSchema,
+  type FlightData,
+  type OpenSkyResponse,
+} from "@shared/schema";
 import { generateUploadSignature } from "./cloudinary";
 import { sendBookingNotification, sendInquiryNotification, sendNewsletterSignup, sendVolunteerApplicationNotification } from "./email";
 // Old auth system removed - now using Supabase Auth for users
 // import { setupAuth } from "./auth";
+
+type FlightFeedSource = "live" | "cached" | "stale-cache" | "fallback";
+type FlightFeedResponse = OpenSkyResponse & {
+  source: FlightFeedSource;
+  message?: string;
+  updatedAt: string;
+};
+type FlightCacheEntry = FlightFeedResponse & { fetchedAt: number };
+
+const FLIGHT_CACHE_TTL_MS = 60 * 1000;
+let eastAfricaFlightCache: FlightCacheEntry | null = null;
+
+const fallbackFlightTemplates: Array<Omit<FlightData, "last_contact" | "time_position">> = [
+  {
+    icao24: "43f1a1",
+    callsign: "KQ482",
+    origin_country: "Kenya",
+    longitude: 36.92,
+    latitude: -1.18,
+    baro_altitude: 9753,
+    on_ground: false,
+    velocity: 232,
+    true_track: 146,
+    vertical_rate: -1.2,
+    sensors: null,
+    geo_altitude: 10012,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+  {
+    icao24: "0804d2",
+    callsign: "TC202",
+    origin_country: "Tanzania",
+    longitude: 39.19,
+    latitude: -6.42,
+    baro_altitude: 7315,
+    on_ground: false,
+    velocity: 198,
+    true_track: 23,
+    vertical_rate: 0.4,
+    sensors: null,
+    geo_altitude: 7560,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+  {
+    icao24: "04c11b",
+    callsign: "ETH815",
+    origin_country: "Ethiopia",
+    longitude: 38.86,
+    latitude: 3.52,
+    baro_altitude: 10668,
+    on_ground: false,
+    velocity: 247,
+    true_track: 202,
+    vertical_rate: -0.8,
+    sensors: null,
+    geo_altitude: 10912,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+  {
+    icao24: "06a2e8",
+    callsign: "QR1346",
+    origin_country: "Qatar",
+    longitude: 34.99,
+    latitude: -3.22,
+    baro_altitude: 11582,
+    on_ground: false,
+    velocity: 255,
+    true_track: 47,
+    vertical_rate: 0,
+    sensors: null,
+    geo_altitude: 11826,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+  {
+    icao24: "04a91c",
+    callsign: "RWD452",
+    origin_country: "Rwanda",
+    longitude: 30.21,
+    latitude: -1.67,
+    baro_altitude: 8840,
+    on_ground: false,
+    velocity: 219,
+    true_track: 311,
+    vertical_rate: 0.6,
+    sensors: null,
+    geo_altitude: 9068,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+  {
+    icao24: "068103",
+    callsign: "UGA303",
+    origin_country: "Uganda",
+    longitude: 32.63,
+    latitude: 0.23,
+    baro_altitude: 7925,
+    on_ground: false,
+    velocity: 206,
+    true_track: 128,
+    vertical_rate: -0.3,
+    sensors: null,
+    geo_altitude: 8153,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+];
+
+function transformOpenSkyResponse(data: any): OpenSkyResponse {
+  return {
+    time: typeof data?.time === "number" ? data.time : Math.floor(Date.now() / 1000),
+    states: Array.isArray(data?.states)
+      ? data.states.map((state: any[]) => ({
+          icao24: state[0] || "",
+          callsign: state[1],
+          origin_country: state[2] || "",
+          time_position: state[3],
+          last_contact: state[4] || 0,
+          longitude: state[5],
+          latitude: state[6],
+          baro_altitude: state[7],
+          on_ground: state[8] || false,
+          velocity: state[9],
+          true_track: state[10],
+          vertical_rate: state[11],
+          sensors: state[12],
+          geo_altitude: state[13],
+          squawk: state[14],
+          spi: state[15] || false,
+          position_source: state[16] || 0,
+        }))
+      : [],
+  };
+}
+
+function createFallbackFlightResponse(): FlightFeedResponse {
+  const now = Math.floor(Date.now() / 1000);
+
+  return {
+    time: now,
+    source: "fallback",
+    updatedAt: new Date().toISOString(),
+    message: "Live OpenSky flight data is temporarily unavailable, so this page is showing a resilient regional sample feed.",
+    states: fallbackFlightTemplates.map((flight, index) => ({
+      ...flight,
+      time_position: now - index * 74,
+      last_contact: now - index * 51,
+    })),
+  };
+}
+
+function withFlightMeta(response: OpenSkyResponse, source: FlightFeedSource, message?: string): FlightFeedResponse {
+  return {
+    ...response,
+    states: response.states || [],
+    source,
+    updatedAt: new Date().toISOString(),
+    ...(message ? { message } : {}),
+  };
+}
+
+function publicCachedFlightResponse(source: FlightFeedSource, message?: string): FlightFeedResponse | null {
+  if (!eastAfricaFlightCache) return null;
+  const { fetchedAt, ...cachedResponse } = eastAfricaFlightCache;
+  return {
+    ...cachedResponse,
+    source,
+    ...(message ? { message } : {}),
+  };
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoint for deployment monitoring
@@ -426,8 +614,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Flight tracking route - proxy to OpenSky Network API
+  // Flight tracking route - proxy to the free OpenSky Network API
   app.get("/api/flights/east-africa", async (req, res) => {
+    const cachedAge = eastAfricaFlightCache ? Date.now() - eastAfricaFlightCache.fetchedAt : Number.POSITIVE_INFINITY;
+    if (eastAfricaFlightCache && cachedAge < FLIGHT_CACHE_TTL_MS) {
+      res.set("Cache-Control", "public, max-age=30, stale-while-revalidate=300");
+      return res.json(publicCachedFlightResponse("cached"));
+    }
+
     try {
       const params = new URLSearchParams({
         lamin: '-12',    // Southern boundary (Southern Tanzania)
@@ -457,48 +651,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const data = await response.json();
-      
-      // Transform OpenSky array format to object format
-      const transformedResponse = {
-        time: data.time,
-        states: data.states?.map((state: any[]) => ({
-          icao24: state[0] || '',
-          callsign: state[1],
-          origin_country: state[2] || '',
-          time_position: state[3],
-          last_contact: state[4] || 0,
-          longitude: state[5],
-          latitude: state[6],
-          baro_altitude: state[7],
-          on_ground: state[8] || false,
-          velocity: state[9],
-          true_track: state[10],
-          vertical_rate: state[11],
-          sensors: state[12],
-          geo_altitude: state[13],
-          squawk: state[14],
-          spi: state[15] || false,
-          position_source: state[16] || 0,
-        })) || []
+      const transformedResponse = transformOpenSkyResponse(data);
+      const liveResponse = withFlightMeta(transformedResponse, "live");
+      eastAfricaFlightCache = {
+        ...liveResponse,
+        fetchedAt: Date.now(),
       };
 
-      console.log(`Successfully fetched ${transformedResponse.states.length} flights`);
-      res.json(transformedResponse);
+      console.log(`Successfully fetched ${transformedResponse.states?.length ?? 0} flights`);
+      res.set("Cache-Control", "public, max-age=30, stale-while-revalidate=300");
+      res.json(liveResponse);
     } catch (error) {
       console.error("Error fetching flight data:", error);
       
-      // Provide detailed error information for debugging
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      const isTimeout = errorMessage.includes('aborted') || errorMessage.includes('timeout');
+      const cachedResponse = publicCachedFlightResponse(
+        "stale-cache",
+        `Live OpenSky data is temporarily unavailable (${errorMessage}). Showing the most recent cached feed.`,
+      );
+
+      if (cachedResponse) {
+        res.set("Cache-Control", "public, max-age=30, stale-while-revalidate=300");
+        return res.json(cachedResponse);
+      }
       
-      res.status(500).json({ 
-        error: "Failed to fetch flight data",
-        message: errorMessage,
-        details: isTimeout 
-          ? "The OpenSky Network API request timed out. This may be due to high traffic or network issues. Please try again in a moment."
-          : "Unable to connect to the OpenSky Network API. The service may be temporarily unavailable.",
-        timestamp: new Date().toISOString()
-      });
+      res.set("Cache-Control", "public, max-age=30, stale-while-revalidate=300");
+      res.json(createFallbackFlightResponse());
     }
   });
 

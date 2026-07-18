@@ -5,10 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Plus, X } from 'lucide-react';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import {
   Form,
   FormControl,
@@ -16,12 +16,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 
 const volunteerFormSchema = z.object({
   title: z.string().min(1, 'Title is required'),
+  slug: z.string().optional(),
   location: z.string().min(1, 'Location is required'),
   country: z.string().min(1, 'Country is required'),
   flag: z.string().min(1, 'Flag emoji is required'),
@@ -57,6 +57,7 @@ export default function AdminVolunteerForm() {
     resolver: zodResolver(volunteerFormSchema),
     defaultValues: {
       title: '',
+      slug: '',
       location: '',
       country: '',
       flag: '',
@@ -105,6 +106,7 @@ export default function AdminVolunteerForm() {
         
         form.reset({
           title: program.title,
+          slug: program.slug || '',
           location: program.location,
           country: program.country,
           flag: program.flag,
@@ -236,6 +238,25 @@ export default function AdminVolunteerForm() {
 
               <FormField
                 control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL Slug (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="wildlife-conservation" {...field} data-testid="input-slug" />
+                    </FormControl>
+                    <p className="text-sm text-muted-foreground">
+                      Leave blank to auto-generate from the program title
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
                 name="location"
                 render={({ field }) => (
                   <FormItem>
@@ -330,11 +351,11 @@ export default function AdminVolunteerForm() {
                 <FormItem>
                   <FormLabel>Short Description</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Brief description for the program card"
-                      className="resize-none"
-                      rows={3}
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
+                      minHeight={120}
                       data-testid="input-description"
                     />
                   </FormControl>
@@ -350,11 +371,11 @@ export default function AdminVolunteerForm() {
                 <FormItem>
                   <FormLabel>Full Explanation</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Detailed explanation about the program"
-                      className="resize-none"
-                      rows={8}
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
+                      minHeight={260}
                       data-testid="input-full-explanation"
                     />
                   </FormControl>

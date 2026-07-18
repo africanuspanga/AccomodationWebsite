@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { MapPin, ArrowLeft, Star, Wifi, Coffee, Utensils, Dumbbell, Waves, Car, Users, Home } from 'lucide-react';
 import { useContent } from '@/hooks/use-content';
 import type { AccommodationDetail } from '@shared/schema';
+import { RichText } from '@/components/ui/rich-text';
+import { plainTextFromRichText } from '@/lib/rich-text';
 
 interface RoomType {
   name: string;
@@ -141,7 +143,7 @@ export default function AccommodationDetail() {
     <>
       <SEOHead 
         title={`${accommodation.name} - Luxury African Accommodation`}
-        description={accommodation.description}
+        description={plainTextFromRichText(accommodation.description)}
         canonical={`/accommodations/${accommodation.slug || accommodation.id}`}
         ogImage={accommodation.imageUrl || undefined}
       />
@@ -202,9 +204,11 @@ export default function AccommodationDetail() {
                 </div>
 
                 <div className="prose prose-lg max-w-none mb-8">
-                  <p className="text-muted-foreground leading-relaxed" data-testid="accommodation-description">
-                    {accommodation.description}
-                  </p>
+                  <RichText
+                    content={accommodation.description}
+                    className="text-muted-foreground"
+                    data-testid="accommodation-description"
+                  />
                 </div>
               </div>
 
@@ -332,7 +336,7 @@ export default function AccommodationDetail() {
                                 {/* Room Details */}
                                 <div className="p-6 bg-card">
                                   <h3 className="font-serif text-2xl font-bold text-primary mb-3">{room.name}</h3>
-                                  <p className="text-muted-foreground mb-4 leading-relaxed">{room.description}</p>
+                                  <RichText content={room.description} compact className="mb-4 text-muted-foreground" />
                                   
                                   {/* Room Amenities */}
                                   {room.amenities && room.amenities.length > 0 && (
@@ -393,9 +397,7 @@ export default function AccommodationDetail() {
                         {accommodation.termsAndConditions ? (
                           <div className="prose prose-lg max-w-none">
                             <div className="bg-muted/30 rounded-2xl p-6 md:p-8">
-                              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                                {accommodation.termsAndConditions}
-                              </p>
+                              <RichText content={accommodation.termsAndConditions} className="text-foreground" />
                             </div>
                           </div>
                         ) : (

@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Clock, Users, Star } from 'lucide-react';
 import { useLocation } from 'wouter';
 import type { Itinerary } from '@/hooks/use-content';
+import { plainTextFromRichText } from '@/lib/rich-text';
 
 interface ItineraryCardProps {
   itinerary: Itinerary;
@@ -98,7 +99,7 @@ export default function ItineraryCard({ itinerary, className = '' }: ItineraryCa
         </div>
 
         <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-          {itinerary.description}
+          {plainTextFromRichText(itinerary.description)}
         </p>
 
         {/* Highlights */}

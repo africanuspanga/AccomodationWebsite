@@ -4,6 +4,7 @@ import { Calendar, Clock, User } from 'lucide-react';
 import { blogPosts } from '@/data/blog-data';
 import SEOHead from '@/components/seo/seo-head';
 import { useQuery } from '@tanstack/react-query';
+import { plainTextFromRichText } from '@/lib/rich-text';
 
 interface AdminBlog {
   id: string;
@@ -109,7 +110,7 @@ export default function Blog() {
 
                   {/* Excerpt */}
                   <p className="text-muted-foreground mb-4 line-clamp-3" data-testid={`blog-excerpt-${post.id}`}>
-                    {post.excerpt}
+                    {plainTextFromRichText(post.excerpt)}
                   </p>
 
                   {/* Read More Button */}

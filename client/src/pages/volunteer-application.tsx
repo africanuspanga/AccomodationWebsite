@@ -18,7 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import SEOHead from '@/components/seo/seo-head';
 import { volunteerPrograms } from '@/data/volunteer-programs';
-import { type AdminVolunteerProgram, mergeVolunteerPrograms } from '@/lib/volunteer-programs';
+import { getVolunteerProgramSlug, type AdminVolunteerProgram, mergeVolunteerPrograms } from '@/lib/volunteer-programs';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
@@ -59,7 +59,8 @@ export default function VolunteerApplication() {
     enabled: true,
   });
   const allPrograms = mergeVolunteerPrograms(adminPrograms, volunteerPrograms);
-  const program = allPrograms.find(p => p.id === id);
+  const program = allPrograms.find(p => p.slug === id || p.id === id);
+  const programSlug = program ? getVolunteerProgramSlug(program) : id || '';
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedExcursions, setSelectedExcursions] = useState<string[]>([]);
@@ -106,6 +107,7 @@ export default function VolunteerApplication() {
   const onSubmit = (data: VolunteerApplicationForm) => {
     const submissionData = {
       ...data,
+      programId: program?.id || data.programId,
       excursions: selectedExcursions,
       dietaryDetails: data.dietaryRestrictions ? data.dietaryDetails : undefined,
     };
@@ -150,14 +152,14 @@ export default function VolunteerApplication() {
       <SEOHead 
         title={`Apply for ${program.title} - Volunteer Application | Accommodation Collection`}
         description={`Apply for the ${program.title} volunteer program and make a meaningful difference in ${program.country}.`}
-        canonical={`/volunteer-application/${program.id}`}
+        canonical={`/volunteer-application/${programSlug}`}
       />
       
       <div className="pt-32 pb-20">
         <div className="container-custom max-w-4xl">
           {/* Back Navigation */}
           <div className="mb-8">
-            <Link href={`/volunteer-program/${program.id}`}>
+            <Link href={`/volunteer-program/${programSlug}`}>
               <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Program Details

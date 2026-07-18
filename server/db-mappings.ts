@@ -466,7 +466,7 @@ export function mapAdminDestinationFromDB(row: any): AdminDestination {
   return {
     id: row.id,
     name: row.name,
-    slug: row.slug || null,
+    slug: row.slug || (row.name ? generateSlug(row.name) : null),
     continental: row.continental,
     country: row.country,
     region: row.region || null,
@@ -519,7 +519,7 @@ export function mapAdminAccommodationFromDB(row: any): AdminAccommodation {
   return {
     id: row.id,
     name: row.name,
-    slug: row.slug || null,
+    slug: row.slug || (row.name ? generateSlug(row.name) : null),
     continental: row.continental,
     country: row.country,
     destination: row.destination,
@@ -574,7 +574,7 @@ export function mapAdminItineraryFromDB(row: any): AdminItinerary {
   return {
     id: row.id,
     name: row.name,
-    slug: row.slug || null,
+    slug: row.slug || (row.name ? generateSlug(row.name) : null),
     duration: row.duration,
     price: row.price,
     category: row.category,
@@ -649,6 +649,7 @@ export function mapAdminVolunteerProgramFromDB(row: any): AdminVolunteerProgram 
   return {
     id: row.id,
     title: row.title,
+    slug: row.slug || (row.title ? generateSlug(row.title) : null),
     location: row.location,
     country: row.country,
     flag: row.flag,
@@ -670,6 +671,11 @@ export function mapAdminVolunteerProgramToDB(obj: any): Record<string, any> {
 
   if (obj.id !== undefined) mapped.id = obj.id;
   if (obj.title !== undefined) mapped.title = obj.title;
+  if (obj.slug !== undefined && obj.slug !== null && obj.slug.trim() !== '') {
+    mapped.slug = generateSlug(obj.slug);
+  } else if (obj.title) {
+    mapped.slug = generateSlug(obj.title);
+  }
   if (obj.location !== undefined) mapped.location = obj.location;
   if (obj.country !== undefined) mapped.country = obj.country;
   if (obj.flag !== undefined) mapped.flag = obj.flag;

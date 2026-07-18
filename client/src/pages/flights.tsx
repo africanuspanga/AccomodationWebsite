@@ -5,10 +5,15 @@ import type { FlightData, OpenSkyResponse } from '@shared/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Plane, MapPin, Clock, ArrowUp, Activity } from 'lucide-react';
+import { RefreshCw, Plane, MapPin, Clock, ArrowUp, Activity, Info } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-
+type FlightFeedSource = 'live' | 'cached' | 'stale-cache' | 'fallback';
+type FlightFeedResponse = OpenSkyResponse & {
+  source?: FlightFeedSource;
+  message?: string;
+  updatedAt?: string;
+};
 
 // Major East African airports
 const MAJOR_AIRPORTS = {
@@ -21,7 +26,103 @@ const MAJOR_AIRPORTS = {
   'HTAR': { name: 'Arusha Airport', city: 'Arusha, Tanzania', code: 'ARK' }
 };
 
-const fetchFlights = async (): Promise<OpenSkyResponse> => {
+const CLIENT_FALLBACK_FLIGHTS: Array<Omit<FlightData, 'last_contact' | 'time_position'>> = [
+  {
+    icao24: '43f1a1',
+    callsign: 'KQ482',
+    origin_country: 'Kenya',
+    longitude: 36.92,
+    latitude: -1.18,
+    baro_altitude: 9753,
+    on_ground: false,
+    velocity: 232,
+    true_track: 146,
+    vertical_rate: -1.2,
+    sensors: null,
+    geo_altitude: 10012,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+  {
+    icao24: '0804d2',
+    callsign: 'TC202',
+    origin_country: 'Tanzania',
+    longitude: 39.19,
+    latitude: -6.42,
+    baro_altitude: 7315,
+    on_ground: false,
+    velocity: 198,
+    true_track: 23,
+    vertical_rate: 0.4,
+    sensors: null,
+    geo_altitude: 7560,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+  {
+    icao24: '04c11b',
+    callsign: 'ETH815',
+    origin_country: 'Ethiopia',
+    longitude: 38.86,
+    latitude: 3.52,
+    baro_altitude: 10668,
+    on_ground: false,
+    velocity: 247,
+    true_track: 202,
+    vertical_rate: -0.8,
+    sensors: null,
+    geo_altitude: 10912,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+  {
+    icao24: '04a91c',
+    callsign: 'RWD452',
+    origin_country: 'Rwanda',
+    longitude: 30.21,
+    latitude: -1.67,
+    baro_altitude: 8840,
+    on_ground: false,
+    velocity: 219,
+    true_track: 311,
+    vertical_rate: 0.6,
+    sensors: null,
+    geo_altitude: 9068,
+    squawk: null,
+    spi: false,
+    position_source: 0,
+  },
+];
+
+function createClientFallbackFlights(reason?: string): FlightFeedResponse {
+  const now = Math.floor(Date.now() / 1000);
+
+  return {
+    time: now,
+    source: 'fallback',
+    updatedAt: new Date().toISOString(),
+    message: reason
+      ? `Live flight data could not be reached (${reason}). Showing a resilient regional sample feed.`
+      : 'Live flight data could not be reached. Showing a resilient regional sample feed.',
+    states: CLIENT_FALLBACK_FLIGHTS.map((flight, index) => ({
+      ...flight,
+      time_position: now - index * 74,
+      last_contact: now - index * 51,
+    })),
+  };
+}
+
+const feedSourceLabel: Record<FlightFeedSource, string> = {
+  live: 'Live OpenSky',
+  cached: 'Cached OpenSky',
+  'stale-cache': 'Cached OpenSky',
+  fallback: 'Regional sample',
+};
+
+const fetchFlights = async (): Promise<FlightFeedResponse> => {
   try {
     const response = await fetch('/api/flights/east-africa', {
       headers: {
@@ -40,7 +141,8 @@ const fetchFlights = async (): Promise<OpenSkyResponse> => {
     return data;
   } catch (error) {
     console.error('Flight fetch error:', error);
-    throw error;
+    const reason = error instanceof Error ? error.message : undefined;
+    return createClientFallbackFlights(reason);
   }
 };
 
@@ -75,7 +177,7 @@ export default function Flights() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [refreshInterval, setRefreshInterval] = useState(30000); // 30 seconds
 
-  const { data, isLoading, error, refetch } = useQuery<OpenSkyResponse>({
+  const { data, isLoading, error, refetch } = useQuery<FlightFeedResponse>({
     queryKey: ['flights', 'east-africa'],
     queryFn: fetchFlights,
     refetchInterval: autoRefresh ? refreshInterval : false,
@@ -88,6 +190,8 @@ export default function Flights() {
     flight.latitude !== null && 
     flight.longitude !== null
   );
+  const feedSource = data?.source || 'live';
+  const isLiveFeed = feedSource === 'live';
 
   const handleRefresh = () => {
     refetch();
@@ -137,6 +241,16 @@ export default function Flights() {
                 <Activity className="h-4 w-4" />
                 Auto Refresh: {autoRefresh ? 'ON' : 'OFF'}
               </Button>
+
+              {data && (
+                <Badge
+                  variant={isLiveFeed ? 'secondary' : 'outline'}
+                  className="h-10 rounded-md px-4 text-sm"
+                  data-testid="flight-feed-source"
+                >
+                  {feedSourceLabel[feedSource]}
+                </Badge>
+              )}
             </div>
           </div>
 
@@ -186,6 +300,22 @@ export default function Flights() {
               </CardContent>
             </Card>
           </div>
+
+          {data && !isLiveFeed && (
+            <Card className="mb-8 border-amber-200 bg-amber-50 text-amber-950">
+              <CardContent className="flex flex-col gap-3 pt-6 sm:flex-row sm:items-start">
+                <Info className="h-5 w-5 flex-shrink-0 text-amber-700" />
+                <div>
+                  <p className="font-semibold">
+                    {feedSource === 'fallback' ? 'Showing regional sample data' : 'Showing cached flight data'}
+                  </p>
+                  <p className="mt-1 text-sm text-amber-900/80">
+                    {data.message || 'The free live flight feed is temporarily limited, so the page is using fallback data.'}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Error State */}
           {error && (
@@ -325,8 +455,8 @@ export default function Flights() {
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
                 This flight tracker shows real-time aircraft positions in East African airspace using data from 
-                the OpenSky Network. The system tracks aircraft equipped with ADS-B transponders flying over 
-                Tanzania, Kenya, Uganda, and Ethiopia.
+                the OpenSky Network when available. If the free data feed is rate-limited or temporarily unavailable, 
+                the page uses cached data or a regional sample feed so the route remains available.
               </p>
               
               <div>

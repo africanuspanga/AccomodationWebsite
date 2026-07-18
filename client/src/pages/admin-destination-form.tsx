@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Plus, X } from 'lucide-react';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import {
   Form,
   FormControl,
@@ -24,6 +25,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ImageUpload } from '@/components/ui/image-upload';
+import {
+  CONTINENT_OPTIONS,
+  COUNTRY_OPTIONS,
+  DESTINATION_REGION_OPTIONS,
+  DESTINATION_TYPE_OPTIONS,
+} from '@/lib/admin-form-options';
 
 const destinationFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -227,16 +234,18 @@ export default function AdminDestinationForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Continental</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger data-testid="select-continental">
                           <SelectValue placeholder="Select continental" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="africa">Africa</SelectItem>
-                        <SelectItem value="europe">Europe</SelectItem>
-                        <SelectItem value="asia">Asia</SelectItem>
+                        {CONTINENT_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -250,19 +259,18 @@ export default function AdminDestinationForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Country</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger data-testid="select-country">
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="tanzania">Tanzania</SelectItem>
-                        <SelectItem value="kenya">Kenya</SelectItem>
-                        <SelectItem value="rwanda">Rwanda</SelectItem>
-                        <SelectItem value="uganda">Uganda</SelectItem>
-                        <SelectItem value="south-africa">South Africa</SelectItem>
-                        <SelectItem value="botswana">Botswana</SelectItem>
+                        {COUNTRY_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -278,18 +286,18 @@ export default function AdminDestinationForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Destination Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger data-testid="select-destination-type">
                           <SelectValue placeholder="Select type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="safari-circuit">Safari Circuit</SelectItem>
-                        <SelectItem value="beach">Beach</SelectItem>
-                        <SelectItem value="mountain">Mountain</SelectItem>
-                        <SelectItem value="city">City</SelectItem>
-                        <SelectItem value="country">Country</SelectItem>
+                        {DESTINATION_TYPE_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -303,16 +311,18 @@ export default function AdminDestinationForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Region</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ''}>
                       <FormControl>
                         <SelectTrigger data-testid="select-region">
                           <SelectValue placeholder="Select region" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="northern-circuit">Northern Circuit</SelectItem>
-                        <SelectItem value="southern-circuit">Southern Circuit</SelectItem>
-                        <SelectItem value="coast">Coast</SelectItem>
+                        {DESTINATION_REGION_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -351,10 +361,11 @@ export default function AdminDestinationForm() {
                 <FormItem>
                   <FormLabel>Full Description (shown on detail page)</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Detailed description of the destination, can be as long as needed..."
-                      className="min-h-[200px]"
-                      {...field}
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                      minHeight={260}
                       data-testid="textarea-full-description"
                     />
                   </FormControl>
@@ -370,10 +381,11 @@ export default function AdminDestinationForm() {
                 <FormItem>
                   <FormLabel>Legacy Description (for backward compatibility)</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Describe this destination..."
-                      className="min-h-[100px]"
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
+                      minHeight={170}
                       data-testid="textarea-description"
                     />
                   </FormControl>

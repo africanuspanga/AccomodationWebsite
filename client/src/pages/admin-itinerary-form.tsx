@@ -5,9 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Plus, X } from 'lucide-react';
+import { RichText } from '@/components/ui/rich-text';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import {
   Form,
   FormControl,
@@ -406,10 +407,11 @@ export default function AdminItineraryForm() {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Describe this itinerary..."
-                      className="min-h-[100px]"
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
+                      minHeight={170}
                     />
                   </FormControl>
                   <FormMessage />
@@ -746,11 +748,11 @@ export default function AdminItineraryForm() {
                         onChange={(e) => setNewDayTitle(e.target.value)}
                         data-testid="input-day-title"
                       />
-                      <Textarea
+                      <RichTextEditor
                         placeholder="Day description..."
                         value={newDayDescription}
-                        onChange={(e) => setNewDayDescription(e.target.value)}
-                        className="min-h-[80px]"
+                        onChange={setNewDayDescription}
+                        minHeight={120}
                         data-testid="textarea-day-description"
                       />
                       <Button type="button" onClick={addDayByDay} className="w-fit" data-testid="button-add-day">
@@ -768,7 +770,7 @@ export default function AdminItineraryForm() {
                             <div className="flex justify-between items-start">
                               <div>
                                 <div className="font-semibold text-primary">Day {day.day}: {day.title}</div>
-                                <p className="text-sm text-muted-foreground mt-1">{day.description}</p>
+                                <RichText content={day.description} compact className="mt-1 text-sm text-muted-foreground" />
                               </div>
                               <Button
                                 type="button"
@@ -882,10 +884,11 @@ export default function AdminItineraryForm() {
                 <FormItem>
                   <FormLabel>Terms & Conditions (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
                       placeholder="Enter terms and conditions for this itinerary..."
-                      className="min-h-[120px]"
-                      {...field}
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                      minHeight={180}
                       data-testid="textarea-terms-conditions"
                     />
                   </FormControl>
